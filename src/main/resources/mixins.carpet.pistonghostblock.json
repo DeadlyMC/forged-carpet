@@ -1,0 +1,10 @@
+{
+  "minVersion": "0.7.10",
+  "package": "carpet.forge.bugfix.pistonGhostBlocks",
+  "refmap": "mixins.carpet.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinTileEntityPiston"
+  ]
+}
