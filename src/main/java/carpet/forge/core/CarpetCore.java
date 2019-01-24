@@ -29,6 +29,7 @@ public class CarpetCore implements IFMLLoadingPlugin {
         MixinBootstrap.init();
 
         Mixins.addConfiguration("mixins.carpet.permanant.json");
+        Mixins.addConfiguration("mixins.carpet.logging.json");
 
         if (config.rsturbo)              Mixins.addConfiguration("mixins.carpet.rsturbo.json");
         if (config.newlight)             Mixins.addConfiguration("mixins.carpet.newlight.json");

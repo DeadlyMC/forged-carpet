@@ -10,6 +10,12 @@
     "MixinEntity",
     "MixinEntitySlime",
     "MixinTileEntity",
-    "MixinTileEntityHopper"
+    "MixinTileEntityHopper",
+    "MixinMinecraft",
+    "MixinMinecraftServer",
+    "MixinPlayerList"
+  ],
+  "server": [
+    "MixinDedicatedServer"
   ]
 }

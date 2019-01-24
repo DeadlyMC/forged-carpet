@@ -3,10 +3,14 @@ package carpet.forge;
 import carpet.forge.commands.*;
 import carpet.forge.config.CarpetConfig;
 import carpet.forge.helper.FlippinCactus;
+import carpet.forge.helper.TickSpeed;
+import carpet.forge.logging.LoggerRegistry;
 import carpet.forge.performance.FlyingMachineTransparent;
 import carpet.forge.proxy.CommonProxy;
 import carpet.forge.tweak.ObserversDoNonUpdate;
+import carpet.forge.utils.HUDController;
 import carpet.forge.utils.Reference;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,7 +39,6 @@ public class CarpetMain {
     public static MinecraftServer minecraft_server;
 
     public CarpetMain() {
-
     }
 
     @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
@@ -81,6 +84,28 @@ public class CarpetMain {
         if (config.commandAutoSave.loaded)    event.registerServerCommand(new CommandAutoSave());
         if (config.commandCounter.loaded)     event.registerServerCommand(new CommandCounter());
         if (config.commandFillBiome.loaded)   event.registerServerCommand(new CommandFillBiome());
+        if (config.commandLog.loaded)         event.registerServerCommand(new CommandLog());
+    }
+
+    public static void onGameStarted() {
+        LoggerRegistry.initLoggers();
+    }
+
+    public static void tick(MinecraftServer server){
+        TickSpeed.tick(server);
+        HUDController.update_hud(server);
+    }
+
+    public static void playerConnected(EntityPlayerMP player) {
+        LoggerRegistry.playerConnected(player);
+    }
+
+    public static void playerDisconnected(EntityPlayerMP player) {
+        LoggerRegistry.playerDisconnected(player);
+    }
+
+    public static void init(MinecraftServer server){
+        CarpetMain.minecraft_server = server;
     }
 
 }

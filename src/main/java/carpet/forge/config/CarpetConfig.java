@@ -163,6 +163,12 @@ public class CarpetConfig {
            .setComment(new String[]{""});
            */
 
+   public final PatchDef commandLog = new PatchDef("commandLog", PatchDef.Side.JOINED)
+           .setDisplayName("Command Log")
+           .setCategory("Commands")
+           .setDefaults(new boolean[]{true, true})
+           .setComment(new String[]{""});
+
     public void init(File file) {
         if (config == null) {
             config = new Configuration(file);
