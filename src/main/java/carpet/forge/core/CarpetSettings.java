@@ -12,6 +12,7 @@ public class CarpetSettings {
     public boolean rsturbo;
     public boolean newlight;
     public boolean isTransparent;
+    public boolean optimizedDespawnRange;
 
     //Bug Fixes
     public boolean llamafix;
@@ -61,6 +62,7 @@ public class CarpetSettings {
         rsturbo             = config.get("performance", "rsturbo", new boolean[]{false, false}, null, true, 2).getBooleanList()[0];
         newlight            = config.get("performance", "newlight", new boolean[]{false, false}, null, true, 2).getBooleanList()[0];
         isTransparent       = config.get("performance", "isTransparent", new boolean[]{true, false}, null, true, 2).getBooleanList()[0];
+        optimizedDespawnRange = config.get("performance", "optimizedDespawnRange", new boolean[]{true, false}, null, true, 2).getBooleanList()[0];
 
         //Bug Fixes
         llamafix            = config.get("bug fixes", "llamafix", new boolean[]{true, false}, null, true, 2).getBooleanList()[0];

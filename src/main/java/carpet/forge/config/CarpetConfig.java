@@ -169,6 +169,12 @@ public class CarpetConfig {
            .setDefaults(new boolean[]{true, true})
            .setComment(new String[]{""});
 
+   public final PatchDef optimizedDespawnRange = new PatchDef("optimizedDespawnRange", PatchDef.Side.JOINED)
+           .setDisplayName("Optimized Despawn Range")
+           .setCategory("Performance")
+           .setDefaults(new boolean[]{true, false})
+           .setComment(new String[]{""});
+
     public void init(File file) {
         if (config == null) {
             config = new Configuration(file);

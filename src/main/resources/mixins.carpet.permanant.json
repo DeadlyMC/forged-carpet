@@ -13,7 +13,8 @@
     "MixinTileEntityHopper",
     "MixinMinecraft",
     "MixinMinecraftServer",
-    "MixinPlayerList"
+    "MixinPlayerList",
+    "MixinWorldEntitySpawner"
   ],
   "server": [
     "MixinDedicatedServer"
