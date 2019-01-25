@@ -14,7 +14,8 @@
     "MixinMinecraft",
     "MixinMinecraftServer",
     "MixinPlayerList",
-    "MixinWorldEntitySpawner"
+    "MixinWorldEntitySpawner",
+    "MixinWorldServer"
   ],
   "server": [
     "MixinDedicatedServer"

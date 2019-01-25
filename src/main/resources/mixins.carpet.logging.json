@@ -15,7 +15,6 @@
     "MixinEntityTNTPrimed",
     "MixinGuiInGameForge",
     "MixinNetworkManager",
-    "MixinWorld",
-    "MixinWorldServer"
+    "MixinWorld"
   ]
 }
