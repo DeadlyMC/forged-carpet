@@ -175,6 +175,12 @@ public class CarpetConfig {
            .setDefaults(new boolean[]{true, false})
            .setComment(new String[]{""});
 
+   public final PatchDef commandPerimeter  = new PatchDef("commandPerimeter", PatchDef.Side.JOINED)
+           .setDisplayName("Command Perimeter")
+           .setCategory("Commands")
+           .setDefaults(new boolean[]{true, true})
+           .setComment(new String[]{"Enables /perimeterinfo command that scans the area around the block for potential spawnable spots"});
+
     public void init(File file) {
         if (config == null) {
             config = new Configuration(file);

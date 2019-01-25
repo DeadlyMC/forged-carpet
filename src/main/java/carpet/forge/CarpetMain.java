@@ -85,6 +85,7 @@ public class CarpetMain {
         if (config.commandCounter.loaded)     event.registerServerCommand(new CommandCounter());
         if (config.commandFillBiome.loaded)   event.registerServerCommand(new CommandFillBiome());
         if (config.commandLog.loaded)         event.registerServerCommand(new CommandLog());
+        if (config.commandPerimeter.loaded)   event.registerServerCommand(new CommandPerimeter());
     }
 
     public static void onGameStarted() {
