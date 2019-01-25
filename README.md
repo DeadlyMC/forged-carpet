@@ -12,6 +12,7 @@ off completely.
 - Client side only atm (Don't worry u multiplayer guys.....server side is being worked upon)
 - Every setting can be toggled on/off in the Mod Options menu. Optionally you can even turn off the setting from being
   loaded when the game starts by turning of the Load Patch option.
+- Mod config file: `fcarpet1122.cfg`
   
 ## Using the mod
 Just drop the `.jar` file from the releases section of this mod repository in the mods folder of your game and run mc with 
