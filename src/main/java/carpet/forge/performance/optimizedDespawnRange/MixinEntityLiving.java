@@ -1,4 +1,4 @@
-package carpet.forge.permanantMixins;
+package carpet.forge.performance.optimizedDespawnRange;
 
 import carpet.forge.utils.IMixinEntityLiving;
 import net.minecraft.entity.EntityLiving;

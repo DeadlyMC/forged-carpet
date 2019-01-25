@@ -1,6 +1,5 @@
 package carpet.forge.core;
 
-import carpet.forge.core.asm.WorldEntitySpawnerTransformer;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.apache.logging.log4j.LogManager;
@@ -38,6 +37,8 @@ public class CarpetCore implements IFMLLoadingPlugin {
         if (config.pistonGhostBlocks)    Mixins.addConfiguration("mixins.carpet.pistonghostblock.json");
         if (config.boundingBoxFix)       Mixins.addConfiguration("mixins.carpet.bbFix.json");
         if (config.tntDoNotUpdate)       Mixins.addConfiguration("mixins.carpet.tnt.json");
+        if (config.optimizedDespawnRange)Mixins.addConfiguration("mixins.carpet.despawn.json");
+
     }
 
     public static void initialize() {

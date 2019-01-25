@@ -21,7 +21,7 @@ package carpet.forge.core.config;
 
 /*
 Shameless rip of the basic Forge configuration classes stripped of writing/saving and GUI integration.
-The point of this is to allow safe reading of the MUP configuration file from the core mod without loading any
+The point of this is to allow safe reading of the mod configuration file from the core mod without loading any
 FML modules aside from those in the class loader exception list.
  */
 

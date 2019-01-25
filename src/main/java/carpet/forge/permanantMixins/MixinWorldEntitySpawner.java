@@ -41,7 +41,9 @@ public abstract class MixinWorldEntitySpawner {
 
     /**
      * @author
-     * Had to replace this method as there were issues with variable
+     * DeadlyMc
+     * @reason
+     * Had to overwrite this method as there were issues with variable
      * handling using mixins.
      */
     @Overwrite()
@@ -90,7 +92,7 @@ public abstract class MixinWorldEntitySpawner {
             }
 
             // [FCM] Start
-            boolean optimizedDespawnRange = CarpetMain.config.optimizedDespawnRange.isEnabled();
+            boolean optimizedDespawnRange = CarpetMain.config.optimizedDespawnRange.getBoolean();
             if (i==0 && optimizedDespawnRange) // Worlds without valid chunks are skipped.
             {
                 return 0;
@@ -199,7 +201,7 @@ public abstract class MixinWorldEntitySpawner {
 
                                                         if (entityliving.isNotColliding()) {
                                                             // [FCM] Replacing //worldServerIn.spawnEntity(entityliving);
-                                                            if (optimizedDespawnRange && ((IMixinEntityLiving)entityliving).willImmediatelyDespawn()) // Added optimized despawn mobs causing netlag by Luflosi
+                                                            if (optimizedDespawnRange && ((IMixinEntityLiving) entityliving).willImmediatelyDespawn()) // Added optimized despawn mobs causing netlag by Luflosi
                                                             {
                                                                 entityliving.setDead();
                                                             }
