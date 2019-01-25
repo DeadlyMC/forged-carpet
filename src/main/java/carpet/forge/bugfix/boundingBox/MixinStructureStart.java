@@ -15,10 +15,9 @@ public abstract class MixinStructureStart {
     @Shadow
     protected abstract void updateBoundingBox();
 
-    @Inject(method = "writeStructureComponentsToNBT", at = @At(value = "CONSTANT", args = "stringValue= Children", ordinal = 0))
+    @Inject(method = "writeStructureComponentsToNBT", at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/NBTTagCompound;setTag(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", ordinal = 1, shift = At.Shift.BEFORE))
     public void callBBUpdate(int chunkX, int chunkZ, CallbackInfoReturnable<NBTTagCompound> cir) {
-        if (CarpetMain.config.boundingBoxFix.enabled) {
-            this.updateBoundingBox();
-        }
+        if (CarpetMain.config.boundingBoxFix.enabled)
+            updateBoundingBox();
     }
 }
