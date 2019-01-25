@@ -25,7 +25,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
 
     int mobs_smashed = 1;
 
-    @Inject(method = "damageEntity", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/common/ISpecialArmor$ArmorProperties;applyArmor(Lnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/util/NonNullList;Lnet/minecraft/util/DamageSource;D)F", shift = At.Shift.AFTER))
+    @Inject(method = "damageEntity", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/common/ISpecialArmor$ArmorProperties;applyArmor(Lnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/util/NonNullList;Lnet/minecraft/util/DamageSource;D)F", shift = At.Shift.AFTER), remap = false)
     private void modifyDamageArmorToughness(DamageSource damageSrc, float damageAmount, CallbackInfo ci){
         float previous_amount = damageAmount;
         DamageReporter.modify_damage(this, damageSrc, previous_amount, damageAmount,
