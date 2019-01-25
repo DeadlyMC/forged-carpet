@@ -167,13 +167,13 @@ public class CarpetConfig {
            .setDisplayName("Command Log")
            .setCategory("Commands")
            .setDefaults(new boolean[]{true, true})
-           .setComment(new String[]{""});
+           .setComment(new String[]{"Enables /log command to monitor events in the game via chat and overlays"});
 
    public final PatchDef optimizedDespawnRange = new PatchDef("optimizedDespawnRange", PatchDef.Side.JOINED)
            .setDisplayName("Optimized Despawn Range")
            .setCategory("Performance")
            .setDefaults(new boolean[]{true, false})
-           .setComment(new String[]{""});
+           .setComment(new String[]{"Spawned mobs that would otherwise despawn immediately, won't be placed in world"});
 
    public final PatchDef commandPerimeter  = new PatchDef("commandPerimeter", PatchDef.Side.JOINED)
            .setDisplayName("Command Perimeter")
