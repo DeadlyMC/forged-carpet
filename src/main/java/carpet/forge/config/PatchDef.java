@@ -51,10 +51,6 @@ public class PatchDef {
         return this.loaded;
     }
 
-    public boolean getBoolean(){
-        return this.enabled;
-    }
-
     public String getFieldName() {
         return this.fieldName;
     }
