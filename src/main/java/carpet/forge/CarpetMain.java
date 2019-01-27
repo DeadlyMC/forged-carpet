@@ -7,7 +7,6 @@ import carpet.forge.helper.TickSpeed;
 import carpet.forge.logging.LoggerRegistry;
 import carpet.forge.performance.FlyingMachineTransparent;
 import carpet.forge.proxy.CommonProxy;
-import carpet.forge.tweak.ObserversDoNonUpdate;
 import carpet.forge.utils.HUDController;
 import carpet.forge.utils.Reference;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -48,7 +47,6 @@ public class CarpetMain {
     @Mod.EventHandler
     public void PreInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new CarpetConfig());
-        MinecraftForge.EVENT_BUS.register(new ObserversDoNonUpdate());
         MinecraftForge.EVENT_BUS.register(new FlyingMachineTransparent());
         MinecraftForge.EVENT_BUS.register(new FlippinCactus());
         FlyingMachineTransparent.setFlyingMachineTransparent();

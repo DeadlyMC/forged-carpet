@@ -38,6 +38,7 @@ public class CarpetCore implements IFMLLoadingPlugin {
         if (config.boundingBoxFix)       Mixins.addConfiguration("mixins.carpet.bbFix.json");
         if (config.tntDoNotUpdate)       Mixins.addConfiguration("mixins.carpet.tnt.json");
         if (config.optimizedDespawnRange)Mixins.addConfiguration("mixins.carpet.despawn.json");
+        if (config.observertweak)        Mixins.addConfiguration("mixins.carpet.observertweak.json");
 
     }
 
