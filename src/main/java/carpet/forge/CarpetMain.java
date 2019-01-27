@@ -16,10 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -30,7 +27,8 @@ import java.io.File;
         version = Reference.VERSION,
         acceptedMinecraftVersions = Reference.ACCEPTED_MC_VERSIONS,
         guiFactory = Reference.GUI_FACTORY,
-        clientSideOnly = true
+        clientSideOnly = true,
+        certificateFingerprint = Reference.FINGERPRINT
 )
 public class CarpetMain {
 
@@ -87,6 +85,20 @@ public class CarpetMain {
         if (config.commandLog.loaded)         event.registerServerCommand(new CommandLog());
         if (config.commandPerimeter.loaded)   event.registerServerCommand(new CommandPerimeter());
     }
+
+    @Mod.EventHandler
+    public void onFingerprintViolation(FMLFingerprintViolationEvent event) {
+
+        if (!event.isDirectory())
+        {
+            logger.warn("*******************************************************************************************************");
+            logger.warn("                                         WARNING!                                                      ");
+            logger.warn("Invalid fingerprint detected! The file " + event.getSource().getName() + " may have been tampered with.");
+            logger.warn("                     This version will NOT be supported by the author!                                 ");
+            logger.warn("*******************************************************************************************************");
+        }
+    }
+
 
     public static void onGameStarted() {
         LoggerRegistry.initLoggers();
