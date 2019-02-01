@@ -82,6 +82,11 @@ public class CarpetMain {
         if (config.commandFillBiome.loaded)   event.registerServerCommand(new CommandFillBiome());
         if (config.commandLog.loaded)         event.registerServerCommand(new CommandLog());
         if (config.commandPerimeter.loaded)   event.registerServerCommand(new CommandPerimeter());
+        if (config.commandTick.loaded)
+        {
+            event.registerServerCommand(new CommandTick());
+            event.registerServerCommand(new CommandTickHealth());
+        }
     }
 
     @Mod.EventHandler

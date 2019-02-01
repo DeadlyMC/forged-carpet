@@ -15,7 +15,9 @@
     "MixinMinecraftServer",
     "MixinPlayerList",
     "MixinWorldEntitySpawner",
-    "MixinWorldServer"
+    "MixinWorldServer",
+    "MixinNetHandlerPlayServer",
+    "MixinWorld"
   ],
   "server": [
     "MixinDedicatedServer"
