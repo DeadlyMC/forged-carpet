@@ -187,6 +187,12 @@ public class CarpetConfig {
            .setDefaults(new boolean[]{true, true})
            .setComment(new String[]{"Enables /tick command to control game speed"});
 
+   public final PatchDef watchDogFix = new PatchDef("watchDogFix", PatchDef.Side.JOINED)
+           .setDisplayName("WatchDogFix")
+           .setCategory("Bug Fixes")
+           .setDefaults(new boolean[]{true, false})
+           .setComment(new String[]{"Fixes server crashing under heavy load and low tps\n Won't prevent crashes if the server doesn't respond in max-tick-time ticks"});
+
     public void init(File file) {
         if (config == null) {
             config = new Configuration(file);

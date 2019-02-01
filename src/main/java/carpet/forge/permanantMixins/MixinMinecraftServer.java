@@ -181,21 +181,33 @@ public abstract class MixinMinecraftServer {
                     else
                     {
                         boolean keeping_up = false;
-                        while (i > 50L)
+                        while (i > TickSpeed.mspt)
                         {
-                            i -= 50L;
+                            // [FCM] WatchDogFix and Tick stuff
+                            if (CarpetMain.config.watchDogFix.enabled && keeping_up)
+                            {
+                                this.currentTime = getCurrentTimeMillis();
+                                this.serverIsRunning = true;
+                                falling_behind = true;
+                            }
+                            i -= TickSpeed.mspt;
                             this.tick();
+                            keeping_up = true;
+                            // [FCM] End
                         }
                     }
+
+                    // [FCM] Ticking stuff
                     if (falling_behind)
                     {
-                        Thread.sleep(1L); /* carpet mod 50L */
+                        Thread.sleep(1L); /* Forged carpet mod */
                     }
                     else
                     {
-                        Thread.sleep(Math.max(1L, TickSpeed.mspt - i)); /* carpet mod 50L */
+                        Thread.sleep(Math.max(1L, TickSpeed.mspt - i)); /* Forged carpet mod */
                     }
                     this.serverIsRunning = true;
+                    // [FCM] End
                 }
                 net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStopping();
                 net.minecraftforge.fml.common.FMLCommonHandler.instance().expectServerStopped(); // has to come before finalTick to avoid race conditions

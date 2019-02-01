@@ -19,6 +19,7 @@ public class CarpetSettings {
     public boolean pistonGhostBlocks;
     public boolean miningGhostBlocks;
     public boolean boundingBoxFix;
+    public boolean watchDogFix;
 
     //Tweaks
     public boolean observertweak;
@@ -71,6 +72,7 @@ public class CarpetSettings {
         pistonGhostBlocks   = config.get("bug fixes", "pistonGhostBlocks", new boolean[]{true, false}, null, true, 2).getBooleanList()[0];
         miningGhostBlocks   = config.get("bug fixes", "miningGhostBlocks", new boolean[]{true, false}, null, true, 2).getBooleanList()[0];
         boundingBoxFix      = config.get("bug fixes", "witchHutBB", new boolean[]{true, false}, null, true, 2).getBooleanList()[0];
+        watchDogFix         = config.get("bug fixes", "watchDogFix", new boolean[]{true, false}, null, true, 2).getBooleanList()[0];
 
         //Commands
         commandCameraMode   = config.get("commands", "commandCameraMode", new boolean[]{true, true}, null, true, 2).getBooleanList()[0];
