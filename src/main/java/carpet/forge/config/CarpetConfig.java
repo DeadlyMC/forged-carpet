@@ -185,7 +185,7 @@ public class CarpetConfig {
            .setDisplayName("Command Tick")
            .setCategory("Commands")
            .setDefaults(new boolean[]{true, true})
-           .setComment(new String[]{""});
+           .setComment(new String[]{"Enables /tick command to control game speed"});
 
     public void init(File file) {
         if (config == null) {
