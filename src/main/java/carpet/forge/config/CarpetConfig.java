@@ -193,6 +193,13 @@ public class CarpetConfig {
            .setDefaults(new boolean[]{true, false})
            .setComment(new String[]{"Fixes server crashing under heavy load and low tps\n Won't prevent crashes if the server doesn't respond in max-tick-time ticks"});
 
+   public final PatchDef ctrlQCrafting = new PatchDef("ctrlQCrafting", PatchDef.Side.JOINED)
+           .setDisplayName("CtrlQCraftingFix")
+           .setCategory("Bug Fixes")
+           .setDefaults(new boolean[]{true, false})
+           .setCredits("Xcom")
+           .setComment(new String[]{"Dropping entire stacks works also from on the crafting UI result slot"});
+
     public void init(File file) {
         if (config == null) {
             config = new Configuration(file);
