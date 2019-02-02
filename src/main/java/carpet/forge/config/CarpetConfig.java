@@ -200,6 +200,12 @@ public class CarpetConfig {
            .setCredits("Xcom")
            .setComment(new String[]{"Dropping entire stacks works also from on the crafting UI result slot"});
 
+    public final PatchDef commandDistance = new PatchDef("commandDistance", PatchDef.Side.JOINED)
+            .setDisplayName("CommandDistance")
+            .setCategory("Commands")
+            .setDefaults(new boolean[]{true, true})
+            .setComment(new String[]{"Enables /distance command to measure in game distance between points\n Also enables brown carpet placement action if 'carpets' rule is turned on as well"});
+
     public void init(File file) {
         if (config == null) {
             config = new Configuration(file);

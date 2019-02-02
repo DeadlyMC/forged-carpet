@@ -38,6 +38,7 @@ public class CarpetSettings {
     public boolean commandLog;
     public boolean commandPerimeter;
     public boolean commandTick;
+    public boolean commandDistance;
 
     //Helper
     public boolean flipcacti;
@@ -89,6 +90,7 @@ public class CarpetSettings {
         commandLog          = config.get("commands", "commandLog", new boolean[]{true, true}, null, true, 2).getBooleanList()[0];
         commandPerimeter    = config.get("commands", "commandPerimeter", new boolean[]{true, true}, null, true, 2).getBooleanList()[0];
         commandTick         = config.get("commands", "commandTick", new boolean[]{true, true}, null, true, 2).getBooleanList()[0];
+        commandDistance     = config.get("commands", "commandDistance", new boolean[]{true, true}, null, true, 2).getBooleanList()[0];
     }
 
 }

@@ -87,6 +87,7 @@ public class CarpetMain {
             event.registerServerCommand(new CommandTick());
             event.registerServerCommand(new CommandTickHealth());
         }
+        if (config.commandDistance.loaded)    event.registerServerCommand(new CommandDistance());
     }
 
     @Mod.EventHandler
