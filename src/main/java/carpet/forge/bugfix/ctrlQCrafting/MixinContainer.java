@@ -1,7 +1,6 @@
 package carpet.forge.bugfix.ctrlQCrafting;
 
 import carpet.forge.CarpetMain;
-import carpet.forge.helper.CtrlQCrafting;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;

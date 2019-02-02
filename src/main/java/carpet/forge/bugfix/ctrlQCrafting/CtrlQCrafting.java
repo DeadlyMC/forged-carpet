@@ -1,4 +1,4 @@
-package carpet.forge.helper;
+package carpet.forge.bugfix.ctrlQCrafting;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
