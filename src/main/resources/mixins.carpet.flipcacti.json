@@ -1,0 +1,13 @@
+{
+  "minVersion": "0.7.10",
+  "package": "carpet.forge.helper.blockRotator.mixin",
+  "refmap": "mixins.carpet.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinBlockHopper",
+    "MixinEntity",
+    "MixinEnumFacing",
+    "MixinPlayerInteractionManager"
+  ]
+}

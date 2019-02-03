@@ -2,7 +2,6 @@ package carpet.forge;
 
 import carpet.forge.commands.*;
 import carpet.forge.config.CarpetConfig;
-import carpet.forge.helper.FlippinCactus;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.logging.LoggerRegistry;
 import carpet.forge.performance.FlyingMachineTransparent;
@@ -48,7 +47,6 @@ public class CarpetMain {
     public void PreInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new CarpetConfig());
         MinecraftForge.EVENT_BUS.register(new FlyingMachineTransparent());
-        MinecraftForge.EVENT_BUS.register(new FlippinCactus());
         FlyingMachineTransparent.setFlyingMachineTransparent();
 
         config.init(new File(Launch.minecraftHome, "config/fcarpet1122.cfg"));

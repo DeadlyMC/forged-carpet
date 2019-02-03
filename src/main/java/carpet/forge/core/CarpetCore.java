@@ -40,6 +40,7 @@ public class CarpetCore implements IFMLLoadingPlugin {
         if (config.optimizedDespawnRange)Mixins.addConfiguration("mixins.carpet.despawn.json");
         if (config.observertweak)        Mixins.addConfiguration("mixins.carpet.observertweak.json");
         if (config.ctrlQCraftingFix)     Mixins.addConfiguration("mixins.carpet.craftingfix.json");
+        if (config.flipcacti)            Mixins.addConfiguration("mixins.carpet.flipcacti.json");
 
     }
 
