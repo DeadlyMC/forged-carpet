@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import java.util.Iterator;
 import java.util.List;
 
-@Mixin(WorldServer.class)
+@Mixin(value = WorldServer.class, priority = 900)
 public abstract class MixinWorldServer extends World {
 
     @Shadow public abstract boolean areAllPlayersAsleep();
