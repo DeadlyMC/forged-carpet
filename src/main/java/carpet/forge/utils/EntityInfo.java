@@ -1,6 +1,6 @@
 package carpet.forge.utils;
 
-import carpet.forge.permanantMixins.IMixinEntityVillager;
+import carpet.forge.mixin.IMixinEntityVillager;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
