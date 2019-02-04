@@ -2,6 +2,7 @@ package carpet.forge.commands;
 
 
 import carpet.forge.CarpetMain;
+import carpet.forge.CarpetSettings;
 import carpet.forge.logging.LogHandler;
 import carpet.forge.logging.Logger;
 import carpet.forge.logging.LoggerRegistry;
@@ -31,117 +32,149 @@ public class CommandLog extends CarpetCommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 
-        if (CarpetMain.config.commandLog.enabled)
+        if (!command_enabled("commandLog", sender)) return;
+        EntityPlayer player = null;
+        if (sender instanceof EntityPlayer)
         {
+            player = (EntityPlayer)sender;
+        }
 
-            EntityPlayer player = null;
-            if (sender instanceof EntityPlayer) {
-                player = (EntityPlayer) sender;
+        if (args.length == 0)
+        {
+            if (player == null)
+            {
+                return;
             }
-
-            if (args.length == 0) {
-                if (player == null) {
-                    return;
-                }
-                Map<String, String> subs = LoggerRegistry.getPlayerSubscriptions(player.getName());
-                if (subs == null) {
-                    subs = new HashMap<>();
-                }
-                List<String> all_logs = new ArrayList<>(LoggerRegistry.getLoggerNames());
-                Collections.sort(all_logs);
-                Messenger.m(player, "w _____________________");
-                Messenger.m(player, "w Available logging options:");
-                for (String lname : all_logs) {
-                    List<Object> comp = new ArrayList<>();
-                    String color = subs.containsKey(lname) ? "w" : "g";
-                    comp.add("w  - " + lname + ": ");
-                    Logger logger = LoggerRegistry.getLogger(lname);
-                    String[] options = logger.getOptions();
-                    if (options == null) {
-                        if (subs.containsKey(lname)) {
-                            comp.add("l Subscribed ");
-                        } else {
-                            comp.add(color + " [Subscribe] ");
-                            comp.add("^w toggle subscription to " + lname);
-                            comp.add("!/log " + lname);
-                        }
-                    } else {
-                        for (String option : logger.getOptions()) {
-                            if (subs.containsKey(lname) && subs.get(lname).equalsIgnoreCase(option)) {
-                                comp.add("l [" + option + "] ");
-                            } else {
-                                comp.add(color + " [" + option + "] ");
-                                comp.add("^w toggle subscription to " + lname + " " + option);
-                                comp.add("!/log " + lname + " " + option);
-                            }
-
-                        }
+            Map<String,String> subs = LoggerRegistry.getPlayerSubscriptions(player.getName());
+            if (subs == null)
+            {
+                subs = new HashMap<>();
+            }
+            List<String> all_logs = new ArrayList<>(LoggerRegistry.getLoggerNames());
+            Collections.sort(all_logs);
+            Messenger.m(player, "w _____________________");
+            Messenger.m(player, "w Available logging options:");
+            for (String lname: all_logs)
+            {
+                List<Object> comp = new ArrayList<>();
+                String color = subs.containsKey(lname)?"w":"g";
+                comp.add("w  - "+lname+": ");
+                Logger logger = LoggerRegistry.getLogger(lname);
+                String [] options = logger.getOptions();
+                if (options == null)
+                {
+                    if (subs.containsKey(lname))
+                    {
+                        comp.add("l Subscribed ");
                     }
-                    if (subs.containsKey(lname)) {
-                        comp.add("nb [X]");
-                        comp.add("^w Click to toggle subscription");
+                    else
+                    {
+                        comp.add(color + " [Subscribe] ");
+                        comp.add("^w toggle subscription to " + lname);
                         comp.add("!/log " + lname);
                     }
-                    Messenger.m(player, comp.toArray(new Object[0]));
                 }
-                return;
-            }
-            // toggle to default
-            if ("clear".equalsIgnoreCase(args[0])) {
-                if (args.length > 1) {
-                    player = server.getPlayerList().getPlayerByUsername(args[1]);
-                }
-                if (player == null) {
-                    throw new WrongUsageException("No player specified");
-                }
-                for (String logname : LoggerRegistry.getLoggerNames()) {
-                    LoggerRegistry.unsubscribePlayer(player.getName(), logname);
-                }
-                notifyCommandListener(sender, this, "Unsubscribed from all logs");
-                return;
-            }
-            Logger logger = LoggerRegistry.getLogger(args[0]);
-            if (logger != null) {
-                String option = null;
-                if (args.length >= 2) {
-                    option = logger.getAcceptedOption(args[1]);
-                }
-                if (args.length >= 3) {
-                    player = server.getPlayerList().getPlayerByUsername(args[2]);
-                }
-                if (player == null) {
-                    throw new WrongUsageException("No player specified");
-                }
-                LogHandler handler = null;
-                if (args.length >= 4) {
-                    handler = LogHandler.createHandler(args[3], ArrayUtils.subarray(args, 4, args.length));
-                    if (handler == null) {
-                        throw new CommandException("Invalid handler");
+                else
+                {
+                    for (String option : logger.getOptions())
+                    {
+                        if (subs.containsKey(lname) && subs.get(lname).equalsIgnoreCase(option))
+                        {
+                            comp.add("l [" + option + "] ");
+                        } else
+                        {
+                            comp.add(color + " [" + option + "] ");
+                            comp.add("^w toggle subscription to " + lname + " " + option);
+                            comp.add("!/log " + lname + " " + option);
+                        }
+
                     }
                 }
-                boolean subscribed = true;
-                if (args.length >= 2 && "clear".equalsIgnoreCase(args[1])) {
-                    LoggerRegistry.unsubscribePlayer(player.getName(), logger.getLogName());
-                    subscribed = false;
-                } else if (option == null) {
-                    subscribed = LoggerRegistry.togglePlayerSubscription(player.getName(), logger.getLogName(), handler);
-                } else {
-                    LoggerRegistry.subscribePlayer(player.getName(), logger.getLogName(), option, handler);
+                if (subs.containsKey(lname))
+                {
+                    comp.add("nb [X]");
+                    comp.add("^w Click to toggle subscription");
+                    comp.add("!/log "+lname);
                 }
-                if (subscribed) {
-                    Messenger.m(player, "gi Subscribed to " + logger.getLogName() + ".");
-                } else {
-                    Messenger.m(player, "gi Unsubscribed from " + logger.getLogName() + ".");
-                }
-            } else {
-                throw new WrongUsageException("No logger named " + args[0] + ".");
+                Messenger.m(player,comp.toArray(new Object[0]));
             }
+            return;
+        }
+        // toggle to default
+        if ("clear".equalsIgnoreCase(args[0]))
+        {
+            if (args.length > 1)
+            {
+                player = server.getPlayerList().getPlayerByUsername(args[1]);
+            }
+            if (player == null)
+            {
+                throw new WrongUsageException("No player specified");
+            }
+            for (String logname : LoggerRegistry.getLoggerNames())
+            {
+                LoggerRegistry.unsubscribePlayer(player.getName(), logname);
+            }
+            notifyCommandListener(sender, this, "Unsubscribed from all logs");
+            return;
+        }
+        Logger logger = LoggerRegistry.getLogger(args[0]);
+        if (logger != null)
+        {
+            String option = null;
+            if (args.length >= 2)
+            {
+                option = logger.getAcceptedOption(args[1]);
+            }
+            if (args.length >= 3)
+            {
+                player = server.getPlayerList().getPlayerByUsername(args[2]);
+            }
+            if (player == null)
+            {
+                throw new WrongUsageException("No player specified");
+            }
+            LogHandler handler = null;
+            if (args.length >= 4)
+            {
+                handler = LogHandler.createHandler(args[3], ArrayUtils.subarray(args, 4, args.length));
+                if (handler == null)
+                {
+                    throw new CommandException("Invalid handler");
+                }
+            }
+            boolean subscribed = true;
+            if (args.length >= 2 && "clear".equalsIgnoreCase(args[1]))
+            {
+                LoggerRegistry.unsubscribePlayer(player.getName(), logger.getLogName());
+                subscribed = false;
+            }
+            else if (option == null)
+            {
+                subscribed = LoggerRegistry.togglePlayerSubscription(player.getName(), logger.getLogName(), handler);
+            }
+            else
+            {
+                LoggerRegistry.subscribePlayer(player.getName(), logger.getLogName(), option, handler);
+            }
+            if (subscribed)
+            {
+                Messenger.m(player, "gi Subscribed to " + logger.getLogName() + ".");
+            }
+            else
+            {
+                Messenger.m(player, "gi Unsubscribed from " + logger.getLogName() + ".");
+            }
+        }
+        else
+        {
+            throw new WrongUsageException("No logger named " + args[0] + ".");
         }
     }
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        if (!CarpetMain.config.commandLog.enabled)
+        if (!CarpetSettings.getBool("commandLog"))
         {
             return Collections.<String>emptyList();
         }

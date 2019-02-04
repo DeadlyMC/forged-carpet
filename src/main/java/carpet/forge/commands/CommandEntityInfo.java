@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.annotation.Nullable;
 
 import carpet.forge.CarpetMain;
+import carpet.forge.CarpetSettings;
 import carpet.forge.utils.EntityInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -71,27 +72,31 @@ public class CommandEntityInfo extends CarpetCommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
 
-        if(CarpetMain.config.commandEntityInfo.enabled) {
-            if (args.length == 0 || "grep".equalsIgnoreCase(args[0])) {
-                String grep = null;
-                if (args.length == 2) {
-                    grep = args[1];
-                }
-                EntityPlayer entityplayer = getCommandSenderAsPlayer(sender);
-                List<String> report = EntityInfo.entityInfo(entityplayer, sender.getEntityWorld());
-                print_multi_message(report, sender, grep);
-            } else {
-                Entity entity = getEntity(server, sender, args[0]);
-                //LOG.error("SENDER dimension "+ sender.getEntityWorld().provider.getDimensionType().getId());
-                List<String> report = EntityInfo.entityInfo(entity, sender.getEntityWorld());
-                String grep = null;
-                if (args.length >= 3 && "grep".equalsIgnoreCase(args[1])) {
-                    grep = args[2];
-                }
-                print_multi_message(report, sender, grep);
+        if (!command_enabled("commandEntityInfo", sender)) return;
+        if (args.length == 0 || "grep".equalsIgnoreCase(args[0]))
+        {
+            String grep = null;
+            if (args.length == 2)
+            {
+                grep = args[1];
             }
-        } else {
-            notifyCommandListener(sender, this, "CommandEntityInfo is disabled");
+            EntityPlayer entityplayer = getCommandSenderAsPlayer(sender);
+            List<String> report = EntityInfo.entityInfo(entityplayer, sender.getEntityWorld());
+            print_multi_message(report, sender, grep);
+        }
+        else
+        {
+            Entity entity = getEntity(server, sender, args[0]);
+            //LOG.error("SENDER dimension "+ sender.getEntityWorld().provider.getDimensionType().getId());
+            List<String> report = EntityInfo.entityInfo(entity, sender.getEntityWorld());
+            String grep = null;
+            if (args.length >= 3 && "grep".equalsIgnoreCase(args[1]))
+            {
+                grep = args[2];
+            }
+            print_multi_message(report, sender, grep);
+
+
         }
     }
 
@@ -104,9 +109,9 @@ public class CommandEntityInfo extends CarpetCommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
-        if (!CarpetMain.config.commandEntityInfo.enabled)
+        if (!CarpetSettings.getBool("commandEntityInfo"))
         {
-            notifyCommandListener(sender, this, "Command is disabled in ForgeCarpet mod options");
+            notifyCommandListener(sender, this, "Command is disabled in carpet settings");
         }
         return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : Collections.emptyList();
     }

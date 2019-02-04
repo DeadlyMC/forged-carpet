@@ -1,6 +1,7 @@
 package carpet.forge.permanantMixins;
 
 import carpet.forge.CarpetMain;
+import carpet.forge.CarpetSettings;
 import carpet.forge.utils.IMixinEntityLiving;
 import carpet.forge.utils.SpawnReporter;
 import net.minecraft.block.state.IBlockState;
@@ -92,7 +93,7 @@ public abstract class MixinWorldEntitySpawner {
             }
 
             // [FCM] Start
-            boolean optimizedDespawnRange = CarpetMain.config.optimizedDespawnRange.enabled;
+            boolean optimizedDespawnRange = CarpetSettings.getBool("optimizedDespawnRange");;
             if (i==0 && optimizedDespawnRange) // Worlds without valid chunks are skipped.
             {
                 return 0;

@@ -25,11 +25,13 @@ public abstract class MixinPlayerInteractionManager {
     @Shadow
     private BlockPos destroyPos;
 
+    /* TODO: carpet mixin
     @Inject(method = "onBlockClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;sendBlockBreakProgress(ILnet/minecraft/util/math/BlockPos;I)V"))
     public void notifyUpdate(BlockPos pos, EnumFacing side, CallbackInfo ci) {
         if (CarpetMain.config.miningGhostBlocks.enabled) {
             player.connection.sendPacket(new SPacketBlockChange(world, destroyPos));
         }
     }
+    */
 
 }

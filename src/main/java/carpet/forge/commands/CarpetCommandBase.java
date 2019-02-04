@@ -1,5 +1,7 @@
 package carpet.forge.commands;
 
+import carpet.forge.CarpetSettings;
+import carpet.forge.utils.Messenger;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,6 +33,28 @@ public abstract class CarpetCommandBase extends CommandBase
         {
             for (ITextComponent t: texts) notifyCommandListener(sender, this, t.getUnformattedText());
         }
+    }
+
+    public boolean command_enabled(String command_name, ICommandSender sender)
+    {
+        if (!CarpetSettings.getBool(command_name))
+        {
+            msg(sender, Messenger.m(null, "w Command is disabled in carpet settings"));
+            if (!(sender instanceof EntityPlayer)) return false;
+            if (CarpetSettings.locked)
+            {
+                Messenger.m((EntityPlayer)sender, "gi Ask your admin to enable it server config");
+            }
+            else
+            {
+                Messenger.m((EntityPlayer)sender,
+                        "gi copy&pasta \"",
+                        "gib /carpet "+command_name+" true", "/carpet "+command_name+" true",
+                        "gi \"to enable it");
+            }
+            return false;
+        }
+        return true;
     }
 
 

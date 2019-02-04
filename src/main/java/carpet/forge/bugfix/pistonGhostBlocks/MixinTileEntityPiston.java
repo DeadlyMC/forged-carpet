@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = TileEntityPiston.class)
 public abstract class MixinTileEntityPiston extends TileEntity {
 
+    /* TODO: Carpet mixin
     @Inject(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/state/IBlockState;"))
     public void notifyBlockUpdate(CallbackInfo ci) {
         if (CarpetMain.config.pistonGhostBlocks.enabled) {
@@ -20,4 +21,5 @@ public abstract class MixinTileEntityPiston extends TileEntity {
             this.world.notifyBlockUpdate(pos.offset(blockState.getValue(BlockPistonExtension.FACING).getOpposite()), blockState, blockState, 0);
         }
     }
+    */
 }

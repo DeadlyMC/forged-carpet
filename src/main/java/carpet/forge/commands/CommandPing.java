@@ -26,23 +26,18 @@ public class CommandPing extends CarpetCommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 
-        if (CarpetMain.config.commandPing.enabled) {
-            if (sender instanceof EntityPlayerMP)
-            {
-                int ping = ((EntityPlayerMP) sender).ping;
-                sender.sendMessage(new TextComponentString("Your ping is: " + ping + " ms"));
+        if (!command_enabled("commandPing", sender))
+            return;
 
-            } else {
-                throw new CommandException(("Only a player can have a ping!"));
-            }
-        } else {
-            notifyCommandListener(sender, this, "CommandPing is Disabled---Enable it in ForgedCarpet Mod Options");
+        if (sender instanceof EntityPlayerMP)
+        {
+            int ping = ((EntityPlayerMP) sender).ping;
+            sender.sendMessage(new TextComponentString("Your ping is: " + ping + " ms"));
         }
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        return Collections.emptyList();
+        else
+        {
+            throw new CommandException("Only a player can have a ping!");
+        }
     }
 
 }

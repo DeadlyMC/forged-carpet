@@ -1,6 +1,7 @@
 package carpet.forge.permanantMixins;
 
 import carpet.forge.CarpetMain;
+import carpet.forge.CarpetSettings;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.utils.CarpetProfiler;
 import com.mojang.authlib.GameProfile;
@@ -184,7 +185,7 @@ public abstract class MixinMinecraftServer {
                         while (i > TickSpeed.mspt)
                         {
                             // [FCM] WatchDogFix and Tick stuff
-                            if (CarpetMain.config.watchDogFix.enabled && keeping_up)
+                            if (CarpetSettings.getBool("watchdogFix") && keeping_up)
                             {
                                 this.currentTime = getCurrentTimeMillis();
                                 this.serverIsRunning = true;

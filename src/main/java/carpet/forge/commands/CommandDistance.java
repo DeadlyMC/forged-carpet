@@ -1,6 +1,7 @@
 package carpet.forge.commands;
 
 import carpet.forge.CarpetMain;
+import carpet.forge.CarpetSettings;
 import carpet.forge.utils.DistanceCalculator;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -26,22 +27,20 @@ public class CommandDistance extends CarpetCommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 
-        if (CarpetMain.config.commandDistance.enabled)
+        if (!command_enabled("commandDistance", sender)) return;
+        if (args.length != 6)
         {
-            if (args.length != 6)
-            {
-                throw new WrongUsageException(getUsage(sender), new Object[0]);
-            }
-            BlockPos blockpos = parseBlockPos(sender, args, 0, false);
-            BlockPos blockpos2 = parseBlockPos(sender, args, 3, false);
-            msg(sender, DistanceCalculator.print_distance_two_points(blockpos, blockpos2));
+            throw new WrongUsageException(getUsage(sender), new Object[0]);
         }
+        BlockPos blockpos = parseBlockPos(sender, args, 0, false);
+        BlockPos blockpos2 = parseBlockPos(sender, args, 3, false);
+        msg(sender, DistanceCalculator.print_distance_two_points(blockpos, blockpos2));
 
     }
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        if (!CarpetMain.config.commandDistance.enabled)
+        if (!CarpetSettings.getBool("commandDistance"))
         {
             return Collections.<String>emptyList();
         }

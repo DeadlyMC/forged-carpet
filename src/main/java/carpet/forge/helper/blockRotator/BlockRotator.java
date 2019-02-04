@@ -1,6 +1,7 @@
 package carpet.forge.helper.blockRotator;
 
 import carpet.forge.CarpetMain;
+import carpet.forge.CarpetSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -20,7 +21,7 @@ public class BlockRotator
 {
     public static boolean flipBlockWithCactus(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        if (!playerIn.capabilities.allowEdit || !CarpetMain.config.flipcacti.enabled || !player_holds_cactus_mainhand(playerIn))
+        if (!playerIn.capabilities.allowEdit || !CarpetSettings.getBool("flippinCactus") || !player_holds_cactus_mainhand(playerIn))
         {
             return false;
         }
@@ -32,7 +33,7 @@ public class BlockRotator
         {
             return block.getDefaultState()
                     .withProperty(BlockDirectional.FACING, EnumFacing.byIndex((int)hitX - 2))
-                    .withProperty(BlockObserver.POWERED, CarpetMain.config.observertweak.enabled);
+                    .withProperty(BlockObserver.POWERED, CarpetSettings.getBool("observersDoNonUpdate"));
         }
         return null;
     }
@@ -54,7 +55,7 @@ public class BlockRotator
         {
             return block.getDefaultState()
                     .withProperty(BlockDirectional.FACING, EnumFacing.byIndex((int)hitX - 2))
-                    .withProperty(BlockObserver.POWERED, CarpetMain.config.observertweak.enabled);
+                    .withProperty(BlockObserver.POWERED, CarpetSettings.getBool("observersDoNonUpdate"));
         }
         else if (block instanceof BlockRedstoneRepeater)
         {
@@ -217,7 +218,7 @@ public class BlockRotator
     }
     public static boolean flippinEligibility(Entity entity)
     {
-        if (CarpetMain.config.flipcacti.enabled
+        if (CarpetSettings.getBool("flippinCactus")
                 && (entity instanceof EntityPlayer))
         {
             EntityPlayer player = (EntityPlayer)entity;

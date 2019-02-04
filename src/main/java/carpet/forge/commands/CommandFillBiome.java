@@ -32,6 +32,9 @@ public class CommandFillBiome extends CarpetCommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 
+        if (!command_enabled("commandFillBiome", sender))
+            return;
+
         if (args.length < 5)
             throw new WrongUsageException(getUsage(sender));
 
@@ -106,10 +109,6 @@ public class CommandFillBiome extends CarpetCommandBase {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-
-        if (!CarpetMain.config.commandFillBiome.enabled) {
-            return Collections.emptyList();
-        }
 
         if (args.length == 0)
         {

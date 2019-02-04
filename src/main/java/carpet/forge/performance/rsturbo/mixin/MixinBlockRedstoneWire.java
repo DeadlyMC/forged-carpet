@@ -1,6 +1,7 @@
 package carpet.forge.performance.rsturbo.mixin;
 
 import carpet.forge.CarpetMain;
+import carpet.forge.CarpetSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.material.MapColor;
@@ -18,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+//TODO: Change to carpet way.
 @Mixin(BlockRedstoneWire.class)
 public abstract class MixinBlockRedstoneWire extends Block implements IBlockRedstoneWire
 {
@@ -53,7 +55,7 @@ public abstract class MixinBlockRedstoneWire extends Block implements IBlockReds
     @Inject(method = "updateSurroundingRedstone", at = @At("HEAD"), cancellable = true)
     private void updateSurroundingRedstoneNew(World worldIn, BlockPos pos, IBlockState state, CallbackInfoReturnable<IBlockState> ci)
     {
-        if (CarpetMain.config.rsturbo.enabled)
+        if (CarpetSettings.fastRedstoneDust)
         {
             ci.setReturnValue(turbo.updateSurroundingRedstone(worldIn, pos, state, null));
         }
@@ -62,7 +64,7 @@ public abstract class MixinBlockRedstoneWire extends Block implements IBlockReds
     @Redirect(method = "neighborChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockRedstoneWire;updateSurroundingRedstone(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;)Lnet/minecraft/block/state/IBlockState;", ordinal = 0))
     private IBlockState updateSurroundingRedstoneTurbo(BlockRedstoneWire wire, World worldIn, BlockPos pos, IBlockState state, IBlockState methodState, World methodWorldIn, BlockPos methodPos, Block methodBlockIn, BlockPos methodFromPos)
     {
-        if (CarpetMain.config.rsturbo.enabled)
+        if (CarpetSettings.fastRedstoneDust)
         {
             return turbo.updateSurroundingRedstone(worldIn, pos, state, methodFromPos);
         }
@@ -78,7 +80,7 @@ public abstract class MixinBlockRedstoneWire extends Block implements IBlockReds
     @Inject(method = "calculateCurrentChanges", at = @At("HEAD"), cancellable = true)
     private void calculateCurrentChangesNew(World worldIn, BlockPos pos1, BlockPos pos2, IBlockState state, CallbackInfoReturnable<IBlockState> ci)
     {
-        if (CarpetMain.config.rsturbo.enabled)
+        if (CarpetSettings.fastRedstoneDust)
         {
             ci.setReturnValue(this.calculateCurrentChangesTurbo(worldIn, pos1, pos2, state));
         }

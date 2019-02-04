@@ -1,6 +1,7 @@
 package carpet.forge.tweak.observersDoNonUpdate;
 
 import carpet.forge.CarpetMain;
+import carpet.forge.CarpetSettings;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockObserver;
 import net.minecraft.block.material.Material;
@@ -27,6 +28,6 @@ public abstract class MixinBlockObserver extends BlockDirectional {
 
     @Redirect(method = "getStateForPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockObserver;getDefaultState()Lnet/minecraft/block/state/IBlockState;"))
     private IBlockState onGetStateForPlacement(BlockObserver blockObserver, World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer).getOpposite()).withProperty(POWERED, CarpetMain.config.observertweak.enabled);
+        return this.getDefaultState().withProperty(FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer).getOpposite()).withProperty(POWERED, CarpetSettings.getBool("observersDoNonUpdate"));
     }
 }

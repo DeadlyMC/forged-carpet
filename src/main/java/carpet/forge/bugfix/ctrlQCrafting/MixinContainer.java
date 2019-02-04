@@ -1,6 +1,7 @@
 package carpet.forge.bugfix.ctrlQCrafting;
 
 import carpet.forge.CarpetMain;
+import carpet.forge.CarpetSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
@@ -368,7 +369,7 @@ public abstract class MixinContainer {
             if (slot2 != null && slot2.getHasStack() && slot2.canTakeStack(player))
             {
                 // [FCM] CtrlQCrafingFix
-                if (CarpetMain.config.ctrlQCrafting.enabled && slotId == 0 && dragType == 1)
+                if (CarpetSettings.getBool("ctrlQCraftingFix") && slotId == 0 && dragType == 1)
                 {
                     for (ItemStack itemstackDropAll = CtrlQCrafting.dropAllCrafting(player, slotId, inventorySlots); !itemstackDropAll.isEmpty() && ItemStack.areItemsEqual(slot2.getStack(), itemstackDropAll); itemstackDropAll = CtrlQCrafting.dropAllCrafting(player, slotId, inventorySlots))
                     {

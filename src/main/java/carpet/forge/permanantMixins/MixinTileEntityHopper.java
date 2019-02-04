@@ -1,6 +1,7 @@
 package carpet.forge.permanantMixins;
 
 import carpet.forge.CarpetMain;
+import carpet.forge.CarpetSettings;
 import carpet.forge.helper.HopperCounter;
 import carpet.forge.utils.WoolTool;
 import net.minecraft.block.BlockHopper;
@@ -33,6 +34,8 @@ public abstract class MixinTileEntityHopper extends TileEntityLockableLoot {
     @Shadow
     public abstract void setInventorySlotContents(int index, ItemStack stack);
 
+    public String cm_name() { return "Hopper"; }
+
     private EnumDyeColor get_wool_pointing() {
         return WoolTool.getWoolColorAtPosition(getWorld(),
                 new BlockPos(getXPos(), getYPos(), getZPos()).offset(BlockHopper.getFacing(this.getBlockMetadata())));
@@ -42,7 +45,7 @@ public abstract class MixinTileEntityHopper extends TileEntityLockableLoot {
     @Inject(method = "transferItemsOut", at = @At("HEAD"), cancellable = true)
     private void transferItemsOut(CallbackInfoReturnable<Boolean> cir) {
 
-        if (CarpetMain.config.hopperCounters.enabled) {
+        if (CarpetSettings.hopperCounters) {
             EnumDyeColor wool_color = this.get_wool_pointing();
             if (wool_color != null) {
                 for (int i = 0; i < this.getSizeInventory(); ++i) {

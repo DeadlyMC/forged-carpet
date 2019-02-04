@@ -12,6 +12,9 @@ public abstract class MixinDedicatedServer {
 
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerProfileCache;setOnlineMode(Z)V"))
     private void gameStartHook(CallbackInfoReturnable<Boolean> cir){
+        // [FCM] init - all stuff loaded from the server, just before worlds loading
+        CarpetMain.onServerLoaded((DedicatedServer)(Object)this);
+        // [FCM] start game hook
         CarpetMain.onGameStarted();
     }
 
