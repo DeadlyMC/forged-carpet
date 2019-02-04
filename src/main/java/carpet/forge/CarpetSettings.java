@@ -166,7 +166,7 @@ public class CarpetSettings {
     {
         try
         {
-            File settings_file = server.getActiveAnvilConverter().getFile(server.getFolderName(), "carpet.conf");
+            File settings_file = server.getActiveAnvilConverter().getFile(server.getFolderName(), "forged-carpet.conf");
             BufferedReader b = new BufferedReader(new FileReader(settings_file));
             String line = "";
             Map<String,String> result = new HashMap<String, String>();
