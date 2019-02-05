@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
         name = Reference.MOD_NAME,
         version = Reference.VERSION,
         acceptedMinecraftVersions = Reference.ACCEPTED_MC_VERSIONS,
-        guiFactory = Reference.GUI_FACTORY,
         certificateFingerprint = Reference.FINGERPRINT
 )
 //TODO: Newlight carpet mixin
