@@ -1,6 +1,8 @@
 package carpet.forge.utils;
 
 import carpet.forge.mixin.IMixinEntityVillager;
+import carpet.forge.utils.mixininterfaces.IMixinEntity;
+import carpet.forge.utils.mixininterfaces.IMixinEntitySlime;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;

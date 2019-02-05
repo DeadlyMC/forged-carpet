@@ -1,4 +1,4 @@
-package carpet.forge.utils;
+package carpet.forge.utils.mixininterfaces;
 
 public interface IMixinEntity {
     int getFire();

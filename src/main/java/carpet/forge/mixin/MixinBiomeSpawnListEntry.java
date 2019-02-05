@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.utils.IMixinBiome;
+import carpet.forge.utils.mixininterfaces.IMixinBiome;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.biome.Biome;
 import org.spongepowered.asm.mixin.Mixin;

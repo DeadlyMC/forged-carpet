@@ -1,7 +1,7 @@
 package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
-import carpet.forge.utils.IMixinEntityLiving;
+import carpet.forge.utils.mixininterfaces.IMixinEntityLiving;
 import carpet.forge.utils.SpawnReporter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.*;

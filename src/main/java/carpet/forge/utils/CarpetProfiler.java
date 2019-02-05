@@ -1,6 +1,8 @@
 package carpet.forge.utils;
 
 import carpet.forge.CarpetMain;
+import carpet.forge.utils.mixininterfaces.IMixinEntity;
+import carpet.forge.utils.mixininterfaces.IMixinTileEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;

@@ -1,8 +1,7 @@
 package carpet.forge.logging.mixins;
 
 import carpet.forge.logging.logHelpers.DamageReporter;
-import carpet.forge.utils.IMixinEntityLivingBase;
-import net.minecraft.enchantment.EnchantmentHelper;
+import carpet.forge.utils.mixininterfaces.IMixinEntityLivingBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttribute;

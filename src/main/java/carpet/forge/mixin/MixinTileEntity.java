@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.utils.IMixinTileEntity;
+import carpet.forge.utils.mixininterfaces.IMixinTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import org.spongepowered.asm.mixin.Mixin;
 
