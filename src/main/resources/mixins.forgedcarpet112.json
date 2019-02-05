@@ -10,6 +10,7 @@
     "MixinBiomeSpawnListEntry",
     "MixinBlockHopper",
     "MixinBlockObserver",
+    "MixinBlockRedstoneWire",
     "MixinBlockTNT",
     "MixinContainer",
     "MixinEntity",
