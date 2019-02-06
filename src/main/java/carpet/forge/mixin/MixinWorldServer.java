@@ -1,7 +1,9 @@
 package carpet.forge.mixin;
 
+import carpet.forge.CarpetSettings;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.utils.CarpetProfiler;
+import carpet.forge.utils.mixininterfaces.IWorld;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -138,6 +140,13 @@ public abstract class MixinWorldServer extends World {
         {
             tele.removeStalePortalLocations(getTotalWorldTime());
         }
+        // [FCM] Newlight
+        if (CarpetSettings.newLight)
+        {
+            this.profiler.endStartSection("lighting");
+            ((IWorld) this).getLightingEngine().procLightUpdates();
+        }
+        // [FCM] End
         this.profiler.endSection();
         this.sendQueuedBlockEvents();
     }

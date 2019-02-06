@@ -1,7 +1,11 @@
 package carpet.forge.mixin;
 
+import carpet.forge.CarpetSettings;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.utils.CarpetProfiler;
+import carpet.forge.utils.LightingEngine;
+import carpet.forge.utils.mixininterfaces.IChunk;
+import carpet.forge.utils.mixininterfaces.IWorld;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
@@ -12,20 +16,25 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.Chunk;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
+import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.WorldInfo;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Iterator;
 import java.util.List;
 
 @Mixin(World.class)
-public abstract class MixinWorld {
+public abstract class MixinWorld implements IWorld {
 
     @Shadow @Final public WorldProvider provider;
 
@@ -73,6 +82,26 @@ public abstract class MixinWorld {
 
     @Shadow public abstract void notifyBlockUpdate(BlockPos pos, IBlockState oldState, IBlockState newState, int flags);
 
+    @Final
+    @Mutable
+    public LightingEngine lightingEngine;
+
+    @Override
+    public LightingEngine getLightingEngine(){
+        return this.lightingEngine;
+    }
+
+    @Inject(method = "<init>" ,at = @At(value = "RETURN"))
+    private void initLightEngine(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client, CallbackInfo ci){
+        this.lightingEngine = new LightingEngine((World)(Object)this);
+    }
+
+    // [FCM ]modified for fillUpdates = false
+    @Redirect(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;)Lnet/minecraft/block/state/IBlockState;"))
+    private IBlockState setBlockStateCarpet(Chunk chunk, BlockPos pos, IBlockState state, BlockPos methodPos, IBlockState newState, int flags){
+        // [FCM] Carpet added flag
+        return ((IChunk) chunk).setBlockState_carpet(methodPos, newState, ((flags & 128) != 0) ?true:false);
+    }
     /**
      * @author DeadlyMC
      * @reason For some reason injection causes a crash.Maybe because CarpetProfiler.end_current_section cannot
@@ -343,5 +372,13 @@ public abstract class MixinWorld {
 
         this.profiler.endSection();
         this.profiler.endSection();
+    }
+
+    @Inject(method = "checkLightFor", at = @At(value = "HEAD"), cancellable = true)
+    private void onCheckLightFor(EnumSkyBlock lightType, BlockPos pos, CallbackInfoReturnable<Boolean> cir){
+        if (CarpetSettings.newLight){
+            this.lightingEngine.scheduleLightUpdate(lightType, pos);
+            cir.setReturnValue(true);
+        }
     }
 }

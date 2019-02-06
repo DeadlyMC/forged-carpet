@@ -29,9 +29,9 @@ public class CarpetSettings {
         set_defaults();
     }
 
-    public static boolean hopperCounters;
-    public static boolean fastRedstoneDust;
-    public static boolean newLight;
+    public static boolean hopperCounters  = true;
+    public static boolean fastRedstoneDust = false;
+    public static boolean newLight = false;
     public static int pistonGhostBlocksFix = 0;
 
     private static CarpetSettingEntry rule(String s1, String s2, String s3) {
