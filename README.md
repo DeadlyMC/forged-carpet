@@ -7,10 +7,8 @@ Probably one of the most comprehensive mods for carpet ever!
 - Mod built using Forge
 - Mod Version: 1.12.2
 - Client side only atm (Don't worry u multiplayer guys.....server side is being worked upon)
-- Every setting can be toggled on/off in the Mod Options menu. Optionally you can even turn off the setting from being
-  loaded when the game starts by turning of the Load Patch option.
-- Mod config file: `fcarpet1122.cfg`
-- Most config settings can be turned off completely in the Mod Options.
+- Every setting can be toggled on/off using `/carpet` command. Like u would do in original carpet
+- Mod config file: `forgedcarpet.conf`
   
 ## Using the mod
 Just drop the `.jar` file from the releases section of this mod repository in the mods folder of your game and run mc with 
