@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Logger;
         acceptedMinecraftVersions = Reference.ACCEPTED_MC_VERSIONS,
         certificateFingerprint = Reference.FINGERPRINT
 )
-//TODO: Newlight carpet mixin
 public class CarpetMain {
 
     public static Logger logger;
