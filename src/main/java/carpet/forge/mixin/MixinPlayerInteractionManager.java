@@ -1,5 +1,6 @@
 package carpet.forge.mixin;
 
+import carpet.forge.CarpetSettings;
 import carpet.forge.helper.BlockRotator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
@@ -11,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
@@ -24,6 +26,9 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = PlayerInteractionManager.class)
 public abstract class MixinPlayerInteractionManager {
@@ -41,14 +46,12 @@ public abstract class MixinPlayerInteractionManager {
 
     @Shadow public abstract boolean isCreative();
 
-    /* TODO: carpet mixin
-    @Inject(method = "onBlockClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;sendBlockBreakProgress(ILnet/minecraft/util/math/BlockPos;I)V"))
+    @Inject(method = "onBlockClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;sendBlockBreakProgress(ILnet/minecraft/util/math/BlockPos;I)V", shift = At.Shift.BEFORE))
     public void notifyUpdate(BlockPos pos, EnumFacing side, CallbackInfo ci) {
-        if (CarpetMain.config.miningGhostBlocks.enabled) {
+        if (CarpetSettings.getBool("miningGhostBlocksFix")) {
             player.connection.sendPacket(new SPacketBlockChange(world, destroyPos));
         }
     }
-    */
 
     /**
      * @author DeadlyMC
