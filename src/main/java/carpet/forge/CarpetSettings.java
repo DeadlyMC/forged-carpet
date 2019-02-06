@@ -166,7 +166,7 @@ public class CarpetSettings {
     {
         try
         {
-            File settings_file = server.getActiveAnvilConverter().getFile(server.getFolderName(), "forged-carpet.conf");
+            File settings_file = server.getActiveAnvilConverter().getFile(server.getFolderName(), "forgedcarpet.conf");
             BufferedReader b = new BufferedReader(new FileReader(settings_file));
             String line = "";
             Map<String,String> result = new HashMap<String, String>();
@@ -225,7 +225,7 @@ public class CarpetSettings {
         catch (IOException e)
         {
             e.printStackTrace();
-            LOG.error("[CM]: failed write the carpet.conf");
+            LOG.error("[CM]: failed write the forgedcarpet.conf");
         }
     }
 
