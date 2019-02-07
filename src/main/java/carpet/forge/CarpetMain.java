@@ -94,6 +94,7 @@ public class CarpetMain {
         event.registerServerCommand(new CommandUnload13());
         event.registerServerCommand(new CommandRNG());
         event.registerServerCommand(new CommandTickingArea());
+        event.registerServerCommand(new CommandStructure());
     }
 
     @Mod.EventHandler

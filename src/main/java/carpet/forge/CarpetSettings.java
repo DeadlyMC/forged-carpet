@@ -93,6 +93,7 @@ public class CarpetSettings {
                         .extraInfo("As set by the /tickingarea comamnd.",
                         "Ticking areas work as if they are the spawn chunks."),
                 rule("disableSpawnChunks",    "creative", "Removes the spawn chunks."),
+                rule("commandStructure",      "commands", "Enables /structure to manage NBT structures used by structure blocks").defaultTrue(),
         };
 
         for (CarpetSettingEntry rule: RuleList)
