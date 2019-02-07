@@ -94,6 +94,9 @@ public class CarpetSettings {
                         "Ticking areas work as if they are the spawn chunks."),
                 rule("disableSpawnChunks",    "creative", "Removes the spawn chunks."),
                 rule("commandStructure",      "commands", "Enables /structure to manage NBT structures used by structure blocks").defaultTrue(),
+                rule("fillUpdates",           "creative", "fill/clone/setblock and structure blocks cause block updates").defaultTrue(),
+                rule("fillLimit",             "creative","Customizable fill/clone volume limit")
+                        .choices("32768","32768 250000 1000000").setNotStrict(),
         };
 
         for (CarpetSettingEntry rule: RuleList)
