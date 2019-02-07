@@ -174,7 +174,7 @@ public class CarpetSettings {
         for (String key: conf.keySet())
         {
             set(key, conf.get(key));
-            LOG.info("[CM]: loaded setting "+key+" as "+conf.get(key)+" from carpet.conf");
+            LOG.info("[CM]: loaded setting "+key+" as "+conf.get(key)+" from forgedcarpet.conf");
         }
         locked = is_locked;
     }
@@ -242,7 +242,7 @@ public class CarpetSettings {
         if (locked) return;
         try
         {
-            File settings_file = server.getActiveAnvilConverter().getFile(server.getFolderName(), "carpet.conf");
+            File settings_file = server.getActiveAnvilConverter().getFile(server.getFolderName(), "forgedcarpet.conf");
             FileWriter fw = new FileWriter(settings_file);
             for (String key: values.keySet())
             {
