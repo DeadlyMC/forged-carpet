@@ -34,6 +34,8 @@ public class CarpetSettings {
     public static boolean newLight = false;
     public static int pistonGhostBlocksFix = 0;
 
+    public static long setSeed = 0;
+
     private static CarpetSettingEntry rule(String s1, String s2, String s3) {
         return CarpetSettingEntry.create(s1, s2, s3);
     }
@@ -83,6 +85,7 @@ public class CarpetSettings {
                 rule("commandDistance",       "commands", "Enables /distance command to measure in game distance between points").defaultTrue()
                         .extraInfo("Also enables brown carpet placement action if 'carpets' rule is turned on as well"),
                 rule("commandUnload",         "commands", "Enables /unload command to control game speed").defaultTrue(),
+                rule("commandRNG",            "commands", "Enables /rng command to manipulate and query rng").defaultTrue(),
 
         };
 

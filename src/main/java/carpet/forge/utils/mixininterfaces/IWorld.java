@@ -4,4 +4,5 @@ import carpet.forge.utils.LightingEngine;
 
 public interface IWorld {
     LightingEngine getLightingEngine();
+    long getRandSeed();
 }

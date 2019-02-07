@@ -30,8 +30,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Mixin(World.class)
 public abstract class MixinWorld implements IWorld {
@@ -82,6 +85,7 @@ public abstract class MixinWorld implements IWorld {
 
     @Shadow public abstract void notifyBlockUpdate(BlockPos pos, IBlockState oldState, IBlockState newState, int flags);
 
+    @Shadow @Final public Random rand;
     @Final
     @Mutable
     public LightingEngine lightingEngine;
@@ -380,5 +384,19 @@ public abstract class MixinWorld implements IWorld {
             this.lightingEngine.scheduleLightUpdate(lightType, pos);
             cir.setReturnValue(true);
         }
+    }
+
+    // [FCM] CommandRNG stuff
+    public long getRandSeed(){
+        try
+        {
+            Field field = Random.class.getDeclaredField("seed");
+            field.setAccessible(true);
+            AtomicLong scrambledSeed = (AtomicLong) field.get(rand);   //this needs to be XOR'd with 0x5DEECE66DL
+            return scrambledSeed.get();
+            // Minecraft.getMinecraft().player.sendChatMessage(chunk.x + ", " + chunk.z + ", seed " + theSeed);
+        } catch (Exception e) {}
+
+        return 0;
     }
 }
