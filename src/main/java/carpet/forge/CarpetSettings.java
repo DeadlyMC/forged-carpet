@@ -82,6 +82,7 @@ public class CarpetSettings {
                 rule("ctrlQCraftingFix",      "fix survival", "Dropping entire stacks works also from on the crafting UI result slot"),
                 rule("commandDistance",       "commands", "Enables /distance command to measure in game distance between points").defaultTrue()
                         .extraInfo("Also enables brown carpet placement action if 'carpets' rule is turned on as well"),
+                rule("commandUnload",         "commands", "Enables /unload command to control game speed").defaultTrue(),
 
         };
 
