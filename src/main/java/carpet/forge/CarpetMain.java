@@ -6,6 +6,7 @@ import carpet.forge.logging.LoggerRegistry;
 import carpet.forge.proxy.CommonProxy;
 import carpet.forge.utils.HUDController;
 import carpet.forge.utils.Reference;
+import carpet.forge.utils.TickingArea;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.Mod;
@@ -40,6 +41,15 @@ public class CarpetMain {
 
     public static void onGameStarted() {
         LoggerRegistry.initLoggers();
+    }
+
+    public static void onLoadAllWorlds(MinecraftServer server)
+    {
+        TickingArea.loadConfig(server);
+    }
+    public static void onWorldsSaved(MinecraftServer server)
+    {
+        TickingArea.saveConfig(server);
     }
 
     public static void onServerLoaded(MinecraftServer server)
@@ -83,6 +93,7 @@ public class CarpetMain {
         event.registerServerCommand(new CommandUnload());
         event.registerServerCommand(new CommandUnload13());
         event.registerServerCommand(new CommandRNG());
+        event.registerServerCommand(new CommandTickingArea());
     }
 
     @Mod.EventHandler

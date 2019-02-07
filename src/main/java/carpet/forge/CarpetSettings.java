@@ -1,7 +1,10 @@
 package carpet.forge;
 
+import carpet.forge.utils.TickingArea;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -86,7 +89,10 @@ public class CarpetSettings {
                         .extraInfo("Also enables brown carpet placement action if 'carpets' rule is turned on as well"),
                 rule("commandUnload",         "commands", "Enables /unload command to control game speed").defaultTrue(),
                 rule("commandRNG",            "commands", "Enables /rng command to manipulate and query rng").defaultTrue(),
-
+                rule("tickingAreas",          "creative", "Enable use of ticking areas.")
+                        .extraInfo("As set by the /tickingarea comamnd.",
+                        "Ticking areas work as if they are the spawn chunks."),
+                rule("disableSpawnChunks",    "creative", "Removes the spawn chunks."),
         };
 
         for (CarpetSettingEntry rule: RuleList)
@@ -134,6 +140,24 @@ public class CarpetSettings {
                 Blocks.OBSERVER.setLightOpacity(255);
                 Blocks.REDSTONE_BLOCK.setLightOpacity(255);
                 Blocks.TNT.setLightOpacity(255);
+            }
+        }
+        else if ("tickingAreas".equalsIgnoreCase(rule))
+        {
+            if (CarpetSettings.getBool("tickingAreas") && CarpetMain.minecraft_server.worlds != null)
+            {
+                TickingArea.initialChunkLoad(CarpetMain.minecraft_server, false);
+            }
+        }
+        else if ("disableSpawnChunks".equalsIgnoreCase(rule))
+        {
+            if (!CarpetSettings.getBool("disableSpawnChunks") && CarpetMain.minecraft_server.worlds != null)
+            {
+                World overworld = CarpetMain.minecraft_server.worlds[0];
+                for (ChunkPos chunk : new TickingArea.SpawnChunks().listIncludedChunks(overworld))
+                {
+                    overworld.getChunkProvider().provideChunk(chunk.x, chunk.z);
+                }
             }
         }
     }

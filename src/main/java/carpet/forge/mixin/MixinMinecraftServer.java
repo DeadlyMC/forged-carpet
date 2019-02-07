@@ -4,6 +4,7 @@ import carpet.forge.CarpetMain;
 import carpet.forge.CarpetSettings;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.utils.CarpetProfiler;
+import carpet.forge.utils.TickingArea;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
@@ -23,9 +24,11 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.Util;
 import net.minecraft.util.datafix.DataFixer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.WorldType;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -115,6 +118,14 @@ public abstract class MixinMinecraftServer {
     @Shadow public abstract FunctionManager getFunctionManager();
 
     @Shadow @Final private List<ITickable> tickables;
+
+    @Shadow protected abstract void outputPercentRemaining(String message, int percent);
+
+    @Shadow protected abstract void clearCurrentTask();
+
+    @Shadow public abstract boolean isServerRunning();
+
+    @Shadow protected abstract void setUserMessage(String message);
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void onMinecraftServer(File anvilFileIn, Proxy proxyIn, DataFixer dataFixerIn, YggdrasilAuthenticationService authServiceIn, MinecraftSessionService sessionServiceIn, GameProfileRepository profileRepoIn, PlayerProfileCache profileCacheIn, CallbackInfo ci){
@@ -445,4 +456,66 @@ public abstract class MixinMinecraftServer {
 
         this.profiler.endSection();
     }
+
+    // [FCM] TickingAreas
+    @Inject(method = "loadAllWorlds", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/server/MinecraftServer;initialWorldChunkLoad()V"))
+    private void onLoadAllWorlds(String saveName, String worldNameIn, long seed, WorldType type, String generatorOptions, CallbackInfo ci){
+        CarpetMain.onLoadAllWorlds((MinecraftServer)(Object)this);
+    }
+
+    /**
+     * @author DeadlyMC
+     * @reason if statement arounds
+     */
+    @Overwrite
+    public void initialWorldChunkLoad()
+    {
+        int i = 16;
+        int j = 4;
+        int k = 192;
+        int l = 625;
+        int i1 = 0;
+        this.setUserMessage("menu.generatingTerrain");
+        int j1 = 0;
+        // [FCM] TickingAreas - Start
+        if (CarpetSettings.getBool("tickingAreas"))
+        {
+            TickingArea.initialChunkLoad((MinecraftServer)(Object)this, true);
+        }
+        // [FCM] TickingAreas - End
+
+        // [FCM] DisableSpawnChunks - if statement around
+        if (!CarpetSettings.getBool("disableSpawnChunks"))
+        {
+            LOGGER.info("Preparing start region for level 0");
+            WorldServer worldserver = net.minecraftforge.common.DimensionManager.getWorld(j1);
+            BlockPos blockpos = worldserver.getSpawnPoint();
+            long k1 = getCurrentTimeMillis();
+
+            for (int l1 = -192; l1 <= 192 && this.isServerRunning(); l1 += 16)
+            {
+                for (int i2 = -192; i2 <= 192 && this.isServerRunning(); i2 += 16)
+                {
+                    long j2 = getCurrentTimeMillis();
+
+                    if (j2 - k1 > 1000L)
+                    {
+                        this.outputPercentRemaining("Preparing spawn area", i1 * 100 / 625);
+                        k1 = j2;
+                    }
+
+                    ++i1;
+                    worldserver.getChunkProvider().provideChunk(blockpos.getX() + l1 >> 4, blockpos.getZ() + i2 >> 4);
+                }
+            }
+        } // [FCM] End indent
+
+        this.clearCurrentTask();
+    }
+
+    @Inject(method = "saveAllWorlds", at = @At("TAIL"))
+    private void onSaveAllWorlds(boolean isSilent, CallbackInfo ci){
+        CarpetMain.onWorldsSaved((MinecraftServer)(Object)this);
+    }
+
 }

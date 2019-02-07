@@ -4,8 +4,11 @@ import carpet.forge.CarpetSettings;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.utils.CarpetProfiler;
 import carpet.forge.utils.LightingEngine;
+import carpet.forge.utils.TickingArea;
 import carpet.forge.utils.mixininterfaces.IChunk;
 import carpet.forge.utils.mixininterfaces.IWorld;
+import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
@@ -86,14 +89,47 @@ public abstract class MixinWorld implements IWorld {
     @Shadow public abstract void notifyBlockUpdate(BlockPos pos, IBlockState oldState, IBlockState newState, int flags);
 
     @Shadow @Final public Random rand;
+
     @Final
     @Mutable
     public LightingEngine lightingEngine;
+
+    public final List<TickingArea> tickingAreas = Lists.newArrayList();
+    public final LongOpenHashSet tickingChunks = new LongOpenHashSet();
 
     @Override
     public LightingEngine getLightingEngine(){
         return this.lightingEngine;
     }
+
+    // [FCM] TickingAreas - Start
+    @Override
+    public List<TickingArea> getTickingAreas(){
+        return tickingAreas;
+    }
+
+    @Override
+    public LongOpenHashSet getTickingChunks(){
+        return tickingChunks;
+    }
+    // [FCM] TickingAreas - End
+
+    @Override
+    // [FCM] CommandRNG stuff
+    public long getRandSeed(){
+        try
+        {
+            Field field = Random.class.getDeclaredField("seed");
+            field.setAccessible(true);
+            AtomicLong scrambledSeed = (AtomicLong) field.get(rand);   //this needs to be XOR'd with 0x5DEECE66DL
+            return scrambledSeed.get();
+            // Minecraft.getMinecraft().player.sendChatMessage(chunk.x + ", " + chunk.z + ", seed " + theSeed);
+        } catch (Exception e) {}
+
+        return 0;
+    }
+
+
 
     @Inject(method = "<init>" ,at = @At(value = "RETURN"))
     private void initLightEngine(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client, CallbackInfo ci){
@@ -386,17 +422,4 @@ public abstract class MixinWorld implements IWorld {
         }
     }
 
-    // [FCM] CommandRNG stuff
-    public long getRandSeed(){
-        try
-        {
-            Field field = Random.class.getDeclaredField("seed");
-            field.setAccessible(true);
-            AtomicLong scrambledSeed = (AtomicLong) field.get(rand);   //this needs to be XOR'd with 0x5DEECE66DL
-            return scrambledSeed.get();
-            // Minecraft.getMinecraft().player.sendChatMessage(chunk.x + ", " + chunk.z + ", seed " + theSeed);
-        } catch (Exception e) {}
-
-        return 0;
-    }
 }
