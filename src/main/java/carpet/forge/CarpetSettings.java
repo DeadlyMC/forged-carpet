@@ -36,6 +36,7 @@ public class CarpetSettings {
     public static boolean fastRedstoneDust = false;
     public static boolean newLight = false;
     public static int pistonGhostBlocksFix = 0;
+    public static int tileTickLimit = 65536;
 
     public static long setSeed = 0;
 
@@ -97,6 +98,9 @@ public class CarpetSettings {
                 rule("fillUpdates",           "creative", "fill/clone/setblock and structure blocks cause block updates").defaultTrue(),
                 rule("fillLimit",             "creative","Customizable fill/clone volume limit")
                         .choices("32768","32768 250000 1000000").setNotStrict(),
+                rule("tileTickLimit",         "survival", "Customizable tile tick limit")
+                        .extraInfo("Negative for no limit")
+                        .choices("65536","1000 65536 1000000").setNotStrict(),
         };
 
         for (CarpetSettingEntry rule: RuleList)
@@ -118,6 +122,7 @@ public class CarpetSettings {
         hopperCounters = CarpetSettings.getBool("hopperCounters");
         fastRedstoneDust = CarpetSettings.getBool("fastRedstoneDust");
         newLight = CarpetSettings.getBool("newLight");
+        tileTickLimit = CarpetSettings.getInt("tileTickLimit");
 
         if ("pistonGhostBlocksFix".equalsIgnoreCase(rule))
         {

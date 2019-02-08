@@ -38,7 +38,7 @@ public class LoggerRegistry
         registerLogger("kills", new Logger("kills", null, null, LogHandler.CHAT));
         registerLogger("damage", new Logger("damage", "all", new String[]{"all","players","me"}, LogHandler.CHAT));
         registerLogger("weather", new Logger("weather", null, null, LogHandler.CHAT));
-        // registerLogger("tileTickLimit", new Logger("tileTickLimit", null, null, LogHandler.CHAT));
+        registerLogger("tileTickLimit", new Logger("tileTickLimit", null, null, LogHandler.CHAT));
 
         registerLogger("tps", new Logger("tps", null, null, LogHandler.HUD));
         registerLogger("packets", new Logger("packets", null, null, LogHandler.HUD));

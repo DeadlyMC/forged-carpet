@@ -2,16 +2,23 @@ package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
 import carpet.forge.helper.TickSpeed;
+import carpet.forge.logging.LoggerRegistry;
 import carpet.forge.utils.CarpetProfiler;
+import carpet.forge.utils.Messenger;
 import carpet.forge.utils.mixininterfaces.IWorld;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.passive.EntitySkeletonHorse;
 import net.minecraft.init.Blocks;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.management.PlayerChunkMap;
+import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.village.VillageSiege;
 import net.minecraft.world.*;
 import net.minecraft.world.chunk.Chunk;
@@ -25,6 +32,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Mixin(value = WorldServer.class, priority = 900)
 public abstract class MixinWorldServer extends World {
@@ -48,6 +57,12 @@ public abstract class MixinWorldServer extends World {
     @Shadow protected abstract void playerCheckLight();
 
     @Shadow protected abstract BlockPos adjustPosToNearbyEntity(BlockPos pos);
+
+    @Shadow @Final private TreeSet<NextTickListEntry> pendingTickListEntriesTreeSet;
+
+    @Shadow @Final private Set<NextTickListEntry> pendingTickListEntriesHashSet;
+
+    @Shadow @Final private List<NextTickListEntry> pendingTickListEntriesThisTick;
 
     protected MixinWorldServer(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
         super(saveHandlerIn, info, providerIn, profilerIn, client);
@@ -280,5 +295,105 @@ public abstract class MixinWorldServer extends World {
             this.profiler.endSection();
         }
     }
+
+    /**
+     * @author DeadlyMC
+     * @reason No injection point
+     * FOR : TileTickLimit logger and rule
+     */
+    @Overwrite
+    public boolean tickUpdates(boolean runAllPending)
+    {
+        if (this.worldInfo.getTerrainType() == WorldType.DEBUG_ALL_BLOCK_STATES)
+        {
+            return false;
+        }
+        else
+        {
+            int i = this.pendingTickListEntriesTreeSet.size();
+
+            if (i != this.pendingTickListEntriesHashSet.size())
+            {
+                throw new IllegalStateException("TickNextTick list out of synch");
+            }
+            else
+            {
+                // [FCM] TileTickLimit - start
+                int tileTickLimit = CarpetSettings.tileTickLimit;
+                if (tileTickLimit >= 0 && i > tileTickLimit)
+                {
+                    if (LoggerRegistry.__tileTickLimit) {
+                        final int fi = i;
+                        LoggerRegistry.getLogger("tileTickLimit").log(() -> new ITextComponent[] {
+                                        Messenger.s(null, String.format("Reached tile tick limit (%d > %d)", fi, tileTickLimit))
+                                },
+                                "NUMBER", i,
+                                "LIMIT", tileTickLimit);
+                    }
+                    i = tileTickLimit;
+                }
+                // [FCM] TileTickLimit - End
+
+                this.profiler.startSection("cleaning");
+
+                for (int j = 0; j < i; ++j)
+                {
+                    NextTickListEntry nextticklistentry = this.pendingTickListEntriesTreeSet.first();
+
+                    if (!runAllPending && nextticklistentry.scheduledTime > this.worldInfo.getWorldTotalTime())
+                    {
+                        break;
+                    }
+
+                    this.pendingTickListEntriesTreeSet.remove(nextticklistentry);
+                    this.pendingTickListEntriesHashSet.remove(nextticklistentry);
+                    this.pendingTickListEntriesThisTick.add(nextticklistentry);
+                }
+
+                this.profiler.endSection();
+                this.profiler.startSection("ticking");
+                Iterator<NextTickListEntry> iterator = this.pendingTickListEntriesThisTick.iterator();
+
+                while (iterator.hasNext())
+                {
+                    NextTickListEntry nextticklistentry1 = iterator.next();
+                    iterator.remove();
+                    //Keeping here as a note for future when it may be restored.
+                    //boolean isForced = getPersistentChunks().containsKey(new ChunkPos(nextticklistentry.xCoord >> 4, nextticklistentry.zCoord >> 4));
+                    //byte b0 = isForced ? 0 : 8;
+                    int k = 0;
+
+                    if (this.isAreaLoaded(nextticklistentry1.position.add(0, 0, 0), nextticklistentry1.position.add(0, 0, 0)))
+                    {
+                        IBlockState iblockstate = this.getBlockState(nextticklistentry1.position);
+
+                        if (iblockstate.getMaterial() != Material.AIR && Block.isEqualTo(iblockstate.getBlock(), nextticklistentry1.getBlock()))
+                        {
+                            try
+                            {
+                                iblockstate.getBlock().updateTick(this, nextticklistentry1.position, iblockstate, this.rand);
+                            }
+                            catch (Throwable throwable)
+                            {
+                                CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Exception while ticking a block");
+                                CrashReportCategory crashreportcategory = crashreport.makeCategory("Block being ticked");
+                                CrashReportCategory.addBlockInfo(crashreportcategory, nextticklistentry1.position, iblockstate);
+                                throw new ReportedException(crashreport);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        this.scheduleUpdate(nextticklistentry1.position, nextticklistentry1.getBlock(), 0);
+                    }
+                }
+
+                this.profiler.endSection();
+                this.pendingTickListEntriesThisTick.clear();
+                return !this.pendingTickListEntriesTreeSet.isEmpty();
+            }
+        }
+    }
+
 
 }
