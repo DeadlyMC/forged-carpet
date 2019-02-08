@@ -6,6 +6,7 @@ import carpet.forge.logging.LoggerRegistry;
 import carpet.forge.utils.CarpetProfiler;
 import carpet.forge.utils.Messenger;
 import carpet.forge.utils.mixininterfaces.IWorld;
+import carpet.forge.utils.mixininterfaces.IWorldServer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -29,6 +30,9 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +40,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @Mixin(value = WorldServer.class, priority = 900)
-public abstract class MixinWorldServer extends World {
+public abstract class MixinWorldServer extends World implements IWorldServer {
 
     @Shadow public abstract boolean areAllPlayersAsleep();
 
@@ -67,6 +71,8 @@ public abstract class MixinWorldServer extends World {
     protected MixinWorldServer(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
         super(saveHandlerIn, info, providerIn, profilerIn, client);
     }
+
+    private boolean blockActionsProcessed;
 
     /**
      * @author DeadlyMC
@@ -395,5 +401,23 @@ public abstract class MixinWorldServer extends World {
         }
     }
 
+    // [FCM] Fix for pistonGhostBlocks breaking caterpillar engine - start
+    @Inject(method ="tick", at = @At("HEAD"))
+    private void resetBlockActionsProcessed(CallbackInfo ci)
+    {
+        this.blockActionsProcessed = false;
+    }
 
+    @Inject(method = "sendQueuedBlockEvents", at = @At("RETURN"))
+    private void setBlockActionsProcessed(CallbackInfo ci)
+    {
+        this.blockActionsProcessed = true;
+    }
+
+    @Override
+    public boolean haveBlockActionsProcessed()
+    {
+        return this.blockActionsProcessed;
+    }
+    // [FCM] Fix for pistonGhostBlocks breaking caterpillar engine - end
 }

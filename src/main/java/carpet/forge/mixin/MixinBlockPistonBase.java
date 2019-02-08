@@ -1,8 +1,11 @@
 package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
+import carpet.forge.utils.mixininterfaces.ITileEntityPiston;
+import carpet.forge.utils.mixininterfaces.IWorldServer;
 import net.minecraft.block.*;
 import net.minecraft.block.material.EnumPushReaction;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +26,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(BlockPistonBase.class)
-public abstract class MixinBlockPistonBase {
+public abstract class MixinBlockPistonBase extends BlockDirectional{
+
+    protected MixinBlockPistonBase(Material materialIn) {
+        super(materialIn);
+    }
 
     @Shadow protected abstract boolean doMove(World worldIn, BlockPos pos, EnumFacing direction, boolean extending);
 
@@ -39,29 +46,6 @@ public abstract class MixinBlockPistonBase {
     @Shadow @Final public static PropertyBool EXTENDED;
 
     @Shadow protected abstract boolean shouldBeExtended(World worldIn, BlockPos pos, EnumFacing facing);
-
-    @Redirect(method = "checkForMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V", ordinal = 1))
-    private void addBlockPistonFix(World world, BlockPos pos, Block blockIn, int eventID, int eventParam){
-        if (CarpetSettings.pistonGhostBlocksFix == 2)
-            world.addBlockEvent(pos, (BlockPistonBase)(Object)this, 1, EnumFacing.values()[eventParam].getIndex() | ignoreMovingBlockMeta(world, pos, EnumFacing.values()[eventParam]));
-        else
-            world.addBlockEvent(pos, (BlockPistonBase)(Object)this, 1, EnumFacing.values()[eventParam].getIndex() );
-    }
-
-    /*
-     * This if statement checks if the the pulling block (block that is 2 blocks infront of the extended piston)
-     * is a non-moving block and returns a meta value of 16 so it can tell the client to ignore pulling blocks
-     * even if the client can pull them. By XCOM
-     */
-    private int ignoreMovingBlockMeta(World worldIn, BlockPos pos, EnumFacing enumfacing) {
-        BlockPos blockpos = pos.add(enumfacing.getXOffset() * 2, enumfacing.getYOffset() * 2, enumfacing.getZOffset() * 2);
-        IBlockState iblockstate = worldIn.getBlockState(blockpos);
-        Block block = iblockstate.getBlock();
-
-        if (block == Blocks.PISTON_EXTENSION) return 16;
-
-        return 0;
-    }
 
     /**
      * @author DeadlyMC
@@ -148,6 +132,39 @@ public abstract class MixinBlockPistonBase {
         }
 
         return true;
+    }
+
+    @Redirect(method = "checkForMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V", ordinal = 1))
+    private void sendDropBlockFlag(World world, BlockPos pos, Block blockIn, int eventID, int eventParam, World worldIn, BlockPos callpos, IBlockState state)
+    {
+        int suppress_move = 0;
+
+        if (CarpetSettings.pistonGhostBlocksFix == 2)
+        {
+            final EnumFacing enumfacing = state.getValue(FACING);
+
+            final BlockPos blockpos = new BlockPos(callpos).offset(enumfacing, 2);
+            final IBlockState iblockstate = worldIn.getBlockState(blockpos);
+
+            if (iblockstate.getBlock() == Blocks.PISTON_EXTENSION)
+            {
+                final TileEntity tileentity = worldIn.getTileEntity(blockpos);
+
+                if (tileentity instanceof TileEntityPiston)
+                {
+                    final TileEntityPiston tileentitypiston = (TileEntityPiston) tileentity;
+                    if (tileentitypiston.getFacing() == enumfacing && tileentitypiston.isExtending()
+                            && (((ITileEntityPiston) tileentitypiston).getLastProgress() < 0.5F
+                            || tileentitypiston.getWorld().getTotalWorldTime() == ((ITileEntityPiston) tileentitypiston).getLastTicked()
+                            || !((IWorldServer) worldIn).haveBlockActionsProcessed()))
+                    {
+                        suppress_move = 16;
+                    }
+                }
+            }
+        }
+
+        worldIn.addBlockEvent(pos, blockIn, eventID, eventParam | suppress_move);
     }
 
 }
