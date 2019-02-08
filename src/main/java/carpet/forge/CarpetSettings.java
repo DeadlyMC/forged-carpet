@@ -101,6 +101,8 @@ public class CarpetSettings {
                 rule("tileTickLimit",         "survival", "Customizable tile tick limit")
                         .extraInfo("Negative for no limit")
                         .choices("65536","1000 65536 1000000").setNotStrict(),
+                rule("stackableEmptyShulkerBoxes", "survival", "Empty shulker boxes can stack to 64 when dropped on the ground")
+                        .extraInfo("To move them around between inventories, use shift click to move entire stacks"),
         };
 
         for (CarpetSettingEntry rule: RuleList)
