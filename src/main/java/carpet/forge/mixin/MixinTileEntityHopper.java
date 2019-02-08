@@ -55,7 +55,6 @@ public abstract class MixinTileEntityHopper extends TileEntityLockableLoot {
                     }
                 }
                 cir.setReturnValue(true);
-                cir.cancel();
 
             }
         }
