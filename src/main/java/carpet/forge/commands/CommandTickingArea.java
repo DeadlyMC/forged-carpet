@@ -14,6 +14,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 public class CommandTickingArea extends CarpetCommandBase {
@@ -219,6 +220,68 @@ public class CommandTickingArea extends CarpetCommandBase {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        return super.getTabCompletions(server, sender, args, targetPos);
+        if (args.length == 0)
+        {
+            return Collections.emptyList();
+        }
+        else if (args.length == 1)
+        {
+            return getListOfStringsMatchingLastWord(args, "add", "remove", "remove_all", "list");
+        }
+        else if ("add".equals(args[0]))
+        {
+            if (args.length == 2)
+            {
+                List<String> completions = tabCompleteChunkPos(sender, targetPos, args, 2);
+                Collections.addAll(completions, "square", "circle", "spawnChunks");
+                return getListOfStringsMatchingLastWord(args, completions);
+            }
+            int index = "square".equals(args[1]) || "circle".equals(args[1]) ? 3 : 2;
+            if (args.length >= index && args.length < index + 2)
+            {
+                return tabCompleteChunkPos(sender, targetPos, args, index);
+            }
+            else if (args.length >= index + 2 && args.length < index + 4)
+            {
+                return tabCompleteChunkPos(sender, targetPos, args, index + 2);
+            }
+            else
+            {
+                return Collections.emptyList();
+            }
+        }
+        else if ("remove".equals(args[0]))
+        {
+            if (args.length == 2)
+            {
+                List<String> completions = tabCompleteChunkPos(sender, targetPos, args, 2);
+                TickingArea.getTickingAreas(sender.getEntityWorld()).stream().filter(area -> area.getName() != null)
+                        .forEach(area -> completions.add(area.getName()));
+                return getListOfStringsMatchingLastWord(args, completions);
+            }
+            else if (args.length == 3)
+            {
+                return tabCompleteChunkPos(sender, targetPos, args, 2);
+            }
+            else
+            {
+                return Collections.emptyList();
+            }
+        }
+        else if ("list".equals(args[0]))
+        {
+            if (args.length == 2)
+            {
+                return getListOfStringsMatchingLastWord(args, "all-dimensions");
+            }
+            else
+            {
+                return Collections.emptyList();
+            }
+        }
+        else
+        {
+            return Collections.emptyList();
+        }
     }
 }
