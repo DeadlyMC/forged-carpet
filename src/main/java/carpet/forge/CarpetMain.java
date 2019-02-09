@@ -55,7 +55,6 @@ public class CarpetMain {
     public static void onServerLoaded(MinecraftServer server)
     {
         CarpetSettings.apply_settings_from_conf(server);
-        CarpetSettings.reload_all_statics();
     }
 
     public static void tick(MinecraftServer server) {
@@ -95,6 +94,8 @@ public class CarpetMain {
         event.registerServerCommand(new CommandRNG());
         event.registerServerCommand(new CommandTickingArea());
         event.registerServerCommand(new CommandStructure());
+
+        CarpetSettings.reload_all_statics();
     }
 
     @Mod.EventHandler
