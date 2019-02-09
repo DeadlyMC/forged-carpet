@@ -6,7 +6,7 @@ Probably one of the most comprehensive mods for carpet ever!
 - Its a coremod
 - Mod built using Forge
 - Mod Version: 1.12.2
-- Client side only atm (Don't worry u multiplayer guys.....server side is being worked upon)
+- Client and Server side
 - Every setting can be toggled on/off using `/carpet` command. Like u would do in original carpet
 - Mod config file: `forgedcarpet.conf`
   

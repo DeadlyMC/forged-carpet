@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public class CarpetSettings {
 
     public static boolean locked = false;
-    public static final String carpetVersion = "v18_12_20";
+    public static final String carpetVersion = "v1.0.0";
 
     public static final Logger LOG = LogManager.getLogger();
     private static final Map<String, CarpetSettingEntry> settings_store;
