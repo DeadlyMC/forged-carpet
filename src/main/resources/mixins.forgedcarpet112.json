@@ -30,7 +30,6 @@
     "MixinItem",
     "MixinItemShulkerBox",
     "MixinItemStack",
-    "MixinMinecraft",
     "MixinMinecraftServer",
     "MixinNetHandlerPlayServer",
     "MixinPlayerInteractionManager",
@@ -47,5 +46,9 @@
   ],
   "server": [
     "MixinDedicatedServer"
+  ],
+  "client": [
+    "MixinMinecraft",
+    "MixinIntegratedServer"
   ]
 }
