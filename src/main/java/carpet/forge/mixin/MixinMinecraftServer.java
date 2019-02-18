@@ -89,7 +89,8 @@ public abstract class MixinMinecraftServer
         return false;
     }
 
-    @Inject(method = "run", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/MinecraftServer;applyServerIconToResponse(Lnet/minecraft/network/ServerStatusResponse;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "run", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
+            target = "Lnet/minecraft/server/MinecraftServer;applyServerIconToResponse(Lnet/minecraft/network/ServerStatusResponse;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void newServerRunningLoop(CallbackInfo ci, long i) throws InterruptedException
     {
         while (this.serverRunning)
@@ -172,13 +173,17 @@ public abstract class MixinMinecraftServer
         }
     }
 
-    @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/network/ServerStatusResponse;invalidateJson()V"), to = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;saveAllWorlds(Z)V")))
+    @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V"),
+            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/network/ServerStatusResponse;invalidateJson()V"),
+                    to = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;saveAllWorlds(Z)V")))
     private void startAutoSaveProfiling(CallbackInfo ci)
     {
         CarpetProfiler.start_section(null, "Autosave");
     }
 
-    @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/profiler/Profiler;endSection()V"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;saveAllWorlds(Z)V"), to = @At(value = "FIELD", target = "Lnet/minecraft/server/MinecraftServer;tickTimeArray:[J")))
+    @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/profiler/Profiler;endSection()V"),
+            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;saveAllWorlds(Z)V"),
+                    to = @At(value = "FIELD", target = "Lnet/minecraft/server/MinecraftServer;tickTimeArray:[J")))
     private void stopAutoSaveProfiling(CallbackInfo ci)
     {
         CarpetProfiler.end_current_section();
@@ -193,20 +198,23 @@ public abstract class MixinMinecraftServer
         }
     }
 
-    @Inject(method = "updateTimeLightAndEntities", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraftforge/common/DimensionManager;unloadWorlds(Ljava/util/Hashtable;)V"))
+    @Inject(method = "updateTimeLightAndEntities", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
+            target = "Lnet/minecraftforge/common/DimensionManager;unloadWorlds(Ljava/util/Hashtable;)V"))
     private void startNetworkProfiling(CallbackInfo ci)
     {
         CarpetProfiler.start_section(null, "Network");
     }
 
-    @Inject(method = "updateTimeLightAndEntities", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/management/PlayerList;onTick()V"))
+    @Inject(method = "updateTimeLightAndEntities", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
+            target = "Lnet/minecraft/server/management/PlayerList;onTick()V"))
     private void stopNetworkProfiling(CallbackInfo ci)
     {
         CarpetProfiler.end_current_section();
     }
 
     // [FCM] TickingAreas
-    @Inject(method = "loadAllWorlds", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/server/MinecraftServer;initialWorldChunkLoad()V"))
+    @Inject(method = "loadAllWorlds", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
+            target = "Lnet/minecraft/server/MinecraftServer;initialWorldChunkLoad()V"))
     private void onLoadAllWorlds(String saveName, String worldNameIn, long seed, WorldType type, String generatorOptions, CallbackInfo ci)
     {
         CarpetMain.onLoadAllWorlds((MinecraftServer) (Object) this);

@@ -104,7 +104,8 @@ public abstract class MixinWorld implements IWorld
     }
 
     // [FCM ]modified for fillUpdates = false
-    @Redirect(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;)Lnet/minecraft/block/state/IBlockState;"))
+    @Redirect(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z",
+              at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;)Lnet/minecraft/block/state/IBlockState;"))
     private IBlockState setBlockStateCarpet(Chunk chunk, BlockPos pos, IBlockState state, BlockPos methodPos, IBlockState newState, int flags)
     {
         // [FCM] Carpet added flag
@@ -121,7 +122,9 @@ public abstract class MixinWorld implements IWorld
         }
     }
 
-    @Redirect(method = "updateEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;", ordinal = 0, remap = false), slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/world/World;loadedEntityList:Ljava/util/List;", ordinal = 1), to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getRidingEntity()Lnet/minecraft/entity/Entity;", ordinal = 0)))
+    @Redirect(method = "updateEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;", ordinal = 0, remap = false),
+              slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/world/World;loadedEntityList:Ljava/util/List;", ordinal = 1),
+                      to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getRidingEntity()Lnet/minecraft/entity/Entity;", ordinal = 0)))
     private Object startEntityProfiling(List<Entity> entityList, int index)
     {
         Entity entity = entityList.get(index);
@@ -134,7 +137,9 @@ public abstract class MixinWorld implements IWorld
         return entity;
     }
 
-    @Inject(method = "updateEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endSection()V", ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;onEntityRemoved(Lnet/minecraft/entity/Entity;)V", ordinal = 1), to = @At(value = "CONSTANT", args = "stringValue=blockEntities", ordinal = 0)))
+    @Inject(method = "updateEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endSection()V", ordinal = 0),
+            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;onEntityRemoved(Lnet/minecraft/entity/Entity;)V", ordinal = 1),
+                    to = @At(value = "CONSTANT", args = "stringValue=blockEntities", ordinal = 0)))
     private void stopEntityProfiling(CallbackInfo ci)
     {
         if ((World) ((Object) (this)) instanceof WorldServer)
@@ -143,7 +148,10 @@ public abstract class MixinWorld implements IWorld
         }
     }
 
-    @Inject(method = "updateEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endStartSection(Ljava/lang/String;)V", ordinal = 0), slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=remove", ordinal = 1), to = @At(value = "FIELD", target = "Lnet/minecraft/world/World;tileEntitiesToBeRemoved:Ljava/util/List;", ordinal = 0)))
+    @Inject(method = "updateEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endStartSection(Ljava/lang/String;)V", ordinal = 0),
+            slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=remove", ordinal = 1),
+                    to = @At(value = "FIELD", target = "Lnet/minecraft/world/World;tileEntitiesToBeRemoved:Ljava/util/List;",
+                            ordinal = 0)))
     private void stopEntitiesProfilingStartTEProfiling(CallbackInfo ci)
     {
         if ((World) ((Object) (this)) instanceof WorldServer)
@@ -154,7 +162,10 @@ public abstract class MixinWorld implements IWorld
         }
     }
 
-    @Inject(method = "updateEntities", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/profiler/Profiler;endSection()V", ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;notifyBlockUpdate(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/block/state/IBlockState;I)V"), to = @At(value = "TAIL")))
+    @Inject(method = "updateEntities", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
+            target = "Lnet/minecraft/profiler/Profiler;endSection()V", ordinal = 0),
+            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;notifyBlockUpdate(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/block/state/IBlockState;I)V"),
+                    to = @At(value = "TAIL")))
     private void stopTEProfiling(CallbackInfo ci)
     {
         if ((World) ((Object) (this)) instanceof WorldServer)
@@ -163,7 +174,9 @@ public abstract class MixinWorld implements IWorld
         }
     }
 
-    @Redirect(method = "updateEntities", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;next()Ljava/lang/Object;", ordinal = 0, remap = false), slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/world/World;tickableTileEntities:Ljava/util/List;", ordinal = 1), to = @At(value = "INVOKE", target = "Lnet/minecraft/tileentity/TileEntity;hasWorld()Z")))
+    @Redirect(method = "updateEntities", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;next()Ljava/lang/Object;", ordinal = 0, remap = false),
+              slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/world/World;tickableTileEntities:Ljava/util/List;", ordinal = 1),
+                      to = @At(value = "INVOKE", target = "Lnet/minecraft/tileentity/TileEntity;hasWorld()Z")))
     private Object startTESectionProfiling(Iterator<TileEntity> iter)
     {
         TileEntity tileEntity = iter.next();
@@ -176,7 +189,9 @@ public abstract class MixinWorld implements IWorld
         return tileEntity;
     }
 
-    @Inject(method = "updateEntities", at = @At(value = "JUMP", opcode = Opcodes.GOTO, shift = At.Shift.BEFORE), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;removeTileEntity(Lnet/minecraft/util/math/BlockPos;)V"), to = @At(value = "CONSTANT", args = "stringValue=pendingBlockEntities")))
+    @Inject(method = "updateEntities", at = @At(value = "JUMP", opcode = Opcodes.GOTO, shift = At.Shift.BEFORE),
+            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;removeTileEntity(Lnet/minecraft/util/math/BlockPos;)V"),
+                    to = @At(value = "CONSTANT", args = "stringValue=pendingBlockEntities")))
     private void stopTESectionProfiling(CallbackInfo ci)
     {
         if ((World) ((Object) (this)) instanceof WorldServer)

@@ -200,13 +200,17 @@ public abstract class MixinWorldServer extends World implements IWorldServer
         this.sendQueuedBlockEvents();
     }
 
-    @Redirect(method = "updateBlocks", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z", ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;isThundering()Z"), to = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;enqueueRelightChecks()V")))
+    @Redirect(method = "updateBlocks", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z", ordinal = 0),
+              slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;isThundering()Z"), to = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/world/chunk/Chunk;enqueueRelightChecks()V")))
     private boolean cancelForLoop(Iterator iterator)
     {
         return false;
     }
 
-    @Inject(method = "updateBlocks", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Ljava/util/Iterator;hasNext()Z", ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;isThundering()Z"), to = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;enqueueRelightChecks()V")), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "updateBlocks", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Ljava/util/Iterator;hasNext()Z", ordinal = 0),
+            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;isThundering()Z"), to = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/world/chunk/Chunk;enqueueRelightChecks()V")), locals = LocalCapture.CAPTURE_FAILHARD)
     private void newForLoop(CallbackInfo ci, int i, boolean flag, boolean flag1)
     {
         for (Iterator<Chunk> iterator = getPersistentChunkIterable(this.playerChunkMap.getChunkIterator()); iterator.hasNext(); this.profiler.endSection())
