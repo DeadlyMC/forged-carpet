@@ -12,10 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(NetHandlerPlayServer.class)
-public abstract class MixinNetHandlerPlayServer {
-
+public abstract class MixinNetHandlerPlayServer
+{
     @Inject(method = "processInput", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayerMP;setEntityActionState(FFZZ)V"))
-    private void isPlayerMoving(CPacketInput packetIn, CallbackInfo ci){
+    private void isPlayerMoving(CPacketInput packetIn, CallbackInfo ci)
+    {
         //[FCM] Checking if player is moving, for commandTick
         if (packetIn.getStrafeSpeed() != 0.0F || packetIn.getForwardSpeed() != 0.0F || packetIn.isJumping() || packetIn.isSneaking())
         {
@@ -24,7 +25,8 @@ public abstract class MixinNetHandlerPlayServer {
     }
 
     @Inject(method = "processPlayer", at = @At(shift = At.Shift.BEFORE, value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayerMP;isPlayerSleeping()Z", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void resetPlayerActiveTimeout(CPacketPlayer packetIn, CallbackInfo ci, WorldServer worldserver, double d0, double  d1, double  d2, double  d3, double  d4, double  d5, double  d6, float  f, float  f1, double  d7, double  d8, double  d9, double  d10, double  d11){
+    private void resetPlayerActiveTimeout(CPacketPlayer packetIn, CallbackInfo ci, WorldServer worldserver, double d0, double d1, double d2, double d3, double d4, double d5, double d6, float f, float f1, double d7, double d8, double d9, double d10, double d11)
+    {
         if (d11 > 0.0001D) // for commandTick
         {
             TickSpeed.reset_player_active_timeout();

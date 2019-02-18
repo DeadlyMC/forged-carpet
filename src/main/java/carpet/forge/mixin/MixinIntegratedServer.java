@@ -8,10 +8,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(IntegratedServer.class)
-public abstract class MixinIntegratedServer {
-
+public abstract class MixinIntegratedServer
+{
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;setKeyPair(Ljava/security/KeyPair;)V"))
-    private void gameStartHook(CallbackInfoReturnable<Boolean> cir){
-        CarpetMain.onServerLoaded((IntegratedServer)(Object)this);
+    private void gameStartHook(CallbackInfoReturnable<Boolean> cir)
+    {
+        CarpetMain.onServerLoaded((IntegratedServer) (Object) this);
     }
 }

@@ -3,26 +3,19 @@ package carpet.forge.mixin;
 import carpet.forge.CarpetSettings;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ExtendedBlockStorage.class)
-public abstract class MixinExtendedBlockStorage {
+public abstract class MixinExtendedBlockStorage
+{
 
-    @Shadow
-    private int blockRefCount;
-
-    /**
-     * @author DeadlyMC
-     * @reason NewLight
-     */
-    @Overwrite
-    public boolean isEmpty() {
-        if (CarpetSettings.newLight) {
-            return false;
-        } else {
-            return this.blockRefCount == 0;
-        }
+    @Inject(method = "isEmpty", at = @At("HEAD"), cancellable = true)
+    private void ifCancelEmpty(CallbackInfoReturnable<Boolean> cir)
+    {
+        if (CarpetSettings.newLight)
+            cir.setReturnValue(false);
     }
 
 }

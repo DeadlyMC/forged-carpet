@@ -18,13 +18,19 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BlockHopper.class)
-public abstract class MixinBlockHopper extends BlockContainer {
+public abstract class MixinBlockHopper extends BlockContainer
+{
 
-    @Shadow @Final public static PropertyDirection FACING;
+    @Shadow
+    @Final
+    public static PropertyDirection FACING;
 
-    @Shadow @Final public static PropertyBool ENABLED;
+    @Shadow
+    @Final
+    public static PropertyBool ENABLED;
 
-    protected MixinBlockHopper(Material materialIn, MapColor color) {
+    protected MixinBlockHopper(Material materialIn, MapColor color)
+    {
         super(materialIn, color);
     }
 

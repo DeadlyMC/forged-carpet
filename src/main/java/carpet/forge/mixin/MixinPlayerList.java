@@ -9,15 +9,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerList.class)
-public abstract class MixinPlayerList {
-
+public abstract class MixinPlayerList
+{
     @Inject(method = "playerLoggedIn", at = @At(value = "RETURN"))
-    public void onPlayerLoggedIn(EntityPlayerMP playerIn, CallbackInfo ci){
+    private void onPlayerLoggedIn(EntityPlayerMP playerIn, CallbackInfo ci)
+    {
         CarpetMain.playerConnected(playerIn);
     }
 
     @Inject(method = "playerLoggedOut", at = @At(value = "HEAD"))
-    public void onPlayerLoggedOut(EntityPlayerMP playerIn, CallbackInfo ci){
+    private void onPlayerLoggedOut(EntityPlayerMP playerIn, CallbackInfo ci)
+    {
         CarpetMain.playerDisconnected(playerIn);
     }
 }

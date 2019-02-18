@@ -8,290 +8,267 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import javax.annotation.Nullable;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Mixin(Chunk.class)
-public abstract class MixinChunk implements IChunk {
+public abstract class MixinChunk implements IChunk
+{
 
-    @Shadow @Final private ExtendedBlockStorage[] storageArrays;
+    @Shadow
+    @Final
+    public static ExtendedBlockStorage NULL_BLOCK_STORAGE;
 
-    @Shadow @Final public static ExtendedBlockStorage NULL_BLOCK_STORAGE;
+    @Shadow
+    @Final
+    public int x;
 
-    @Shadow public abstract boolean canSeeSky(BlockPos pos);
-
-    @Shadow @Final private World world;
-
-    @Shadow public abstract int getTopFilledSegment();
-
-    @Shadow private int heightMapMinimum;
-    @Shadow @Final private int[] precipitationHeightMap;
-
-    @Shadow protected abstract int getBlockLightOpacity(int x, int y, int z);
-
-    @Shadow @Final private int[] heightMap;
-    @Shadow private boolean dirty;
-    @Shadow @Final public int x;
-    @Shadow @Final public int z;
-
-    @Shadow protected abstract void updateSkylightNeighborHeight(int x, int z, int startY, int endY);
-
-    @Shadow public abstract IBlockState getBlockState(BlockPos pos);
-
-    @Shadow @Nullable public abstract TileEntity getTileEntity(BlockPos pos, Chunk.EnumCreateEntityType creationMode);
-
-    @Shadow public abstract int getLightFor(EnumSkyBlock type, BlockPos pos);
-
-    @Shadow protected abstract void propagateSkylightOcclusion(int x, int z);
-
-    @Shadow private boolean isTerrainPopulated;
-
-    @Shadow public abstract void checkLight();
-
-    @Shadow private boolean isGapLightingUpdated;
-
-    @Shadow protected abstract void recheckGaps(boolean onlyOne);
-
-    @Shadow private boolean ticked;
-    @Shadow private boolean isLightPopulated;
-    @Shadow @Final private ConcurrentLinkedQueue<BlockPos> tileEntityPosQueue;
-
-    @Shadow @Nullable protected abstract TileEntity createNewTileEntity(BlockPos pos);
+    @Shadow
+    @Final
+    public int z;
 
     public short[] neighborLightChecks = null;
     public short pendingNeighborLightInits;
 
-    /**
-     * @author DeadlyMC
-     * @reason if statement arounds
-     */
-    @Overwrite
-    public void generateSkylightMap()
+    @Shadow
+    @Final
+    private ExtendedBlockStorage[] storageArrays;
+
+    @Shadow
+    @Final
+    private World world;
+
+    @Shadow
+    @Final
+    private int[] precipitationHeightMap;
+
+    @Shadow
+    @Final
+    private int[] heightMap;
+
+    @Shadow
+    private boolean dirty;
+
+    @Shadow
+    private boolean isTerrainPopulated;
+
+    @Shadow
+    private boolean isLightPopulated;
+
+    @Shadow
+    public abstract boolean canSeeSky(BlockPos pos);
+
+    @Shadow
+    protected abstract int getBlockLightOpacity(int x, int y, int z);
+
+    @Shadow
+    public abstract IBlockState getBlockState(BlockPos pos);
+
+    @Shadow
+    @Nullable
+    public abstract TileEntity getTileEntity(BlockPos pos, Chunk.EnumCreateEntityType creationMode);
+
+    @Shadow
+    public abstract int getLightFor(EnumSkyBlock type, BlockPos pos);
+
+    @Shadow
+    protected abstract void propagateSkylightOcclusion(int x, int z);
+
+    @Shadow
+    public abstract void checkLight();
+
+    @Shadow
+    protected abstract void relightBlock(int x, int y, int z);
+
+    @Shadow
+    public abstract void generateSkylightMap();
+
+    @Redirect(method = "generateSkylightMap", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldProvider;hasSkyLight()Z"))
+    private boolean cancelHasSkyLight1(WorldProvider worldProvider)
     {
-        int i = this.getTopFilledSegment();
-        this.heightMapMinimum = Integer.MAX_VALUE;
+        return false;
+    }
 
-        for (int j = 0; j < 16; ++j)
+    @Inject(method = "generateSkylightMap", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
+            target = "Lnet/minecraft/world/WorldProvider;hasSkyLight()Z"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void newHasSkyLight1(CallbackInfo ci, int i, int j, int k)
+    {
+        if (this.world.provider.hasSkyLight())
         {
-            for (int k = 0; k < 16; ++k)
+            if (CarpetSettings.newLight)
             {
-                this.precipitationHeightMap[j + (k << 4)] = -999;
+                LightingHooks.fillSkylightColumn((Chunk) (Object) this, j, k);
+            }
+            else
+            {
+                int k1 = 15;
+                int i1 = i + 16 - 1;
 
-                for (int l = i + 16; l > 0; --l)
+                while (true)
                 {
-                    if (this.getBlockLightOpacity(j, l - 1, k) != 0)
+                    int j1 = this.getBlockLightOpacity(j, i1, k);
+
+                    if (j1 == 0 && k1 != 15)
                     {
-                        this.heightMap[k << 4 | j] = l;
+                        j1 = 1;
+                    }
 
-                        if (l < this.heightMapMinimum)
+                    k1 -= j1;
+
+                    if (k1 > 0)
+                    {
+                        ExtendedBlockStorage extendedblockstorage = this.storageArrays[i1 >> 4];
+
+                        if (extendedblockstorage != NULL_BLOCK_STORAGE)
                         {
-                            this.heightMapMinimum = l;
+                            extendedblockstorage.setSkyLight(j, i1 & 15, k, k1);
+                            this.world.notifyLightSet(new BlockPos((this.x << 4) + j, i1, (this.z << 4) + k));
                         }
+                    }
 
+                    --i1;
+
+                    if (i1 <= 0 || k1 <= 0)
+                    {
                         break;
                     }
                 }
-
-                if (this.world.provider.hasSkyLight())
-                {
-                    // [FCM] Newlight -- if statement around
-                    if (CarpetSettings.newLight) {
-                        LightingHooks.fillSkylightColumn((Chunk)(Object)this, j, k);
-                    }
-                    else
-                    {
-                        int k1 = 15;
-                        int i1 = i + 16 - 1;
-
-                        while (true) {
-                            int j1 = this.getBlockLightOpacity(j, i1, k);
-
-                            if (j1 == 0 && k1 != 15) {
-                                j1 = 1;
-                            }
-
-                            k1 -= j1;
-
-                            if (k1 > 0) {
-                                ExtendedBlockStorage extendedblockstorage = this.storageArrays[i1 >> 4];
-
-                                if (extendedblockstorage != NULL_BLOCK_STORAGE) {
-                                    extendedblockstorage.setSkyLight(j, i1 & 15, k, k1);
-                                    this.world.notifyLightSet(new BlockPos((this.x << 4) + j, i1, (this.z << 4) + k));
-                                }
-                            }
-
-                            --i1;
-
-                            if (i1 <= 0 || k1 <= 0) {
-                                break;
-                            }
-                        }
-                    }
-                    // [FCM] Newlight -- end
-                }
             }
         }
 
-        this.dirty = true;
     }
 
-    /**
-     * @author DeadlyMC
-     * @reason if statement arounds
-     */
-    @Overwrite
-    private void relightBlock(int x, int y, int z)
+    @ModifyConstant(method = "relightBlock", constant = @Constant(intValue = 255))
+    private int newLightIntChange(int original)
     {
-        // [FCM] Newlight -- Changed variable 'i' according to if statement
-        int i;
+        if (CarpetSettings.newLight)
+            return 0xFFFFFFFF;
+        else
+            return 255;
+    }
+
+    @Redirect(method = "relightBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;markBlocksDirtyVertical(IIII)V"))
+    private void cancelUselessCallIf(World world, int x, int z, int y1, int y2)
+    {
+
+    }
+
+    @Inject(method = "relightBlock", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
+            target = "Lnet/minecraft/world/World;markBlocksDirtyVertical(IIII)V"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void newUselessCallIf(int x, int y, int z, CallbackInfo ci, int i, int j)
+    {
+        if (!CarpetSettings.newLight)
+            this.world.markBlocksDirtyVertical(x + this.x * 16, z + this.z * 16, j, i); //Forge: Useless, since heightMap is not updated yet (See #3871)
+    }
+
+    @Redirect(method = "relightBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldProvider;hasSkyLight()Z"),
+              slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;markBlocksDirtyVertical(IIII)V"),
+                      to = @At(value = "FIELD", target = "Lnet/minecraft/world/chunk/Chunk;storageArrays:[Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;", ordinal = 0)))
+    private boolean cancelHasSkyLight2(WorldProvider worldProvider)
+    {
+        return false;
+    }
+
+    @Inject(method = "relightBlock", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
+            target = "Lnet/minecraft/world/WorldProvider;hasSkyLight()Z", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void newHasSkyLight2(int x, int y, int z, CallbackInfo ci, int i, int j)
+    {
+        if (this.world.provider.hasSkyLight())
+        {
+            // [FCM] Newlight
+            if (CarpetSettings.newLight)
+            {
+                LightingHooks.relightSkylightColumn(this.world, (Chunk) (Object) this, x, z, i, j); //Forge: Optimized version of World.markBlocksDirtyVertical; heightMap is now updated (See #3871)
+            }
+            else
+            { // Don't mess up the light cache; World.checkLight already does all necessary steps (See #3871)
+                if (j < i)
+                {
+                    for (int j1 = j; j1 < i; ++j1)
+                    {
+                        ExtendedBlockStorage extendedblockstorage2 = this.storageArrays[j1 >> 4];
+
+                        if (extendedblockstorage2 != NULL_BLOCK_STORAGE)
+                        {
+                            extendedblockstorage2.setSkyLight(x, j1 & 15, z, 15);
+                            this.world.notifyLightSet(new BlockPos((this.x << 4) + x, j1, (this.z << 4) + z));
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i1 = i; i1 < j; ++i1)
+                    {
+                        ExtendedBlockStorage extendedblockstorage = this.storageArrays[i1 >> 4];
+
+                        if (extendedblockstorage != NULL_BLOCK_STORAGE)
+                        {
+                            extendedblockstorage.setSkyLight(x, i1 & 15, z, 0);
+                            this.world.notifyLightSet(new BlockPos((this.x << 4) + x, i1, (this.z << 4) + z));
+                        }
+                    }
+                }
+
+                int k1 = 15;
+
+                while (j > 0 && k1 > 0)
+                {
+                    --j;
+                    int i2 = this.getBlockLightOpacity(x, j, z);
+
+                    if (i2 == 0)
+                    {
+                        i2 = 1;
+                    }
+
+                    k1 -= i2;
+
+                    if (k1 < 0)
+                    {
+                        k1 = 0;
+                    }
+
+                    ExtendedBlockStorage extendedblockstorage1 = this.storageArrays[j >> 4];
+
+                    if (extendedblockstorage1 != NULL_BLOCK_STORAGE)
+                    {
+                        extendedblockstorage1.setSkyLight(x, j & 15, z, k1);
+                    }
+                }
+            }
+        }
+
+    }
+
+    @Inject(method = "relightBlock", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
+            target = "Lnet/minecraft/world/WorldProvider;hasSkyLight()Z", ordinal = 1), cancellable = true)
+    private void skipChecksIf(int x, int y, int z, CallbackInfo ci)
+    {
+        // [FCM] Newlight
         if (CarpetSettings.newLight)
         {
-            i = this.heightMap[z << 4 | x];
-        }
-        else
-        {
-            i = this.heightMap[z << 4 | x] & 255;
-        }
-        // [FCM] End
-        int j = i;
-
-        if (y > i)
-        {
-            j = y;
-        }
-
-        while (j > 0 && this.getBlockLightOpacity(x, j - 1, z) == 0)
-        {
-            --j;
-        }
-
-        if (j != i)
-        {
-            // [FCM] Newlight -- Optimization
-            if (!CarpetSettings.newLight)
-                // Forge: Useless, since heightMap is not updated yet
-                this.world.markBlocksDirtyVertical(x + this.x * 16, z + this.z * 16, j, i);
-            this.heightMap[z << 4 | x] = j;
-            int k = this.x * 16 + x;
-            int l = this.z * 16 + z;
-
-            if (this.world.provider.hasSkyLight())
-            {
-                // [FCM] Newlight -- Optimization
-                if (CarpetSettings.newLight) {
-                    LightingHooks.relightSkylightColumn(this.world, (Chunk) (Object) this, x, z, i, j); //Forge: Optimized version of World.markBlocksDirtyVertical; heightMap is now updated
-                }
-                else // Don't mess up the light cache; World.checkLight already does all necessary steps
-                {
-                    if (j < i)
-                    {
-                        for (int j1 = j; j1 < i; ++j1)
-                        {
-                            ExtendedBlockStorage extendedblockstorage2 = this.storageArrays[j1 >> 4];
-
-                            if (extendedblockstorage2 != NULL_BLOCK_STORAGE) {
-                                extendedblockstorage2.setSkyLight(x, j1 & 15, z, 15);
-                                this.world.notifyLightSet(new BlockPos((this.x << 4) + x, j1, (this.z << 4) + z));
-                            }
-                        }
-                    } else {
-                        for (int i1 = i; i1 < j; ++i1)
-                        {
-                            ExtendedBlockStorage extendedblockstorage = this.storageArrays[i1 >> 4];
-
-                            if (extendedblockstorage != NULL_BLOCK_STORAGE) {
-                                extendedblockstorage.setSkyLight(x, i1 & 15, z, 0);
-                                this.world.notifyLightSet(new BlockPos((this.x << 4) + x, i1, (this.z << 4) + z));
-                            }
-                        }
-                    }
-
-                    int k1 = 15;
-
-                    while (j > 0 && k1 > 0)
-                    {
-                        --j;
-                        int i2 = this.getBlockLightOpacity(x, j, z);
-
-                        if (i2 == 0)
-                        {
-                            i2 = 1;
-                        }
-
-                        k1 -= i2;
-
-                        if (k1 < 0)
-                        {
-                            k1 = 0;
-                        }
-
-                        ExtendedBlockStorage extendedblockstorage1 = this.storageArrays[j >> 4];
-
-                        if (extendedblockstorage1 != NULL_BLOCK_STORAGE)
-                        {
-                            extendedblockstorage1.setSkyLight(x, j & 15, z, k1);
-                        }
-                    }
-                }
-                // [FCM] End
-            }
-
-            int l1 = this.heightMap[z << 4 | x];
-            int j2 = i;
-            int k2 = l1;
-
-            if (l1 < i)
-            {
-                j2 = l1;
-                k2 = i;
-            }
-
-            if (l1 < this.heightMapMinimum)
-            {
-                this.heightMapMinimum = l1;
-            }
-
-            // [FCM] NewLight -- Optimization
-            if (CarpetSettings.newLight){
-                this.dirty = true;
-                return; //Forge: Following checks are not needed if the light cache is not messed up
-            }
-
-            if (this.world.provider.hasSkyLight())
-            {
-                for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL)
-                {
-                    this.updateSkylightNeighborHeight(k + enumfacing.getXOffset(), l + enumfacing.getZOffset(), j2, k2);
-                }
-
-                this.updateSkylightNeighborHeight(k, l, j2, k2);
-            }
-
             this.dirty = true;
+            ci.cancel(); //Forge: Following checks are not needed if the light cache is not messed up (See #3871)
         }
     }
 
     // [FCM] Replace method with a carpet method
     @Inject(method = "setBlockState", at = @At("HEAD"), cancellable = true)
-    private void redirectToCarpetMethod(BlockPos pos, IBlockState state, CallbackInfoReturnable<IBlockState> cir){
+    private void redirectToCarpetMethod(BlockPos pos, IBlockState state, CallbackInfoReturnable<IBlockState> cir)
+    {
         cir.setReturnValue(setBlockState_carpet(pos, state, false));
         cir.cancel();
     }
@@ -335,8 +312,9 @@ public abstract class MixinChunk implements IChunk {
                 this.storageArrays[j >> 4] = extendedblockstorage;
                 flag = j >= i1;
                 // [FCM] Newlight
-                if (CarpetSettings.newLight){
-                    LightingHooks.initSkylightForSection(this.world, (Chunk)(Object)this, extendedblockstorage); //Forge: Always initialize sections properly (See #3870 and #3879)
+                if (CarpetSettings.newLight)
+                {
+                    LightingHooks.initSkylightForSection(this.world, (Chunk) (Object) this, extendedblockstorage); //Forge: Always initialize sections properly (See #3870 and #3879)
                 }
             }
 
@@ -349,7 +327,8 @@ public abstract class MixinChunk implements IChunk {
                     if (block1 != block) //Only fire block breaks when the block changes.
                         block1.breakBlock(this.world, pos, iblockstate);
                     TileEntity te = this.getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
-                    if (te != null && te.shouldRefresh(this.world, pos, iblockstate, state)) this.world.removeTileEntity(pos);
+                    if (te != null && te.shouldRefresh(this.world, pos, iblockstate, state))
+                        this.world.removeTileEntity(pos);
                 }
                 else if (block1.hasTileEntity(iblockstate))
                 {
@@ -426,61 +405,70 @@ public abstract class MixinChunk implements IChunk {
     }
 
     @Inject(method = "getLightFor", at = @At(value = "HEAD"))
-    private void procLightUpdatesNewLight1(EnumSkyBlock type, BlockPos pos, CallbackInfoReturnable<Integer> cir){
+    private void procLightUpdatesNewLight1(EnumSkyBlock type, BlockPos pos, CallbackInfoReturnable<Integer> cir)
+    {
         if (CarpetSettings.newLight)
             ((IWorld) this.world).getLightingEngine().procLightUpdates(type);
     }
 
     @Redirect(method = "setLightFor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;generateSkylightMap()V"))
-    private void newLightInitSkyLight(Chunk chunk){
+    private void newLightInitSkyLight(Chunk chunk)
+    {
     }
 
-    @Inject(method = "setLightFor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;generateSkylightMap()V"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void insteadOfGenerateSkylightMap(EnumSkyBlock type, BlockPos pos, int value, CallbackInfo ci, int i, int j, int k, ExtendedBlockStorage extendedblockstorage) {
-        if (CarpetSettings.newLight){
-            LightingHooks.initSkylightForSection(this.world, (Chunk)(Object)this, extendedblockstorage); //Forge: generateSkylightMap produces the wrong result (See #3870)
-        }else{
+    @Inject(method = "setLightFor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;generateSkylightMap()V"),
+            locals = LocalCapture.CAPTURE_FAILHARD)
+    private void insteadOfGenerateSkylightMap(EnumSkyBlock type, BlockPos pos, int value, CallbackInfo ci, int i, int j, int k, ExtendedBlockStorage extendedblockstorage)
+    {
+        if (CarpetSettings.newLight)
+        {
+            LightingHooks.initSkylightForSection(this.world, (Chunk) (Object) this, extendedblockstorage); //Forge: generateSkylightMap produces the wrong result (See #3870)
+        }
+        else
+        {
             this.generateSkylightMap();
         }
     }
 
     @Inject(method = "getLightSubtracted", at = @At(value = "HEAD"))
-    private void procLightUpdatesNewLight2(BlockPos pos, int amount, CallbackInfoReturnable<Integer> cir){
+    private void procLightUpdatesNewLight2(BlockPos pos, int amount, CallbackInfoReturnable<Integer> cir)
+    {
         if (CarpetSettings.newLight)
             ((IWorld) this.world).getLightingEngine().procLightUpdates();
     }
 
     @Inject(method = "onLoad", at = @At(value = "TAIL"))
-    private void onOnLoad(CallbackInfo ci){
-        if (CarpetSettings.newLight){
-            LightingHooks.onLoad(this.world, (Chunk)(Object)this);
+    private void onOnLoad(CallbackInfo ci)
+    {
+        if (CarpetSettings.newLight)
+        {
+            LightingHooks.onLoad(this.world, (Chunk) (Object) this);
         }
     }
 
-    @Redirect(method = "populate(Lnet/minecraft/world/gen/IChunkGenerator;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;checkLight()V"))
-    private void ifCheckLight(Chunk chunk){
-        if (CarpetSettings.newLight){
+    @Redirect(method = "populate(Lnet/minecraft/world/gen/IChunkGenerator;)V", at = @At(value = "INVOKE",
+              target = "Lnet/minecraft/world/chunk/Chunk;checkLight()V"))
+    private void ifCheckLight(Chunk chunk)
+    {
+        if (CarpetSettings.newLight)
+        {
             this.isTerrainPopulated = true;
-        }else{
+        }
+        else
+        {
             this.checkLight();
         }
     }
 
-    /**
-     * @author DeadlyMC
-     * @reason if statement around
-     */
-    @Overwrite
-    public void onTick(boolean skipRecheckGaps)
+    @Redirect(method = "onTick", at = @At(value = "FIELD", target = "Lnet/minecraft/world/chunk/Chunk;isTerrainPopulated:Z"))
+    private boolean cancelIsTerrainIf(Chunk chunk)
     {
-        if (this.isGapLightingUpdated && this.world.provider.hasSkyLight() && !skipRecheckGaps)
-        {
-            this.recheckGaps(this.world.isRemote);
-        }
+        return false;
+    }
 
-        this.ticked = true;
-
-        // [FCM] Newlight
+    @Inject(method = "onTick", at = @At(value = "FIELD", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/chunk/Chunk;ticked:Z"))
+    private void newIsTerrainIf(boolean skipRecheckGaps, CallbackInfo ci)
+    {
         if (!CarpetSettings.newLight)
         {
             if (!this.isLightPopulated && this.isTerrainPopulated)
@@ -488,37 +476,29 @@ public abstract class MixinChunk implements IChunk {
                 this.checkLight();
             }
         }
-
-        while (!this.tileEntityPosQueue.isEmpty())
-        {
-            BlockPos blockpos = this.tileEntityPosQueue.poll();
-
-            if (this.getTileEntity(blockpos, Chunk.EnumCreateEntityType.CHECK) == null && this.getBlockState(blockpos).getBlock().hasTileEntity(this.getBlockState(blockpos)))
-            {
-                TileEntity tileentity = this.createNewTileEntity(blockpos);
-                this.world.setTileEntity(blockpos, tileentity);
-                this.world.markBlockRangeForRenderUpdate(blockpos, blockpos);
-            }
-        }
     }
 
     @Override
-    public short[] getNeighborLightChecks() {
+    public short[] getNeighborLightChecks()
+    {
         return neighborLightChecks;
     }
 
     @Override
-    public void setNeighborLightChecks(short[] lightChecks){
+    public void setNeighborLightChecks(short[] lightChecks)
+    {
         neighborLightChecks = lightChecks;
     }
 
     @Override
-    public short getPendingNeighborLightInits(){
+    public short getPendingNeighborLightInits()
+    {
         return this.pendingNeighborLightInits;
     }
 
     @Override
-    public void setPendingNeighborLightInits(short inits){
+    public void setPendingNeighborLightInits(short inits)
+    {
         pendingNeighborLightInits = inits;
     }
 

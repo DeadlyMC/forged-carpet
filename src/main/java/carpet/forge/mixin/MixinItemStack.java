@@ -8,15 +8,18 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(ItemStack.class)
-public abstract class MixinItemStack implements IItemStack {
+public abstract class MixinItemStack implements IItemStack
+{
+    @Shadow
+    public abstract Item getItem();
 
-    @Shadow public abstract Item getItem();
-
-    @Shadow public abstract boolean hasTagCompound();
+    @Shadow
+    public abstract boolean hasTagCompound();
 
     // [FCM] Check for ground stacking
     @Override
-    public boolean isGroundStackable() {
+    public boolean isGroundStackable()
+    {
         return ((IItem) this.getItem()).itemGroundStacking(hasTagCompound());
     }
 }

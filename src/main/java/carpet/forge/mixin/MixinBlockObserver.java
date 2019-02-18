@@ -1,6 +1,5 @@
 package carpet.forge.mixin;
 
-import carpet.forge.CarpetMain;
 import carpet.forge.CarpetSettings;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockObserver;
@@ -18,16 +17,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(BlockObserver.class)
-public abstract class MixinBlockObserver extends BlockDirectional {
+public abstract class MixinBlockObserver extends BlockDirectional
+{
+    @Shadow
+    @Final
+    public static PropertyBool POWERED;
 
-    protected MixinBlockObserver(Material materialIn) {
+    protected MixinBlockObserver(Material materialIn)
+    {
         super(materialIn);
     }
 
-    @Shadow @Final public static PropertyBool POWERED;
-
     @Redirect(method = "getStateForPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockObserver;getDefaultState()Lnet/minecraft/block/state/IBlockState;"))
-    private IBlockState onGetStateForPlacement(BlockObserver blockObserver, World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer).getOpposite()).withProperty(POWERED, CarpetSettings.getBool("observersDoNonUpdate"));
+    private IBlockState onGetStateForPlacement(BlockObserver blockObserver, World worldIn, BlockPos pos, EnumFacing facing,
+                                               float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+    {
+        return this.getDefaultState().withProperty(FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer).getOpposite())
+                .withProperty(POWERED, CarpetSettings.getBool("observersDoNonUpdate"));
     }
 }

@@ -2,7 +2,6 @@ package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
 import carpet.forge.helper.RedstoneWireTurbo;
-import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.properties.PropertyInteger;
@@ -19,25 +18,34 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
 import java.util.Set;
 
 @Mixin(BlockRedstoneWire.class)
-public abstract class MixinBlockRedstoneWire {
+public abstract class MixinBlockRedstoneWire
+{
 
-    @Shadow @Final public static PropertyInteger POWER;
+    @Shadow
+    @Final
+    public static PropertyInteger POWER;
 
-    @Shadow protected abstract int getMaxCurrentStrength(World worldIn, BlockPos pos, int strength);
+    @Shadow
+    public boolean canProvidePower;
 
-    @Shadow public boolean canProvidePower;
-    @Shadow @Final private Set<BlockPos> blocksNeedingUpdate;
+    @Shadow
+    @Final
+    private Set<BlockPos> blocksNeedingUpdate;
 
-    @Shadow protected abstract IBlockState updateSurroundingRedstone(World worldIn, BlockPos pos, IBlockState state);
+    private RedstoneWireTurbo turbo = new RedstoneWireTurbo((BlockRedstoneWire) (Object) this);
 
-    private RedstoneWireTurbo turbo = new RedstoneWireTurbo((BlockRedstoneWire)(Object)this);
+    @Shadow
+    protected abstract int getMaxCurrentStrength(World worldIn, BlockPos pos, int strength);
+
+    @Shadow
+    protected abstract IBlockState updateSurroundingRedstone(World worldIn, BlockPos pos, IBlockState state);
 
     @Inject(method = "updateSurroundingRedstone", at = @At("HEAD"))
-    private void updateSurroundingRedstoneTurbo(World worldIn, BlockPos pos, IBlockState state, CallbackInfoReturnable<IBlockState> cir){
+    private void updateSurroundingRedstoneTurbo(World worldIn, BlockPos pos, IBlockState state, CallbackInfoReturnable<IBlockState> cir)
+    {
         if (CarpetSettings.fastRedstoneDust)
             cir.setReturnValue(turbo.updateSurroundingRedstone(worldIn, pos, state, null));
     }
@@ -50,7 +58,7 @@ public abstract class MixinBlockRedstoneWire {
     public IBlockState calculateCurrentChanges(World worldIn, BlockPos pos1, BlockPos pos2, IBlockState state)
     {
         IBlockState iblockstate = state;
-        int i = ((Integer)state.getValue(POWER)).intValue();
+        int i = ((Integer) state.getValue(POWER)).intValue();
         int j = 0;
         j = this.getMaxCurrentStrength(worldIn, pos2, j);
         this.canProvidePower = false;
@@ -87,7 +95,8 @@ public abstract class MixinBlockRedstoneWire {
 
                 if (worldIn.getBlockState(blockpos).isNormalCube() && !worldIn.getBlockState(pos1.up()).isNormalCube())
                 {
-                    if (flag && pos1.getY() >= pos2.getY()) {
+                    if (flag && pos1.getY() >= pos2.getY())
+                    {
                         l = this.getMaxCurrentStrength(worldIn, blockpos.up(), l);
                     }
                 }
@@ -117,15 +126,18 @@ public abstract class MixinBlockRedstoneWire {
             {
                 j = k;
             }
-        } else {
+        }
+        else
+        {
             // The new code sets this redstonewire block's power level to the highest neighbor
             // minus 1.  This usually results in wire power levels dropping by 2 at a time.
             // This optimization alone has no impact on opdate order, only the number of updates.
-            j = l-1;
+            j = l - 1;
 
             // If 'l' turns out to be zero, then j will be set to -1, but then since 'k' will
             // always be in the range of 0 to 15, the following if will correct that.
-            if (k>j) j=k;
+            if (k > j)
+                j = k;
         }
 
         if (i != j)
@@ -153,8 +165,13 @@ public abstract class MixinBlockRedstoneWire {
         return state;
     }
 
-    @Redirect(method = "neighborChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockRedstoneWire;updateSurroundingRedstone(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;)Lnet/minecraft/block/state/IBlockState;"))
-    private IBlockState callUpdateSurroundingRedstoneTurbo(BlockRedstoneWire blockRedstoneWire, World worldIn, BlockPos pos, IBlockState state, IBlockState methodState, World methpdWorldIn, BlockPos methodPos, Block methodBlockIn, BlockPos fromPos){
+    @Redirect(method = "neighborChanged", at = @At(value = "INVOKE",
+              target = "Lnet/minecraft/block/BlockRedstoneWire;updateSurroundingRedstone(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;)Lnet/minecraft/block/state/IBlockState;"))
+    private IBlockState callUpdateSurroundingRedstoneTurbo(BlockRedstoneWire blockRedstoneWire, World worldIn,
+                                                           BlockPos pos, IBlockState state, IBlockState methodState,
+                                                           World methpdWorldIn, BlockPos methodPos, Block methodBlockIn,
+                                                           BlockPos fromPos)
+    {
         if (CarpetSettings.fastRedstoneDust)
             return turbo.updateSurroundingRedstone(worldIn, pos, state, fromPos);
         else
