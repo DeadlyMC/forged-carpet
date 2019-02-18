@@ -32,7 +32,10 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
 import java.util.List;
@@ -40,39 +43,62 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @Mixin(value = WorldServer.class, priority = 900)
-public abstract class MixinWorldServer extends World implements IWorldServer {
+public abstract class MixinWorldServer extends World implements IWorldServer
+{
 
-    @Shadow public abstract boolean areAllPlayersAsleep();
+    @Shadow
+    @Final
+    public PlayerChunkMap playerChunkMap;
 
-    @Shadow protected abstract void wakeAllPlayers();
+    @Shadow
+    public List<Teleporter> customTeleporters;
 
-    @Shadow @Final private WorldEntitySpawner entitySpawner;
+    @Shadow
+    @Final
+    protected VillageSiege villageSiege;
 
-    @Shadow @Final public PlayerChunkMap playerChunkMap;
+    @Shadow
+    @Final
+    private WorldEntitySpawner entitySpawner;
 
-    @Shadow @Final protected VillageSiege villageSiege;
+    @Shadow
+    @Final
+    private Teleporter worldTeleporter;
 
-    @Shadow @Final private Teleporter worldTeleporter;
+    @Shadow
+    @Final
+    private TreeSet<NextTickListEntry> pendingTickListEntriesTreeSet;
 
-    @Shadow public List<Teleporter> customTeleporters;
+    @Shadow
+    @Final
+    private Set<NextTickListEntry> pendingTickListEntriesHashSet;
 
-    @Shadow protected abstract void sendQueuedBlockEvents();
+    @Shadow
+    @Final
+    private List<NextTickListEntry> pendingTickListEntriesThisTick;
 
-    @Shadow protected abstract void playerCheckLight();
+    // New boolean
+    private boolean blockActionsProcessed;
 
-    @Shadow protected abstract BlockPos adjustPosToNearbyEntity(BlockPos pos);
-
-    @Shadow @Final private TreeSet<NextTickListEntry> pendingTickListEntriesTreeSet;
-
-    @Shadow @Final private Set<NextTickListEntry> pendingTickListEntriesHashSet;
-
-    @Shadow @Final private List<NextTickListEntry> pendingTickListEntriesThisTick;
-
-    protected MixinWorldServer(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
+    protected MixinWorldServer(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client)
+    {
         super(saveHandlerIn, info, providerIn, profilerIn, client);
     }
 
-    private boolean blockActionsProcessed;
+    @Shadow
+    public abstract boolean areAllPlayersAsleep();
+
+    @Shadow
+    protected abstract void wakeAllPlayers();
+
+    @Shadow
+    protected abstract void sendQueuedBlockEvents();
+
+    @Shadow
+    protected abstract void playerCheckLight();
+
+    @Shadow
+    protected abstract BlockPos adjustPosToNearbyEntity(BlockPos pos);
 
     /**
      * @author DeadlyMC
@@ -109,7 +135,8 @@ public abstract class MixinWorldServer extends World implements IWorldServer {
             this.profiler.startSection("mobSpawner");
             CarpetProfiler.start_section(world_name, "spawning");
 
-            if (this.getGameRules().getBoolean("doMobSpawning") && this.worldInfo.getTerrainType() != WorldType.DEBUG_ALL_BLOCK_STATES) {
+            if (this.getGameRules().getBoolean("doMobSpawning") && this.worldInfo.getTerrainType() != WorldType.DEBUG_ALL_BLOCK_STATES)
+            {
                 this.entitySpawner.findChunksForSpawning((WorldServer) (Object) this, this.spawnHostileMobs, this.spawnPeacefulMobs, this.worldInfo.getWorldTotalTime() % 400L == 0L);
             }
             CarpetProfiler.end_current_section();
@@ -129,7 +156,8 @@ public abstract class MixinWorldServer extends World implements IWorldServer {
         {
             this.worldInfo.setWorldTotalTime(this.worldInfo.getWorldTotalTime() + 1L);
 
-            if (this.getGameRules().getBoolean("doDaylightCycle")) {
+            if (this.getGameRules().getBoolean("doDaylightCycle"))
+            {
                 this.setWorldTime(this.getWorldTime() + 1L);
             }
             this.profiler.endStartSection("tickPending");
@@ -172,135 +200,117 @@ public abstract class MixinWorldServer extends World implements IWorldServer {
         this.sendQueuedBlockEvents();
     }
 
-    /**
-     * @author DeadlyMC
-     * @reason The change in code required 'continue' statements.
-     * Changes are highlighted with comments
-     */
-    @Overwrite
-    protected void updateBlocks()
+    @Redirect(method = "updateBlocks", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z", ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;isThundering()Z"), to = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;enqueueRelightChecks()V")))
+    private boolean cancelForLoop(Iterator iterator)
     {
-        this.playerCheckLight();
-
-        if (this.worldInfo.getTerrainType() == WorldType.DEBUG_ALL_BLOCK_STATES)
-        {
-            Iterator<Chunk> iterator1 = this.playerChunkMap.getChunkIterator();
-
-            while (iterator1.hasNext())
-            {
-                ((Chunk)iterator1.next()).onTick(false);
-            }
-        }
-        else
-        {
-            int i = this.getGameRules().getInt("randomTickSpeed");
-            boolean flag = this.isRaining();
-            boolean flag1 = this.isThundering();
-            this.profiler.startSection("pollingChunks");
-
-            for (Iterator<Chunk> iterator = getPersistentChunkIterable(this.playerChunkMap.getChunkIterator()); iterator.hasNext(); this.profiler.endSection())
-            {
-                this.profiler.startSection("getChunk");
-                Chunk chunk = iterator.next();
-                int j = chunk.x * 16;
-                int k = chunk.z * 16;
-                this.profiler.endStartSection("checkNextLight");
-                chunk.enqueueRelightChecks();
-                this.profiler.endStartSection("tickChunk");
-                chunk.onTick(false);
-                if (!TickSpeed.process_entities)
-                { // [FCM] Skipping the rest of the block processing
-                    this.profiler.endSection();
-                    continue;
-                }
-                this.profiler.endStartSection("thunder");
-
-                if (this.provider.canDoLightning(chunk) && flag && flag1 && this.rand.nextInt(100000) == 0)
-                {
-                    this.updateLCG = this.updateLCG * 3 + 1013904223;
-                    int l = this.updateLCG >> 2;
-                    BlockPos blockpos = this.adjustPosToNearbyEntity(new BlockPos(j + (l & 15), 0, k + (l >> 8 & 15)));
-
-                    if (this.isRainingAt(blockpos))
-                    {
-                        DifficultyInstance difficultyinstance = this.getDifficultyForLocation(blockpos);
-
-                        if (this.getGameRules().getBoolean("doMobSpawning") && this.rand.nextDouble() < (double)difficultyinstance.getAdditionalDifficulty() * 0.01D)
-                        {
-                            EntitySkeletonHorse entityskeletonhorse = new EntitySkeletonHorse(this);
-                            entityskeletonhorse.setTrap(true);
-                            entityskeletonhorse.setGrowingAge(0);
-                            entityskeletonhorse.setPosition((double)blockpos.getX(), (double)blockpos.getY(), (double)blockpos.getZ());
-                            this.spawnEntity(entityskeletonhorse);
-                            this.addWeatherEffect(new EntityLightningBolt(this, (double)blockpos.getX(), (double)blockpos.getY(), (double)blockpos.getZ(), true));
-                        }
-                        else
-                        {
-                            this.addWeatherEffect(new EntityLightningBolt(this, (double)blockpos.getX(), (double)blockpos.getY(), (double)blockpos.getZ(), false));
-                        }
-                    }
-                }
-
-                this.profiler.endStartSection("iceandsnow");
-
-                if (this.provider.canDoRainSnowIce(chunk) && this.rand.nextInt(16) == 0)
-                {
-                    this.updateLCG = this.updateLCG * 3 + 1013904223;
-                    int j2 = this.updateLCG >> 2;
-                    BlockPos blockpos1 = this.getPrecipitationHeight(new BlockPos(j + (j2 & 15), 0, k + (j2 >> 8 & 15)));
-                    BlockPos blockpos2 = blockpos1.down();
-
-                    if (this.isAreaLoaded(blockpos2, 1)) // Forge: check area to avoid loading neighbors in unloaded chunks
-                        if (this.canBlockFreezeNoWater(blockpos2))
-                        {
-                            this.setBlockState(blockpos2, Blocks.ICE.getDefaultState());
-                        }
-
-                    if (flag && this.canSnowAt(blockpos1, true))
-                    {
-                        this.setBlockState(blockpos1, Blocks.SNOW_LAYER.getDefaultState());
-                    }
-
-                    if (flag && this.getBiome(blockpos2).canRain())
-                    {
-                        this.getBlockState(blockpos2).getBlock().fillWithRain(this, blockpos2);
-                    }
-                }
-
-                this.profiler.endStartSection("tickBlocks");
-
-                if (i > 0)
-                {
-                    for (ExtendedBlockStorage extendedblockstorage : chunk.getBlockStorageArray())
-                    {
-                        if (extendedblockstorage != Chunk.NULL_BLOCK_STORAGE && extendedblockstorage.needsRandomTick())
-                        {
-                            for (int i1 = 0; i1 < i; ++i1)
-                            {
-                                this.updateLCG = this.updateLCG * 3 + 1013904223;
-                                int j1 = this.updateLCG >> 2;
-                                int k1 = j1 & 15;
-                                int l1 = j1 >> 8 & 15;
-                                int i2 = j1 >> 16 & 15;
-                                IBlockState iblockstate = extendedblockstorage.get(k1, i2, l1);
-                                Block block = iblockstate.getBlock();
-                                this.profiler.startSection("randomTick");
-
-                                if (block.getTickRandomly())
-                                {
-                                    block.randomTick(this, new BlockPos(k1 + j, i2 + extendedblockstorage.getYLocation(), l1 + k), iblockstate, this.rand);
-                                }
-
-                                this.profiler.endSection();
-                            }
-                        }
-                    }
-                }
-            }
-
-            this.profiler.endSection();
-        }
+        return false;
     }
+
+    @Inject(method = "updateBlocks", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Ljava/util/Iterator;hasNext()Z", ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;isThundering()Z"), to = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;enqueueRelightChecks()V")), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void newForLoop(CallbackInfo ci, int i, boolean flag, boolean flag1)
+    {
+        for (Iterator<Chunk> iterator = getPersistentChunkIterable(this.playerChunkMap.getChunkIterator()); iterator.hasNext(); this.profiler.endSection())
+        {
+            this.profiler.startSection("getChunk");
+            Chunk chunk = iterator.next();
+            int j = chunk.x * 16;
+            int k = chunk.z * 16;
+            this.profiler.endStartSection("checkNextLight");
+            chunk.enqueueRelightChecks();
+            this.profiler.endStartSection("tickChunk");
+            chunk.onTick(false);
+            if (!TickSpeed.process_entities)
+            { // skipping the rest of the block processing
+                this.profiler.endSection();
+                continue;
+            }
+            this.profiler.endStartSection("thunder");
+
+            if (this.provider.canDoLightning(chunk) && flag && flag1 && this.rand.nextInt(100000) == 0)
+            {
+                this.updateLCG = this.updateLCG * 3 + 1013904223;
+                int l = this.updateLCG >> 2;
+                BlockPos blockpos = this.adjustPosToNearbyEntity(new BlockPos(j + (l & 15), 0, k + (l >> 8 & 15)));
+
+                if (this.isRainingAt(blockpos))
+                {
+                    DifficultyInstance difficultyinstance = this.getDifficultyForLocation(blockpos);
+
+                    if (this.getGameRules().getBoolean("doMobSpawning") && this.rand.nextDouble() < (double) difficultyinstance.getAdditionalDifficulty() * 0.01D)
+                    {
+                        EntitySkeletonHorse entityskeletonhorse = new EntitySkeletonHorse(this);
+                        entityskeletonhorse.setTrap(true);
+                        entityskeletonhorse.setGrowingAge(0);
+                        entityskeletonhorse.setPosition((double) blockpos.getX(), (double) blockpos.getY(), (double) blockpos.getZ());
+                        this.spawnEntity(entityskeletonhorse);
+                        this.addWeatherEffect(new EntityLightningBolt(this, (double) blockpos.getX(), (double) blockpos.getY(), (double) blockpos.getZ(), true));
+                    }
+                    else
+                    {
+                        this.addWeatherEffect(new EntityLightningBolt(this, (double) blockpos.getX(), (double) blockpos.getY(), (double) blockpos.getZ(), false));
+                    }
+                }
+            }
+
+            this.profiler.endStartSection("iceandsnow");
+
+            if (this.provider.canDoRainSnowIce(chunk) && this.rand.nextInt(16) == 0)
+            {
+                this.updateLCG = this.updateLCG * 3 + 1013904223;
+                int j2 = this.updateLCG >> 2;
+                BlockPos blockpos1 = this.getPrecipitationHeight(new BlockPos(j + (j2 & 15), 0, k + (j2 >> 8 & 15)));
+                BlockPos blockpos2 = blockpos1.down();
+
+                if (this.isAreaLoaded(blockpos2, 1)) // Forge: check area to avoid loading neighbors in unloaded chunks
+                    if (this.canBlockFreezeNoWater(blockpos2))
+                    {
+                        this.setBlockState(blockpos2, Blocks.ICE.getDefaultState());
+                    }
+
+                if (flag && this.canSnowAt(blockpos1, true))
+                {
+                    this.setBlockState(blockpos1, Blocks.SNOW_LAYER.getDefaultState());
+                }
+
+                if (flag && this.getBiome(blockpos2).canRain())
+                {
+                    this.getBlockState(blockpos2).getBlock().fillWithRain(this, blockpos2);
+                }
+            }
+
+            this.profiler.endStartSection("tickBlocks");
+
+            if (i > 0)
+            {
+                for (ExtendedBlockStorage extendedblockstorage : chunk.getBlockStorageArray())
+                {
+                    if (extendedblockstorage != Chunk.NULL_BLOCK_STORAGE && extendedblockstorage.needsRandomTick())
+                    {
+                        for (int i1 = 0; i1 < i; ++i1)
+                        {
+                            this.updateLCG = this.updateLCG * 3 + 1013904223;
+                            int j1 = this.updateLCG >> 2;
+                            int k1 = j1 & 15;
+                            int l1 = j1 >> 8 & 15;
+                            int i2 = j1 >> 16 & 15;
+                            IBlockState iblockstate = extendedblockstorage.get(k1, i2, l1);
+                            Block block = iblockstate.getBlock();
+                            this.profiler.startSection("randomTick");
+
+                            if (block.getTickRandomly())
+                            {
+                                block.randomTick(this, new BlockPos(k1 + j, i2 + extendedblockstorage.getYLocation(), l1 + k), iblockstate, this.rand);
+                            }
+
+                            this.profiler.endSection();
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
 
     /**
      * @author DeadlyMC
@@ -328,13 +338,10 @@ public abstract class MixinWorldServer extends World implements IWorldServer {
                 int tileTickLimit = CarpetSettings.tileTickLimit;
                 if (tileTickLimit >= 0 && i > tileTickLimit)
                 {
-                    if (LoggerRegistry.__tileTickLimit) {
+                    if (LoggerRegistry.__tileTickLimit)
+                    {
                         final int fi = i;
-                        LoggerRegistry.getLogger("tileTickLimit").log(() -> new ITextComponent[] {
-                                        Messenger.s(null, String.format("Reached tile tick limit (%d > %d)", fi, tileTickLimit))
-                                },
-                                "NUMBER", i,
-                                "LIMIT", tileTickLimit);
+                        LoggerRegistry.getLogger("tileTickLimit").log(() -> new ITextComponent[]{Messenger.s(null, String.format("Reached tile tick limit (%d > %d)", fi, tileTickLimit))}, "NUMBER", i, "LIMIT", tileTickLimit);
                     }
                     i = tileTickLimit;
                 }
@@ -402,7 +409,7 @@ public abstract class MixinWorldServer extends World implements IWorldServer {
     }
 
     // [FCM] Fix for pistonGhostBlocks breaking caterpillar engine - start
-    @Inject(method ="tick", at = @At("HEAD"))
+    @Inject(method = "tick", at = @At("HEAD"))
     private void resetBlockActionsProcessed(CallbackInfo ci)
     {
         this.blockActionsProcessed = false;
