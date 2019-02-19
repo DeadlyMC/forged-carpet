@@ -38,20 +38,11 @@ public abstract class MixinTemplate
 
     @Redirect(method = "addBlocksToWorld(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/gen/structure/template/ITemplateProcessor;Lnet/minecraft/world/gen/structure/template/PlacementSettings;I)V",
               at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;notifyNeighborsRespectDebug(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;Z)V"))
-    private void cancelNotifyNeighbours(World worldIn, BlockPos pos, Block blockType, boolean updateObservers)
-    {
-
-    }
-
-    @Inject(method = "addBlocksToWorld(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/gen/structure/template/ITemplateProcessor;Lnet/minecraft/world/gen/structure/template/PlacementSettings;I)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;notifyNeighborsRespectDebug(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;Z)V",
-                    shift = At.Shift.BEFORE),
-            locals = LocalCapture.CAPTURE_FAILHARD)
-    private void newNotifyNeighbours(World worldIn, BlockPos pos, ITemplateProcessor templateProcessor, PlacementSettings placementIn, int flags, CallbackInfo ci, Block block, StructureBoundingBox structureboundingbox, Iterator var8, Template.BlockInfo template$blockinfo, BlockPos blockpos, Template.BlockInfo template$blockinfo1)
+    private void cancelNotifyNeighbours(World worldIn, BlockPos blockpos, Block blockType, boolean updateObservers)
     {
         if (CarpetSettings.getBool("fillUpdates"))
         {
-            worldIn.notifyNeighborsRespectDebug(blockpos, template$blockinfo1.blockState.getBlock(), false);
+            worldIn.notifyNeighborsRespectDebug(blockpos, blockType, false);
         }
     }
 }

@@ -7,8 +7,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(GuiIngameForge.class)
-public abstract class MixinGuiInGameForge {
-
+public abstract class MixinGuiInGameForge
+{
     @Redirect(method = "renderPlayerList", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;isIntegratedServerRunning()Z", ordinal = 0))
     private boolean onRenderPlayerList(Minecraft minecraft)
     {

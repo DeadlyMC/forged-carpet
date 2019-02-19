@@ -12,28 +12,36 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(EntityMob.class)
-public abstract class MixinEntityMob extends EntityCreature {
+public abstract class MixinEntityMob extends EntityCreature
+{
 
-    public MixinEntityMob(World worldIn) {
+    float f = (float) this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
+    float ff = f;
+
+    public MixinEntityMob(World worldIn)
+    {
         super(worldIn);
     }
 
-    public String cm_name() { return "Mob"; }
-
-    float f = (float)this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
-    float ff = f;
-
-    @Inject(method = "attackEntityAsMob", at = @At(value = "INVOKE",shift = At.Shift.AFTER, target = "Lnet/minecraft/entity/monster/EntityMob;getEntityAttribute(Lnet/minecraft/entity/ai/attributes/IAttribute;)Lnet/minecraft/entity/ai/attributes/IAttributeInstance;"))
-    private void registerDamageAttacker(Entity entityIn, CallbackInfoReturnable<Boolean> cir){
-        DamageReporter.register_damage_attacker( entityIn, this, f);
+    public String cm_name()
+    {
+        return "Mob";
     }
 
-    @Inject(method = "attackEntityAsMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getKnockbackModifier(Lnet/minecraft/entity/EntityLivingBase;)I", shift = At.Shift.AFTER))
-    private void modifyDamage(Entity entityIn, CallbackInfoReturnable<Boolean> cir){
-        DamageReporter.modify_damage((EntityLivingBase)entityIn, DamageSource.causeMobDamage(this), ff, f, "attacker enchants");
+    @Inject(method = "attackEntityAsMob", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
+            target = "Lnet/minecraft/entity/monster/EntityMob;getEntityAttribute(Lnet/minecraft/entity/ai/attributes/IAttribute;)Lnet/minecraft/entity/ai/attributes/IAttributeInstance;"))
+    private void registerDamageAttacker(Entity entityIn, CallbackInfoReturnable<Boolean> cir)
+    {
+        DamageReporter.register_damage_attacker(entityIn, this, f);
+    }
+
+    @Inject(method = "attackEntityAsMob", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/enchantment/EnchantmentHelper;getKnockbackModifier(Lnet/minecraft/entity/EntityLivingBase;)I", shift = At.Shift.AFTER))
+    private void modifyDamage(Entity entityIn, CallbackInfoReturnable<Boolean> cir)
+    {
+        DamageReporter.modify_damage((EntityLivingBase) entityIn, DamageSource.causeMobDamage(this), ff, f, "attacker enchants");
     }
 
 }

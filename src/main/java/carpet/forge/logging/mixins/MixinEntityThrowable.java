@@ -11,16 +11,18 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityThrowable.class)
-public abstract class MixinEntityThrowable extends Entity {
+public abstract class MixinEntityThrowable extends Entity
+{
+    private TrajectoryLogHelper logHelper = null;
 
-    public MixinEntityThrowable(World worldIn) {
+    public MixinEntityThrowable(World worldIn)
+    {
         super(worldIn);
     }
 
-    private TrajectoryLogHelper logHelper = null;
-
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At(value = "RETURN"))
-    private void onEntityThrowable(World worldIn, CallbackInfo ci){
+    private void onEntityThrowable(World worldIn, CallbackInfo ci)
+    {
         if (LoggerRegistry.__projectiles)
         {
             logHelper = new TrajectoryLogHelper("projectiles");
@@ -28,7 +30,8 @@ public abstract class MixinEntityThrowable extends Entity {
     }
 
     @Inject(method = "onUpdate", at = @At(value = "RETURN"))
-    private void onOnUpdate(CallbackInfo ci){
+    private void onOnUpdate(CallbackInfo ci)
+    {
         if (LoggerRegistry.__projectiles && logHelper != null)
         {
             logHelper.onTick(posX, posY, posZ, motionX, motionY, motionZ);
@@ -36,7 +39,8 @@ public abstract class MixinEntityThrowable extends Entity {
     }
 
     @Override
-    public void setDead() {
+    public void setDead()
+    {
         super.setDead();
         if (LoggerRegistry.__projectiles && logHelper != null)
             logHelper.onFinish();
