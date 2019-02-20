@@ -48,7 +48,7 @@ public abstract class MixinPlayerInteractionManager
 
     @Inject(method = "processRightClickBlock", at = @At(value = "INVOKE",
             target = "Lnet/minecraftforge/event/entity/player/PlayerInteractEvent$RightClickBlock;getUseBlock()Lnet/minecraftforge/fml/common/eventhandler/Event$Result;",
-            ordinal = 1, shift = At.Shift.AFTER), locals = LocalCapture.PRINT)
+            ordinal = 1, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
     private void checkFlipCactus(EntityPlayer player, World worldIn, ItemStack stack,
                                  EnumHand hand, BlockPos pos, EnumFacing facing, float hitX, float hitY,
                                  float hitZ, CallbackInfoReturnable<EnumActionResult> cir, double reachDist,
