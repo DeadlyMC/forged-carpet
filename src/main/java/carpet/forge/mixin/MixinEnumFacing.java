@@ -1,5 +1,6 @@
 package carpet.forge.mixin;
 
+import carpet.forge.helper.BlockRotator;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -18,9 +19,13 @@ public abstract class MixinEnumFacing
     @Final
     public static EnumFacing DOWN;
 
-    @Inject(method = "getDirectionFromEntityLiving", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
+    @Inject(method = "getDirectionFromEntityLiving",
+            at = @At(value = "FIELD", target = "Lnet/minecraft/util/EnumFacing;UP:Lnet/minecraft/util/EnumFacing;",
+            shift = At.Shift.BEFORE),
+            cancellable = true)
     private static void flippinEligibility(BlockPos pos, EntityLivingBase placer, CallbackInfoReturnable<EnumFacing> cir)
     {
-        cir.setReturnValue(DOWN);
+        if (BlockRotator.flippinEligibility(placer))
+            cir.setReturnValue(DOWN);
     }
 }
