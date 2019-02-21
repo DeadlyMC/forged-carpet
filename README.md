@@ -2,8 +2,6 @@
 Powerful toolbox with ultimate control for technical mc!
 Probably one of the most comprehensive mods for carpet ever!
 
-NOTE: Mod not compatible with liteloader as of now! Trying my best to fix it
-
 ## General Info
 - Its a coremod
 - Mod built using Forge

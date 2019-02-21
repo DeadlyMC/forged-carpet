@@ -25,6 +25,10 @@ public abstract class MixinNetHandlerPlayServer
         }
     }
 
+    /*
+      Enabling this mixin crashes game when running with liteloader and
+      disabling this doesn't seem to cause any issues(Atleast i haven't seen any)
+
     @Inject(method = "processPlayer", at = @At(shift = At.Shift.BEFORE, value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayerMP;isPlayerSleeping()Z"),
             slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/network/NetHandlerPlayServer;firstGoodZ:D"),
                             to = @At(value = "FIELD", target = "Lnet/minecraft/network/NetHandlerPlayServer;lastMovePacketCounter:I")),
@@ -36,4 +40,5 @@ public abstract class MixinNetHandlerPlayServer
             TickSpeed.reset_player_active_timeout();
         }
     }
+    */
 }
