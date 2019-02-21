@@ -103,6 +103,9 @@ public class CarpetSettings {
                         .choices("65536","1000 65536 1000000").setNotStrict(),
                 rule("stackableEmptyShulkerBoxes", "survival", "Empty shulker boxes can stack to 64 when dropped on the ground")
                         .extraInfo("To move them around between inventories, use shift click to move entire stacks"),
+                rule("commandCarpetFill", "creative", "Enables /carpetfill command")
+                        .extraInfo("This is an replica of /fill command for fillUpdates and fillLimits")
+                        .defaultTrue(),
         };
 
         for (CarpetSettingEntry rule: RuleList)

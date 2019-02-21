@@ -1,4 +1,4 @@
-package carpet.forge.mixin;
+package carpet.forge.commands;
 
 import carpet.forge.CarpetSettings;
 import com.google.common.collect.Lists;
@@ -14,21 +14,30 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 
+import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
-@Mixin(CommandFill.class)
-public abstract class MixinCommandFill extends CommandBase{
-
-    /**
-     * @author DeadlyMC
-     * @reason if statement arounds
-     */
-    @Overwrite
+public class CommandCarpetFill extends CarpetCommandBase
+{
+    
+    @Override
+    public String getName()
+    {
+        return "carpetfill";
+    }
+    
+    @Override
+    public String getUsage(ICommandSender sender)
+    {
+        return "commands.fill.usage";
+    }
+    
+    @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
+        if (!command_enabled("commandCarpetFill", sender)) return;
         if (args.length < 7)
         {
             throw new WrongUsageException("commands.fill.usage", new Object[0]);
@@ -40,7 +49,7 @@ public abstract class MixinCommandFill extends CommandBase{
             BlockPos blockpos1 = parseBlockPos(sender, args, 3, false);
             Block block = CommandBase.getBlockByText(sender, args[6]);
             IBlockState iblockstate;
-
+            
             if (args.length >= 8)
             {
                 iblockstate = convertArgToBlockState(block, args[7]);
@@ -49,22 +58,19 @@ public abstract class MixinCommandFill extends CommandBase{
             {
                 iblockstate = block.getDefaultState();
             }
-
+            
             BlockPos blockpos2 = new BlockPos(Math.min(blockpos.getX(), blockpos1.getX()), Math.min(blockpos.getY(), blockpos1.getY()), Math.min(blockpos.getZ(), blockpos1.getZ()));
             BlockPos blockpos3 = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos.getY(), blockpos1.getY()), Math.max(blockpos.getZ(), blockpos1.getZ()));
             int i = (blockpos3.getX() - blockpos2.getX() + 1) * (blockpos3.getY() - blockpos2.getY() + 1) * (blockpos3.getZ() - blockpos2.getZ() + 1);
-
-            // [FCM] FillLimit - Changed 'i > 32768' TO 'i > CarpetSettings.getInt("fillLimit")'
-            if (i > CarpetSettings.getInt("fillLimit"))
+            
+            if (i > CarpetSettings.getInt("fillLimit")) // [FCM] replaced 32768
             {
-                // [FCM] FillLimit - Replaced:
-                // throw new CommandException("commands.fill.tooManyBlocks", new Object[] {i, Integer.valueOf(32768)});
-                throw new CommandException("commands.fill.tooManyBlocks", new Object[] {i, Integer.valueOf(CarpetSettings.getInt("fillLimit"))});
+                throw new CommandException("commands.fill.tooManyBlocks", new Object[]{i, Integer.valueOf(CarpetSettings.getInt("fillLimit"))}); // [FCM] replaced 32768
             }
             else if (blockpos2.getY() >= 0 && blockpos3.getY() < 256)
             {
                 World world = sender.getEntityWorld();
-
+                
                 for (int j = blockpos2.getZ(); j <= blockpos3.getZ(); j += 16)
                 {
                     for (int k = blockpos2.getX(); k <= blockpos3.getX(); k += 16)
@@ -75,14 +81,14 @@ public abstract class MixinCommandFill extends CommandBase{
                         }
                     }
                 }
-
+                
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
                 boolean flag = false;
-
+                
                 if (args.length >= 10 && block.hasTileEntity(iblockstate))
                 {
                     String s = buildString(args, 9);
-
+                    
                     try
                     {
                         nbttagcompound = JsonToNBT.getTagFromJson(s);
@@ -90,13 +96,13 @@ public abstract class MixinCommandFill extends CommandBase{
                     }
                     catch (NBTException nbtexception)
                     {
-                        throw new CommandException("commands.fill.tagError", new Object[] {nbtexception.getMessage()});
+                        throw new CommandException("commands.fill.tagError", new Object[]{nbtexception.getMessage()});
                     }
                 }
-
+                
                 List<BlockPos> list = Lists.<BlockPos>newArrayList();
                 i = 0;
-
+                
                 for (int l = blockpos2.getZ(); l <= blockpos3.getZ(); ++l)
                 {
                     for (int i1 = blockpos2.getY(); i1 <= blockpos3.getY(); ++i1)
@@ -104,7 +110,7 @@ public abstract class MixinCommandFill extends CommandBase{
                         for (int j1 = blockpos2.getX(); j1 <= blockpos3.getX(); ++j1)
                         {
                             BlockPos blockpos4 = new BlockPos(j1, i1, l);
-
+                            
                             if (args.length >= 9)
                             {
                                 if (!"outline".equals(args[8]) && !"hollow".equals(args[8]))
@@ -123,7 +129,7 @@ public abstract class MixinCommandFill extends CommandBase{
                                     else if ("replace".equals(args[8]) && !block.hasTileEntity(iblockstate) && args.length > 9)
                                     {
                                         Block block1 = CommandBase.getBlockByText(sender, args[9]);
-
+                                        
                                         if (world.getBlockState(blockpos4).getBlock() != block1 || args.length > 10 && !"-1".equals(args[10]) && !"*".equals(args[10]) && !CommandBase.convertArgToBlockStatePredicate(block1, args[10]).apply(world.getBlockState(blockpos4)))
                                         {
                                             continue;
@@ -137,28 +143,27 @@ public abstract class MixinCommandFill extends CommandBase{
                                         world.setBlockState(blockpos4, Blocks.AIR.getDefaultState(), 2);
                                         list.add(blockpos4);
                                     }
-
+                                    
                                     continue;
                                 }
                             }
-
+                            
                             TileEntity tileentity1 = world.getTileEntity(blockpos4);
-
+                            
                             if (tileentity1 != null && tileentity1 instanceof IInventory)
                             {
-                                ((IInventory)tileentity1).clear();
+                                ((IInventory) tileentity1).clear();
                             }
-
-                            // [FCM] FillUpdates
-                            if (world.setBlockState(blockpos4, iblockstate, 2 | (CarpetSettings.getBool("fillUpdates")?0:128)))
+                            
+                            if (world.setBlockState(blockpos4, iblockstate, 2 | (CarpetSettings.getBool("fillUpdates") ? 0 : 128))) // FCM
                             {
                                 list.add(blockpos4);
                                 ++i;
-
+                                
                                 if (flag)
                                 {
                                     TileEntity tileentity = world.getTileEntity(blockpos4);
-
+                                    
                                     if (tileentity != null)
                                     {
                                         nbttagcompound.setInteger("x", blockpos4.getX());
@@ -171,16 +176,18 @@ public abstract class MixinCommandFill extends CommandBase{
                         }
                     }
                 }
-
+                
+                // [FCM] if statement around
                 if (CarpetSettings.getBool("fillUpdates"))
-                { // [FCM] FillUpdates - Extra indent start
+                {
                     for (BlockPos blockpos5 : list)
                     {
                         Block block2 = world.getBlockState(blockpos5).getBlock();
                         world.notifyNeighborsRespectDebug(blockpos5, block2, false);
                     }
-                } // [FCM] FillUpdates - Extra indent end
-
+                }
+                // [FCM] End
+                
                 if (i <= 0)
                 {
                     throw new CommandException("commands.fill.failed", new Object[0]);
@@ -188,7 +195,7 @@ public abstract class MixinCommandFill extends CommandBase{
                 else
                 {
                     sender.setCommandStat(CommandResultStats.Type.AFFECTED_BLOCKS, i);
-                    notifyCommandListener(sender, this, "commands.fill.success", new Object[] {i});
+                    notifyCommandListener(sender, this, "commands.fill.success", new Object[]{i});
                 }
             }
             else
@@ -197,5 +204,33 @@ public abstract class MixinCommandFill extends CommandBase{
             }
         }
     }
-
+    
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
+    {
+        if (!CarpetSettings.getBool("commandCarpetFill"))
+        {
+            return Collections.<String>emptyList();
+        }
+        if (args.length > 0 && args.length <= 3)
+        {
+            return getTabCompletionCoordinate(args, 0, targetPos);
+        }
+        else if (args.length > 3 && args.length <= 6)
+        {
+            return getTabCompletionCoordinate(args, 3, targetPos);
+        }
+        else if (args.length == 7)
+        {
+            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
+        }
+        else if (args.length == 9)
+        {
+            return getListOfStringsMatchingLastWord(args, new String[] {"replace", "destroy", "keep", "hollow", "outline"});
+        }
+        else
+        {
+            return args.length == 10 && "replace".equals(args[8]) ? getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys()) : Collections.emptyList();
+        }
+    }
 }
