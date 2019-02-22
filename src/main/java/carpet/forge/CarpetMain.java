@@ -95,6 +95,7 @@ public class CarpetMain {
         event.registerServerCommand(new CommandTickingArea());
         event.registerServerCommand(new CommandStructure());
         event.registerServerCommand(new CommandCarpetFill());
+        event.registerServerCommand(new CommandCarpetClone());
 
         CarpetSettings.reload_all_statics();
     }

@@ -106,6 +106,9 @@ public class CarpetSettings {
                 rule("commandCarpetFill", "creative", "Enables /carpetfill command")
                         .extraInfo("This is an replica of /fill command for fillUpdates and fillLimits")
                         .defaultTrue(),
+                rule("commandCarpetClone", "creative", "Enables /carpetclone command")
+                        .extraInfo("This is an replica of /clone command for fillUpdates and fillLimits")
+                        .defaultTrue(),
         };
 
         for (CarpetSettingEntry rule: RuleList)
