@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(
         modid = Reference.MOD_ID,
         name = Reference.MOD_NAME,
-        version = Reference.VERSION,
+        version = Reference.MOD_VERSION,
         acceptedMinecraftVersions = Reference.ACCEPTED_MC_VERSIONS,
         certificateFingerprint = Reference.FINGERPRINT,
         updateJSON = Reference.UPDATE_URL
