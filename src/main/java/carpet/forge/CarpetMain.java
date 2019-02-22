@@ -19,7 +19,8 @@ import org.apache.logging.log4j.Logger;
         name = Reference.MOD_NAME,
         version = Reference.VERSION,
         acceptedMinecraftVersions = Reference.ACCEPTED_MC_VERSIONS,
-        certificateFingerprint = Reference.FINGERPRINT
+        certificateFingerprint = Reference.FINGERPRINT,
+        updateJSON = Reference.UPDATE_URL
 )
 public class CarpetMain {
 
