@@ -16,7 +16,6 @@
     "MixinBlockTNT",
     "MixinChunk",
     "MixinChunkProviderServer",
-    "MixinCommandSetBlock",
     "MixinContainer",
     "MixinEntity",
     "MixinEntityItem",
