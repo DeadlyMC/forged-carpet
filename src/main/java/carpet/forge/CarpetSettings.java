@@ -37,6 +37,7 @@ public class CarpetSettings {
     public static boolean newLight = false;
     public static int pistonGhostBlocksFix = 0;
     public static int tileTickLimit = 65536;
+    public static boolean huskSpawningInTemples = false;
 
     public static long setSeed = 0;
 
@@ -112,6 +113,7 @@ public class CarpetSettings {
                 rule("commandCarpetSetBlock", "commands", "Enables /carpetsetblock command")
                         .extraInfo("This is an replica of /setblock command for fillUpdates and fillLimits")
                         .defaultTrue(),
+                rule("huskSpawningInTemples", "experimental feature", "Only husks spawn in desert temples"),
         };
 
         for (CarpetSettingEntry rule: RuleList)
@@ -134,6 +136,7 @@ public class CarpetSettings {
         fastRedstoneDust = CarpetSettings.getBool("fastRedstoneDust");
         newLight = CarpetSettings.getBool("newLight");
         tileTickLimit = CarpetSettings.getInt("tileTickLimit");
+        huskSpawningInTemples = CarpetSettings.getBool("huskSpawningInTemples");
 
         if ("pistonGhostBlocksFix".equalsIgnoreCase(rule))
         {
