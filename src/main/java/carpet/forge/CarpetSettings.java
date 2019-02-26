@@ -114,6 +114,7 @@ public class CarpetSettings {
                         .extraInfo("This is an replica of /setblock command for fillUpdates and fillLimits")
                         .defaultTrue(),
                 rule("huskSpawningInTemples", "experimental feature", "Only husks spawn in desert temples"),
+                rule("silverFishDropGravel",  "experimental", "Silverfish drop a gravel item when breaking out of a block"),
         };
 
         for (CarpetSettingEntry rule: RuleList)

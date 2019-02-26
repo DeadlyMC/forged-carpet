@@ -13,6 +13,7 @@
     "MixinBlockPistonBase",
     "MixinBlockRedstoneWire",
     "MixinBlockShulkerBox",
+    "MixinBlockSilverfish",
     "MixinBlockTNT",
     "MixinChunk",
     "MixinChunkGeneratorOverworld",
@@ -48,7 +49,7 @@
     "MixinDedicatedServer"
   ],
   "client": [
-    "MixinMinecraft",
-    "MixinIntegratedServer"
+    "MixinIntegratedServer",
+    "MixinMinecraft"
   ]
 }
