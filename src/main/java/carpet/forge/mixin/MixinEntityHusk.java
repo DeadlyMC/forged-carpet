@@ -30,4 +30,10 @@ public abstract class MixinEntityHusk extends EntityZombie
             return super.getCanSpawnHere() && this.world.canSeeSky(new BlockPos(this));
         }
     }
+    
+    @Redirect(method = "getCanSpawnHere", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;canSeeSky(Lnet/minecraft/util/math/BlockPos;)Z"))
+    private boolean cancelCanSeeSky(World world, BlockPos pos)
+    {
+        return false;
+    }
 }
