@@ -1,6 +1,7 @@
 package carpet.forge;
 
 import carpet.forge.commands.*;
+import carpet.forge.helper.FlippinCactus;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.logging.LoggerRegistry;
 import carpet.forge.proxy.CommonProxy;
@@ -9,6 +10,7 @@ import carpet.forge.utils.Reference;
 import carpet.forge.utils.TickingArea;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
@@ -71,6 +73,12 @@ public class CarpetMain {
         LoggerRegistry.playerDisconnected(player);
     }
 
+    
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event)
+    {
+        MinecraftForge.EVENT_BUS.register(FlippinCactus.class);
+    }
 
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
