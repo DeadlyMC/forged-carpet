@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class MixinItem implements IItem {
 
     /*
-     * [FCM] Fix for stack changes when doing NBT checks on shoulkers.
+     * [FCM] Fix for stack changes when doing NBT checks on shulkers.
      */
     @Override
     public boolean itemGroundStacking(boolean hasTagCompound) { return false; }
