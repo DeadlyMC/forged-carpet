@@ -1,9 +1,12 @@
 package carpet.forge;
 
+import carpet.forge.config.CarpetConfig;
 import carpet.forge.utils.TickingArea;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -182,6 +185,13 @@ public class CarpetSettings {
                 {
                     overworld.getChunkProvider().provideChunk(chunk.x, chunk.z);
                 }
+            }
+        }
+        else if("fastRedstoneDust".equalsIgnoreCase(rule))
+        {
+            if (!CarpetConfig.fastRedstoneDust)
+            {
+                Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString("Please enable FastRedstoneDust in Mod Options menu first to use this feature"));
             }
         }
     }

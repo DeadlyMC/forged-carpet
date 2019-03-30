@@ -1,4 +1,4 @@
-package carpet.forge.mixin;
+package carpet.forge.mixin.fastredstone;
 
 import carpet.forge.CarpetSettings;
 import carpet.forge.helper.RedstoneWireTurbo;
