@@ -77,7 +77,9 @@ public abstract class MixinChunk implements IChunk
 
     @Shadow
     public abstract void generateSkylightMap();
-
+    
+    @Shadow public abstract boolean canSeeSky(BlockPos pos);
+    
     // [FCM] Replace method with a carpet method
     @Inject(method = "setBlockState", at = @At("HEAD"), cancellable = true)
     private void redirectToCarpetMethod(BlockPos pos, IBlockState state, CallbackInfoReturnable<IBlockState> cir)
@@ -214,6 +216,55 @@ public abstract class MixinChunk implements IChunk
                 this.dirty = true;
                 return iblockstate;
             }
+        }
+    }
+    
+    private short[] neightborLightChecks = null;
+    private short pendingNeighborLightInits;
+    
+    @Override
+    public short[] getNeighborLightChecks()
+    {
+        return this.neightborLightChecks;
+    }
+    
+    @Override
+    public void setNeighborLightChecks(short[] in)
+    {
+        this.neightborLightChecks = in;
+    }
+    
+    @Override
+    public short getPendingNeighborLightInits()
+    {
+        return this.pendingNeighborLightInits;
+    }
+    
+    @Override
+    public void setPendingNeighborLightInits(short in)
+    {
+        this.pendingNeighborLightInits = in;
+    }
+    
+    @Override
+    public int getCachedLightFor(EnumSkyBlock type, BlockPos pos)
+    {
+        int i = pos.getX() & 15;
+        int j = pos.getY();
+        int k = pos.getZ() & 15;
+        ExtendedBlockStorage extendedblockstorage = this.storageArrays[j >> 4];
+        
+        if (extendedblockstorage == NULL_BLOCK_STORAGE)
+        {
+            return this.canSeeSky(pos) ? type.defaultLightValue : 0;
+        }
+        else if (type == EnumSkyBlock.SKY)
+        {
+            return !this.world.provider.hasSkyLight() ? 0 : extendedblockstorage.getSkyLight(i, j & 15, k);
+        }
+        else
+        {
+            return type == EnumSkyBlock.BLOCK ? extendedblockstorage.getBlockLight(i, j & 15, k) : type.defaultLightValue;
         }
     }
 

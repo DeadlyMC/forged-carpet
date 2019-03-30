@@ -28,8 +28,10 @@ public class CarpetCore implements IFMLLoadingPlugin
         Mixins.addConfiguration("mixins.forgedcarpet112.json");
         Mixins.addConfiguration("mixins.carpet.logging.json");
         
-        if (CarpetConfig.fastRedstoneDust) Mixins.addConfiguration("mixins.carpet.fastdust.json");
-        if (CarpetConfig.newLight)         Mixins.addConfiguration("mixins.carpet.newlight.json");
+        CarpetConfig config = new CarpetConfig();
+        
+        if (config.getFastRedstoneDust())     Mixins.addConfiguration("mixins.carpet.fastdust.json");
+        if (config.getNewLight())             Mixins.addConfiguration("mixins.carpet.newlight.json");
         
         try
         {
@@ -41,6 +43,11 @@ public class CarpetCore implements IFMLLoadingPlugin
             Mixins.addConfiguration("mixins.carpet.forge.json");
         }
         
+    }
+    
+    public static File getMinecraftDir()
+    {
+        return minecraftDir;
     }
     
     @Override
@@ -74,9 +81,5 @@ public class CarpetCore implements IFMLLoadingPlugin
     public String getAccessTransformerClass()
     {
         return null;
-    }
-    
-    public static File getMinecraftDir() {
-        return minecraftDir;
     }
 }

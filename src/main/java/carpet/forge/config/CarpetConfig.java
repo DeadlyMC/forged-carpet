@@ -29,7 +29,7 @@ public class CarpetConfig
     @Config.RequiresMcRestart
     public static boolean fastRedstoneDust;
     
-    public boolean fastRedstoneDust()
+    public boolean getFastRedstoneDust()
     {
         preload();
         return fastRedstoneDust;
@@ -40,7 +40,7 @@ public class CarpetConfig
     @Config.RequiresMcRestart
     public static boolean newLight;
     
-    public boolean newLight()
+    public boolean getNewLight()
     {
         preload();
         return newLight;

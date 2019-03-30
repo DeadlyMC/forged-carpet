@@ -1,6 +1,7 @@
 package carpet.forge.mixin;
 
 import carpet.forge.utils.CarpetProfiler;
+import carpet.forge.utils.LightingEngine;
 import carpet.forge.utils.TickingArea;
 import carpet.forge.utils.mixininterfaces.IChunk;
 import carpet.forge.utils.mixininterfaces.IWorld;
@@ -8,15 +9,19 @@ import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.profiler.Profiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.WorldInfo;
 import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -171,6 +176,23 @@ public abstract class MixinWorld implements IWorld
         {
             CarpetProfiler.end_current_entity_section();
         }
+    }
+    
+    @Final
+    @Mutable
+    private LightingEngine lightingEngine;
+    
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void onInit(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn,
+            Profiler profilerIn, boolean client, CallbackInfo ci)
+    {
+        this.lightingEngine = new LightingEngine((World) (Object) this);
+    }
+    
+    @Override
+    public LightingEngine getLightingEngine()
+    {
+        return this.lightingEngine;
     }
     
 }

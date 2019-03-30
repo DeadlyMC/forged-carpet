@@ -28,32 +28,24 @@ public abstract class MixinChunk implements IChunk
 {
     @Shadow
     @Final
-    public static ExtendedBlockStorage NULL_BLOCK_STORAGE;
-    @Shadow
-    @Final
     public int x;
     
-    private short[] neightborLightChecks = null;
-    private short pendingNeighborLightInits;
     private int copyOfJ;
     private int copyOfK;
     
     @Shadow
     @Final
     private int[] heightMap;
+    
     @Shadow
     @Final
     private World world;
-    @Shadow
-    private int heightMapMinimum;
-    @Shadow
-    @Final
-    private ExtendedBlockStorage[] storageArrays;
-    @Shadow
-    private boolean isTerrainPopulated;
     
     @Shadow
-    public abstract boolean canSeeSky(BlockPos pos);
+    private int heightMapMinimum;
+    
+    @Shadow
+    private boolean isTerrainPopulated;
     
     @Shadow
     protected abstract int getBlockLightOpacity(int x, int y, int z);
@@ -194,28 +186,6 @@ public abstract class MixinChunk implements IChunk
         }
     }
     
-    @Override
-    public int getCachedLightFor(EnumSkyBlock type, BlockPos pos)
-    {
-        int i = pos.getX() & 15;
-        int j = pos.getY();
-        int k = pos.getZ() & 15;
-        ExtendedBlockStorage extendedblockstorage = this.storageArrays[j >> 4];
-        
-        if (extendedblockstorage == NULL_BLOCK_STORAGE)
-        {
-            return this.canSeeSky(pos) ? type.defaultLightValue : 0;
-        }
-        else if (type == EnumSkyBlock.SKY)
-        {
-            return !this.world.provider.hasSkyLight() ? 0 : extendedblockstorage.getSkyLight(i, j & 15, k);
-        }
-        else
-        {
-            return type == EnumSkyBlock.BLOCK ? extendedblockstorage.getBlockLight(i, j & 15, k) : type.defaultLightValue;
-        }
-    }
-    
     @Redirect(method = "setLightFor", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/chunk/Chunk;generateSkylightMap()V"))
     private void weCallThisElsewhere(Chunk chunk)
@@ -263,29 +233,5 @@ public abstract class MixinChunk implements IChunk
     {
         if (!CarpetSettings.newLight)
             this.checkLight();
-    }
-    
-    @Override
-    public short[] getNeighborLightChecks()
-    {
-        return this.neightborLightChecks;
-    }
-    
-    @Override
-    public void setNeighborLightChecks(short[] in)
-    {
-        this.neightborLightChecks = in;
-    }
-    
-    @Override
-    public short getPendingNeighborLightInits()
-    {
-        return this.pendingNeighborLightInits;
-    }
-    
-    @Override
-    public void setPendingNeighborLightInits(short in)
-    {
-        this.pendingNeighborLightInits = in;
     }
 }
