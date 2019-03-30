@@ -191,7 +191,16 @@ public class CarpetSettings {
         {
             if (!CarpetConfig.fastRedstoneDust)
             {
-                Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString("Please enable FastRedstoneDust in Mod Options menu first to use this feature"));
+                CarpetMain.minecraft_server.getPlayerList()
+                        .sendMessage(new TextComponentString("Please enable FastRedstoneDust in Mod Options menu to use it\n Changing it using /carpet doesn't make any difference"));
+            }
+        }
+        else if("newLight".equalsIgnoreCase(rule))
+        {
+            if (!CarpetConfig.newLight)
+            {
+                CarpetMain.minecraft_server.getPlayerList()
+                        .sendMessage(new TextComponentString("Please enable NewLight in Mod Options menu to use this feature\n Changing it using /carpet doesn't make any difference"));
             }
         }
     }

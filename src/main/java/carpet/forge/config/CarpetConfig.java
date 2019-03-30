@@ -25,7 +25,7 @@ public class CarpetConfig
 {
     
     @Config.Name("FastRedstoneDust")
-    @Config.Comment("WIP")
+    @Config.Comment("Lag optimizations for redstone Dust. By Theosib")
     @Config.RequiresMcRestart
     public static boolean fastRedstoneDust;
     
@@ -33,6 +33,17 @@ public class CarpetConfig
     {
         preload();
         return fastRedstoneDust;
+    }
+    
+    @Config.Name("NewLight")
+    @Config.Comment("Uses alternative lighting engine by PhiPros. AKA NewLight mod")
+    @Config.RequiresMcRestart
+    public static boolean newLight;
+    
+    public boolean newLight()
+    {
+        preload();
+        return newLight;
     }
     
     private static void preload() {

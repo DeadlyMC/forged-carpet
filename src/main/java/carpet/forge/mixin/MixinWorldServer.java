@@ -95,9 +95,6 @@ public abstract class MixinWorldServer extends World implements IWorldServer
     protected abstract void sendQueuedBlockEvents();
 
     @Shadow
-    protected abstract void playerCheckLight();
-
-    @Shadow
     protected abstract BlockPos adjustPosToNearbyEntity(BlockPos pos);
 
     /**
@@ -189,13 +186,6 @@ public abstract class MixinWorldServer extends World implements IWorldServer
         {
             tele.removeStalePortalLocations(getTotalWorldTime());
         }
-        // [FCM] Newlight
-        if (CarpetSettings.newLight)
-        {
-            this.profiler.endStartSection("lighting");
-            ((IWorld) this).getLightingEngine().procLightUpdates();
-        }
-        // [FCM] End
         this.profiler.endSection();
         this.sendQueuedBlockEvents();
     }

@@ -4,11 +4,17 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 
-public interface IChunk {
-    int getCachedLightFor(EnumSkyBlock type, BlockPos pos);
-    short getPendingNeighborLightInits();
-    void setPendingNeighborLightInits(short inits);
+public interface IChunk
+{
     short[] getNeighborLightChecks();
-    void setNeighborLightChecks(short[] lightChecks);
+    
+    void setNeighborLightChecks(short[] in);
+    
+    short getPendingNeighborLightInits();
+    
+    void setPendingNeighborLightInits(short in);
+    
+    int getCachedLightFor(EnumSkyBlock type, BlockPos pos);
+    
     IBlockState setBlockState_carpet(BlockPos pos, IBlockState state, boolean skip_updates);
 }

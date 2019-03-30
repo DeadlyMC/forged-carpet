@@ -31,20 +31,6 @@ public abstract class MixinChunkProviderServer
     @Final
     public Set<Long> droppedChunks;
 
-    @Inject(method = "saveChunks", at = @At(value = "HEAD"))
-    private void procLightUpdatesNewLight1(boolean all, CallbackInfoReturnable<Boolean> cir)
-    {
-        if (CarpetSettings.newLight)
-            ((IWorld) this.world).getLightingEngine().procLightUpdates();
-    }
-
-    @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Ljava/util/Set;iterator()Ljava/util/Iterator;"))
-    private void procLightUpdatesNewLight2(CallbackInfoReturnable<Boolean> cir)
-    {
-        if (CarpetSettings.newLight)
-            ((IWorld) this.world).getLightingEngine().procLightUpdates();
-    }
-
     @Inject(method = "queueUnload", at = @At("HEAD"))
     private void tickAndDisableSpawnRule(Chunk chunkIn, CallbackInfo ci)
     {
