@@ -75,7 +75,7 @@ public abstract class MixinContainer
                                        InventoryPlayer inventoryplayer, Slot slot2)
     {
         // [FCM] CtrlQCrafting tweak
-        if (CarpetSettings.getBool("ctrlQCraftingFix") && slotId == 0 && dragType == 1)
+        if (CarpetSettings.ctrlQCraftingFix && slotId == 0 && dragType == 1)
         {
             for (ItemStack itemstackDropAll = CtrlQCrafting.dropAllCrafting(player, slotId, inventorySlots); !itemstackDropAll.isEmpty() && ItemStack.areItemsEqual(slot2.getStack(), itemstackDropAll); itemstackDropAll = CtrlQCrafting.dropAllCrafting(player, slotId, inventorySlots))
             {

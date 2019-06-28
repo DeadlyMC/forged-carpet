@@ -14,6 +14,6 @@ public abstract class MixinBlockTNT
     @Redirect(method = "onBlockAdded", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isBlockPowered(Lnet/minecraft/util/math/BlockPos;)Z"))
     public boolean onUpdate(World worldIn, BlockPos pos)
     {
-        return worldIn.isBlockPowered(pos) && !CarpetSettings.getBool("TNTDoNotUpdate");
+        return worldIn.isBlockPowered(pos) && !CarpetSettings.TNTDoNotUpdate;
     }
 }

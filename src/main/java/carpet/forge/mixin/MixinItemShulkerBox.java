@@ -14,7 +14,7 @@ public abstract class MixinItemShulkerBox implements IItem
     @Override
     public boolean itemGroundStacking(boolean hasTag)
     {
-        return !hasTag && CarpetSettings.getBool("stackableEmptyShulkerBoxes");
+        return !hasTag && CarpetSettings.stackableEmptyShulkerBoxes;
     }
 
 }

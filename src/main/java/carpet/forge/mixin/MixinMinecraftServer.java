@@ -139,7 +139,7 @@ public abstract class MixinMinecraftServer
                 while (i > TickSpeed.mspt)// 50L
                 {
                     i -= TickSpeed.mspt;// 50L
-                    if (CarpetSettings.getBool("watchdogFix") && keeping_up)
+                    if (CarpetSettings.watchdogFix && keeping_up)
                     {
                         this.currentTime = getCurrentTimeMillis();
                         this.serverIsRunning = true;
@@ -235,14 +235,14 @@ public abstract class MixinMinecraftServer
         this.setUserMessage("menu.generatingTerrain");
         int j1 = 0;
         // [FCM] TickingAreas - Start
-        if (CarpetSettings.getBool("tickingAreas"))
+        if (CarpetSettings.tickingAreas)
         {
             TickingArea.initialChunkLoad((MinecraftServer) (Object) this, true);
         }
         // [FCM] TickingAreas - End
 
         // [FCM] DisableSpawnChunks - if statement around
-        if (!CarpetSettings.getBool("disableSpawnChunks"))
+        if (!CarpetSettings.disableSpawnChunks)
         {
             LOGGER.info("Preparing start region for level 0");
             WorldServer worldserver = net.minecraftforge.common.DimensionManager.getWorld(j1);

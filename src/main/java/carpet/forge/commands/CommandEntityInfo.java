@@ -109,7 +109,7 @@ public class CommandEntityInfo extends CarpetCommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
-        if (!CarpetSettings.getBool("commandEntityInfo"))
+        if (!CarpetSettings.commandEntityInfo)
         {
             notifyCommandListener(sender, this, "Command is disabled in carpet settings");
         }

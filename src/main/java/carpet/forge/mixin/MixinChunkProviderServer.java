@@ -35,9 +35,9 @@ public abstract class MixinChunkProviderServer
     private void tickAndDisableSpawnRule(Chunk chunkIn, CallbackInfo ci)
     {
         boolean canDrop = world.provider.canDropChunk(chunkIn.x, chunkIn.z);
-        if (CarpetSettings.getBool("disableSpawnChunks"))
+        if (CarpetSettings.disableSpawnChunks)
             canDrop = true;
-        if (CarpetSettings.getBool("tickingAreas"))
+        if (CarpetSettings.tickingAreas)
             canDrop &= !TickingArea.isTickingChunk(world, chunkIn.x, chunkIn.z);
         if (canDrop)
         {

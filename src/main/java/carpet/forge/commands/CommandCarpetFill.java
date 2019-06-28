@@ -69,9 +69,9 @@ public class CommandCarpetFill extends CarpetCommandBase
             BlockPos blockpos3 = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos.getY(), blockpos1.getY()), Math.max(blockpos.getZ(), blockpos1.getZ()));
             int i = (blockpos3.getX() - blockpos2.getX() + 1) * (blockpos3.getY() - blockpos2.getY() + 1) * (blockpos3.getZ() - blockpos2.getZ() + 1);
             
-            if (i > CarpetSettings.getInt("fillLimit")) // [FCM] replaced 32768
+            if (i > CarpetSettings.fillLimit) // [FCM] replaced 32768
             {
-                throw new CommandException("commands.fill.tooManyBlocks", new Object[]{i, Integer.valueOf(CarpetSettings.getInt("fillLimit"))}); // [FCM] replaced 32768
+                throw new CommandException("commands.fill.tooManyBlocks", new Object[]{i, Integer.valueOf(CarpetSettings.fillLimit)}); // [FCM] replaced 32768
             }
             else if (blockpos2.getY() >= 0 && blockpos3.getY() < 256)
             {
@@ -161,7 +161,7 @@ public class CommandCarpetFill extends CarpetCommandBase
                                 ((IInventory) tileentity1).clear();
                             }
                             
-                            if (world.setBlockState(blockpos4, iblockstate, 2 | (CarpetSettings.getBool("fillUpdates") ? 0 : 128))) // FCM
+                            if (world.setBlockState(blockpos4, iblockstate, 2 | (CarpetSettings.fillUpdates ? 0 : 128))) // FCM
                             {
                                 list.add(blockpos4);
                                 ++i;
@@ -184,7 +184,7 @@ public class CommandCarpetFill extends CarpetCommandBase
                 }
                 
                 // [FCM] if statement around
-                if (CarpetSettings.getBool("fillUpdates"))
+                if (CarpetSettings.fillUpdates)
                 {
                     for (BlockPos blockpos5 : list)
                     {
@@ -214,7 +214,7 @@ public class CommandCarpetFill extends CarpetCommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
-        if (!CarpetSettings.getBool("commandCarpetFill"))
+        if (!CarpetSettings.commandCarpetFill)
         {
             return Collections.<String>emptyList();
         }

@@ -25,7 +25,7 @@ public class FlippinCactus
         
         if (event.getEntityPlayer().getHeldItemMainhand().getItem() == (Item.getItemFromBlock(Blocks.CACTUS)))
         {
-            if (CarpetSettings.getBool("flippinCactus"))
+            if (CarpetSettings.flippinCactus)
             {
                 if (block instanceof BlockGlazedTerracotta || (block instanceof BlockRedstoneDiode) || (block instanceof BlockRailBase) || (block instanceof BlockTrapDoor) || (block instanceof BlockLever) || (block instanceof BlockFenceGate))
                 {

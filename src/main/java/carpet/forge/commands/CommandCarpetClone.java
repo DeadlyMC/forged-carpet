@@ -61,9 +61,9 @@ public class CommandCarpetClone extends CarpetCommandBase
             StructureBoundingBox structureboundingbox1 = new StructureBoundingBox(blockpos2, blockpos2.add(structureboundingbox.getLength()));
             int i = structureboundingbox.getXSize() * structureboundingbox.getYSize() * structureboundingbox.getZSize();
             
-            if (i > CarpetSettings.getInt("fillLimit")) // [FCM] replaced 32768
+            if (i > CarpetSettings.fillLimit) // [FCM] replaced 32768
             {
-                throw new CommandException("commands.clone.tooManyBlocks", new Object[]{i, Integer.valueOf(CarpetSettings.getInt("fillLimit"))}); // [FCM] replaced 32768
+                throw new CommandException("commands.clone.tooManyBlocks", new Object[]{i, Integer.valueOf(CarpetSettings.fillLimit)}); // [FCM] replaced 32768
             }
             else
             {
@@ -164,12 +164,12 @@ public class CommandCarpetClone extends CarpetCommandBase
                                         ((IInventory) tileentity1).clear();
                                     }
                                     
-                                    world.setBlockState(blockpos6, Blocks.BARRIER.getDefaultState(), 2 | (CarpetSettings.getBool("fillUpdates") ? 0 : 128)); // Carpet
+                                    world.setBlockState(blockpos6, Blocks.BARRIER.getDefaultState(), 2 | (CarpetSettings.fillUpdates ? 0 : 128)); // Carpet
                                 }
                                 
                                 for (BlockPos blockpos7 : deque)
                                 {
-                                    world.setBlockState(blockpos7, Blocks.AIR.getDefaultState(), (CarpetSettings.getBool("fillUpdates") ? 3 : 131)); // Carpet
+                                    world.setBlockState(blockpos7, Blocks.AIR.getDefaultState(), (CarpetSettings.fillUpdates ? 3 : 131)); // Carpet
                                 }
                             }
                             
@@ -188,14 +188,14 @@ public class CommandCarpetClone extends CarpetCommandBase
                                     ((IInventory) tileentity2).clear();
                                 }
                                 
-                                world.setBlockState(commandclone$staticclonedata.pos, Blocks.BARRIER.getDefaultState(), 2 | (CarpetSettings.getBool("fillUpdates") ? 0 : 128)); // Carpet
+                                world.setBlockState(commandclone$staticclonedata.pos, Blocks.BARRIER.getDefaultState(), 2 | (CarpetSettings.fillUpdates ? 0 : 128)); // Carpet
                             }
                             
                             i = 0;
                             
                             for (CommandClone.StaticCloneData commandclone$staticclonedata1 : list3)
                             {
-                                if (world.setBlockState(commandclone$staticclonedata1.pos, commandclone$staticclonedata1.blockState, 2 | (CarpetSettings.getBool("fillUpdates") ? 0 : 128))) // Carpet
+                                if (world.setBlockState(commandclone$staticclonedata1.pos, commandclone$staticclonedata1.blockState, 2 | (CarpetSettings.fillUpdates ? 0 : 128))) // Carpet
                                 {
                                     ++i;
                                 }
@@ -219,7 +219,7 @@ public class CommandCarpetClone extends CarpetCommandBase
                             }
                             
                             // [FCM] if statement around
-                            if (CarpetSettings.getBool("fillUpdates"))
+                            if (CarpetSettings.fillUpdates)
                             {
                                 for (CommandClone.StaticCloneData commandclone$staticclonedata3 : list4)
                                 {
@@ -268,7 +268,7 @@ public class CommandCarpetClone extends CarpetCommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
-        if (!CarpetSettings.getBool("commandCarpetClone"))
+        if (!CarpetSettings.commandCarpetClone)
         {
             return Collections.<String>emptyList();
         }

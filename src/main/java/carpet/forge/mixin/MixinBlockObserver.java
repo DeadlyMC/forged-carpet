@@ -33,6 +33,6 @@ public abstract class MixinBlockObserver extends BlockDirectional
                                                float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
     {
         return this.getDefaultState().withProperty(FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer).getOpposite())
-                .withProperty(POWERED, CarpetSettings.getBool("observersDoNonUpdate"));
+                .withProperty(POWERED, CarpetSettings.observersDoNonUpdate);
     }
 }

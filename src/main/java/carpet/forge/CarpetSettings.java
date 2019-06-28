@@ -1,6 +1,10 @@
 package carpet.forge;
 
+import carpet.forge.utils.TickingArea;
+import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,6 +19,8 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static carpet.forge.CarpetSettings.RuleCategory.*;
+
 public class CarpetSettings
 {
     public static final String carpetVersion = "v19_05_02";
@@ -27,8 +33,200 @@ public class CarpetSettings
      * Rules in this category should start with the "command" prefix
      */
     
+    @Rule(desc = "Enables /spawn command for spawn tracking", category = COMMANDS)
+    public static boolean commandSpawn = true;
+    
+    @Rule(desc = "Enables /tick command to control game speed", category = COMMANDS)
+    public static boolean commandTick = true;
+    
+    @Rule(desc = "Enables /log command to monitor events in the game via chat and overlays", category = COMMANDS)
+    public static boolean commandLog = true;
+    
+    @Rule(
+            desc = "Enables /distance command to measure in game distance between points",
+            category = COMMANDS,
+            extra = {
+            "Also enables brown carpet placement action if 'carpets' rule is turned on as well"
+            }
+    )
+    public static boolean commandDistance = true;
+    
+    @Rule(
+            desc = "Enables /blockinfo command",
+            category = COMMANDS,
+            extra = {
+            "Also enables gray carpet placement action if 'carpets' rule is turned on as well"
+            }
+    )
+    public static boolean commandBlockInfo = true;
+    
+    @Rule(
+            desc = "Enables /entityinfo command",
+            category = COMMANDS,
+            extra = {
+            "Also enables yellow carpet placement action if 'carpets' rule is turned on as well"
+            }
+    )
+    public static boolean commandEntityInfo = true;
+    
+    @Rule(desc = "Enables /unload command to inspect chunk unloading order", category = COMMANDS)
+    public static boolean commandUnload = true;
+    
+    @Rule(
+            desc = "Enables /c and /s commands to quickly switch between camera and survival modes",
+            category = COMMANDS,
+            extra = {
+            "/c and /s commands are available to all players regardless of their permission levels"
+            }
+    )
+    public static boolean commandCameramode = true;
+    
+    @Rule(desc = "Enables /perimeterinfo command that scans the area around the block for potential spawnable spots", category = COMMANDS)
+    public static boolean commandPerimeterInfo = true;
+    
+    @Rule(desc = "Enables /rng command to manipulate and query rng", category = COMMANDS)
+    public static boolean commandRNG = true;
+    
+    @Rule(desc = "Enables /structure to manage NBT structures used by structure blocks", category = COMMANDS)
+    public static boolean commandStructure = true;
+    
+    @Rule(desc = "Enables /fillbiome command to change the biome of an area", category = COMMANDS)
+    public static boolean commandFillBiome = true;
+    
+    @Rule(desc = "Enables /autosave command to query information about the autosave and execute commands relative to the autosave", category = COMMANDS)
+    public static boolean commandAutosave = true;
+    
+    @Rule(desc = "Enables /ping for players to get their ping", category = COMMANDS)
+    public static boolean commandPing = true;
+    
+    @Rule(
+            desc = "Enable /carpetfill command",
+            category = COMMANDS,
+            extra = "This is a replica of /fill for fillUpdates and fillLimits"
+    )
+    public static boolean commandCarpetFill = true;
+    
+    @Rule(
+            desc = "Enable /carpetclone command",
+            category = COMMANDS,
+            extra = "This is a replica of /clone for fillUpdates and fillLimits"
+    )
+    public static boolean commandCarpetClone = true;
+    
+    @Rule(
+            desc = "Enable /carpetsetblock command",
+            category = COMMANDS,
+            extra = "This is a replica of /setblock for fillUpdates and fillLimits"
+    )
+    public static boolean commandCarpetSetBlock = true;
+    
     
     // ===== CREATIVE TOOLS ===== //
+    
+    @Rule(
+            desc = "Players can flip and rotate blocks when holding cactus",
+            category = {CREATIVE, SURVIVAL},
+            extra = {
+            "Doesn't cause block updates when rotated/flipped",
+            "Applies to pistons, observers, droppers, repeaters, stairs, glazed terracotta etc..."
+            }
+    )
+    @CreativeDefault
+    @SurvivalDefault
+    public static boolean flippinCactus = false;
+    
+    @Rule(desc = "Observers don't pulse when placed", category = CREATIVE)
+    public static boolean observersDoNonUpdate = false;
+    
+    @Rule(
+            desc = "Transparent observers, TNT and redstone blocks. May cause lighting artifacts",
+            category = CREATIVE,
+            validator = "validateFlyingMachineTransparent"
+    )
+    public static boolean flyingMachineTransparent = false;
+    private static boolean validateFlyingMachineTransparent(boolean value) {
+        int newOpacity = value ? 0 : 255;
+        Blocks.OBSERVER.setLightOpacity(newOpacity);
+        Blocks.REDSTONE_BLOCK.setLightOpacity(newOpacity);
+        Blocks.TNT.setLightOpacity(newOpacity);
+        return true;
+    }
+    
+    @Rule(desc = "TNT doesn't update when placed against a power source", category = TNT)
+    public static boolean TNTDoNotUpdate = false;
+    
+    @Rule(
+            desc = "hoppers pointing to wool will count items passing through them",
+            category = {COMMANDS, CREATIVE, SURVIVAL},
+            extra = {
+            "Enables /counter command, and actions while placing red and green carpets on wool blocks",
+            "Use /counter <color?> reset to reset the counter, and /counter <color?> to query",
+            "In survival, place green carpet on same color wool to query, red to reset the counters",
+            "Counters are global and shared between players, 16 channels available",
+            "Items counted are destroyed, count up to one stack per tick per hopper"
+            }
+    )
+    @CreativeDefault
+    @SurvivalDefault
+    public static boolean hopperCounters = false;
+    
+    @Rule(desc = "Spawned mobs that would otherwise despawn immediately, won't be placed in world", category = OPTIMIZATIONS)
+    public static boolean optimizedDespawnRange = false;
+    
+    @Rule(
+            desc = "Enable use of ticking areas.",
+            category = {CREATIVE, EXPERIMENTAL},
+            validator = "validateTickingAreas",
+            extra = {
+            "As set by the /tickingarea command.",
+            "Ticking areas work as if they are the spawn chunks."
+            }
+    )
+    public static boolean tickingAreas = false;
+    private static boolean validateTickingAreas(boolean value) {
+        if (value && CarpetMain.minecraft_server.worlds != null)
+            TickingArea.initialChunkLoad(CarpetMain.minecraft_server, false);
+        return true;
+    }
+    
+    @Rule(desc = "Removes the spawn chunks.", category = CREATIVE, validator = "validateDisableSpawnChunks")
+    public static boolean disableSpawnChunks = false;
+    private static boolean validateDisableSpawnChunks(boolean value) {
+        if (!value && CarpetMain.minecraft_server.worlds != null)
+        {
+            World overworld = CarpetMain.minecraft_server.worlds[0];
+            for (ChunkPos chunk : new TickingArea.SpawnChunks().listIncludedChunks(overworld))
+                overworld.getChunkProvider().provideChunk(chunk.x, chunk.z);
+        }
+        return true;
+    }
+    
+    @Rule(desc = "fill/clone/setblock and structure blocks cause block updates", category = CREATIVE)
+    @CreativeDefault("false")
+    public static boolean fillUpdates = true;
+    
+    @Rule(
+            desc = "Customizable fill/clone volume limit",
+            category = CREATIVE,
+            options = {"32768", "250000", "1000000"},
+            validator = "validateNonNegative"
+    )
+    @CreativeDefault("500000")
+    public static int fillLimit = 32768;
+    
+    @Rule(
+            desc = "Customizable tile tick limit",
+            category = SURVIVAL,
+            options = {"1000", "65536", "1000000"},
+            validator = "validateTileTickLimit",
+            extra = {
+            "-1 for no limit"
+            }
+    )
+    public static int tileTickLimit = 65536;
+    private static boolean validateTileTickLimit(int value) {
+        return value >= -1;
+    }
     
     
     // ===== FIXES ===== //
@@ -36,8 +234,85 @@ public class CarpetSettings
      * Rules in this category should end with the "Fix" suffix
      */
     
+    @Rule(desc = "Prevents llamas from taking player food while breeding", category = FIX)
+    @BugFixDefault
+    public static boolean llamaOverfeedingFix = false;
+    
+    @Rule(
+            desc = "Fix for piston ghost blocks",
+            category = FIX,
+            extra = {
+            "Does not work properly on vanilla clients with non-vanilla push limits"
+            }
+    )
+    @BugFixDefault
+    public static boolean pistonGhostBlocksFix = false;
+    
+    @Rule(
+            desc = "Remove ghost blocks when mining too fast",
+            category = FIX,
+            extra = "Fixed in 1.13"
+    )
+    @SurvivalDefault
+    public static boolean miningGhostBlocksFix = false;
+    
+    @Rule(
+            desc = "Structure bounding boxes (i.e. witch huts) will generate correctly",
+            category = FIX,
+            extra = {
+            "Fixes spawning issues due to incorrect bounding boxes"
+            }
+    )
+    public static boolean boundingBoxFix = false;
+    
+    @Rule(
+            desc = "Fixes server crashing under heavy load and low tps",
+            category = FIX,
+            extra = {
+            "Won't prevent crashes if the server doesn't respond in max-tick-time ticks"
+            }
+    )
+    @BugFixDefault
+    public static boolean watchdogFix = false;
+    
     
     // ===== SURVIVAL FEATURES ===== //
+    
+    @Rule(
+            desc = "Dropping entire stacks works also from on the crafting UI result slot",
+            category = {FIX, SURVIVAL}
+    )
+    @SurvivalDefault
+    public static boolean ctrlQCraftingFix = false;
+    
+    @Rule(
+            desc = "Empty shulker boxes can stack to 64 when dropped on the ground",
+            category = SURVIVAL,
+            extra = {
+            "To move them around between inventories, use shift click to move entire stacks"
+            }
+    )
+    @SurvivalDefault
+    public static boolean stackableEmptyShulkerBoxes = false;
+    
+    @Rule(desc = "Only husks spawn in desert temples", category = {EXPERIMENTAL, FEATURE})
+    public static boolean huskSpawningInTemples = false;
+    
+    @Rule(desc = "Silverfish drop a gravel item when breaking out of a block", category = EXPERIMENTAL)
+    public static boolean silverFishDropGravel = false;
+    
+    
+    // ===== EXPERIMENTAL/OPTIMIZATIONS ===== //
+    
+    @Rule(
+            desc = "Lag optimizations for redstone dust",
+            extra = "by Theosib",
+            category = {EXPERIMENTAL, OPTIMIZATIONS}
+    )
+    public static boolean fastRedstoneDust = false;
+    
+    @Rule(desc = "Uses alternative lighting engine by PhiPros. AKA NewLight mod", category = OPTIMIZATIONS)
+    public static boolean newLight = false;
     
     
     // ===== API ===== //

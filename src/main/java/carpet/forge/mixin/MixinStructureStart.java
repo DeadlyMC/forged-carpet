@@ -19,7 +19,7 @@ public abstract class MixinStructureStart
             target = "Lnet/minecraft/nbt/NBTTagCompound;setTag(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", ordinal = 1, shift = At.Shift.BEFORE))
     private void callBBUpdate(int chunkX, int chunkZ, CallbackInfoReturnable<NBTTagCompound> cir)
     {
-        if (CarpetSettings.getBool("boundingBoxFix"))
+        if (CarpetSettings.boundingBoxFix)
             updateBoundingBox();
     }
 }

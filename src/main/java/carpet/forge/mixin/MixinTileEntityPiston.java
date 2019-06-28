@@ -23,7 +23,8 @@ public abstract class MixinTileEntityPiston extends TileEntity implements ITileE
     {
         return "Piston";
     }
-
+    
+    /*
     @Inject(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z", shift = At.Shift.BEFORE))
     private void notifyBlockUpdate(CallbackInfo ci)
     {
@@ -53,4 +54,6 @@ public abstract class MixinTileEntityPiston extends TileEntity implements ITileE
         return this.lastProgress;
     }
     // [FCM] Fix for pistonGhostBlocks breaking caterpillar engine - End
+    
+     */
 }

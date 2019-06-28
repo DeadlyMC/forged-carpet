@@ -16,12 +16,12 @@ public abstract class CarpetCommandBase extends CommandBase
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
         return true;
     }
-
+    
     @Override
     public int getRequiredPermissionLevel() {
         return 0;
     }
-
+    
     public void msg(ICommandSender sender, List<ITextComponent> texts) { msg(sender, texts.toArray(new ITextComponent[0])); }
     public void msg(ICommandSender sender, ITextComponent ... texts)
     {
@@ -34,10 +34,9 @@ public abstract class CarpetCommandBase extends CommandBase
             for (ITextComponent t: texts) notifyCommandListener(sender, this, t.getUnformattedText());
         }
     }
-
     public boolean command_enabled(String command_name, ICommandSender sender)
     {
-        if (!CarpetSettings.getBool(command_name))
+        if (!CarpetSettings.get(command_name).equalsIgnoreCase("true"))
         {
             msg(sender, Messenger.m(null, "w Command is disabled in carpet settings"));
             if (!(sender instanceof EntityPlayer)) return false;
@@ -59,4 +58,3 @@ public abstract class CarpetCommandBase extends CommandBase
 
 
 }
-

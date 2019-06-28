@@ -97,7 +97,7 @@ public abstract class MixinWorldEntitySpawner
             }
 
             // [FCM] Start
-            boolean optimizedDespawnRange = CarpetSettings.getBool("optimizedDespawnRange");
+            boolean optimizedDespawnRange = CarpetSettings.optimizedDespawnRange;
             ;
             if (i == 0 && optimizedDespawnRange) // Worlds without valid chunks are skipped.
             {
