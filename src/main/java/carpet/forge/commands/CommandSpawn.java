@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
-import carpet.forge.CarpetMain;
 import carpet.forge.CarpetSettings;
 import carpet.forge.helper.HopperCounter;
 import carpet.forge.helper.TickSpeed;

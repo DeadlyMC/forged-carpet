@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.CarpetMain;
+import carpet.forge.CarpetServer;
 import carpet.forge.CarpetSettings;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.utils.CarpetProfiler;
@@ -80,7 +80,7 @@ public abstract class MixinMinecraftServer
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void onMinecraftServer(File anvilFileIn, Proxy proxyIn, DataFixer dataFixerIn, YggdrasilAuthenticationService authServiceIn, MinecraftSessionService sessionServiceIn, GameProfileRepository profileRepoIn, PlayerProfileCache profileCacheIn, CallbackInfo ci)
     {
-        CarpetMain.init((MinecraftServer) (Object) this);
+        CarpetServer.init((MinecraftServer) (Object) this);
     }
 
     @Redirect(method = "run", at = @At(value = "FIELD", target = "Lnet/minecraft/server/MinecraftServer;serverRunning:Z"))
@@ -166,7 +166,7 @@ public abstract class MixinMinecraftServer
     @Inject(method = "tick", at = @At(value = "FIELD", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/MinecraftServer;tickCounter:I", ordinal = 0))
     private void carpetTickAndStartTickProfiling(CallbackInfo ci)
     {
-        CarpetMain.tick((MinecraftServer) (Object) this);
+        CarpetServer.tick((MinecraftServer) (Object) this);
         if (CarpetProfiler.tick_health_requested != 0L)
         {
             CarpetProfiler.start_tick_profiling();
@@ -217,7 +217,7 @@ public abstract class MixinMinecraftServer
             target = "Lnet/minecraft/server/MinecraftServer;initialWorldChunkLoad()V"))
     private void onLoadAllWorlds(String saveName, String worldNameIn, long seed, WorldType type, String generatorOptions, CallbackInfo ci)
     {
-        CarpetMain.onLoadAllWorlds((MinecraftServer) (Object) this);
+        CarpetServer.onLoadAllWorlds((MinecraftServer) (Object) this);
     }
 
     /**
@@ -273,7 +273,7 @@ public abstract class MixinMinecraftServer
     @Inject(method = "saveAllWorlds", at = @At("TAIL"))
     private void onSaveAllWorlds(boolean isSilent, CallbackInfo ci)
     {
-        CarpetMain.onWorldsSaved((MinecraftServer) (Object) this);
+        CarpetServer.onWorldsSaved((MinecraftServer) (Object) this);
     }
 
 }

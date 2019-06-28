@@ -1,6 +1,5 @@
 package carpet.forge.commands;
 
-import carpet.forge.CarpetMain;
 import carpet.forge.utils.Messenger;
 import carpet.forge.utils.PerimeterDiagnostics;
 import net.minecraft.command.CommandException;

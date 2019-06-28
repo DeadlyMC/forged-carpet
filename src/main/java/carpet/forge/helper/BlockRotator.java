@@ -1,6 +1,5 @@
 package carpet.forge.helper;
 
-import carpet.forge.CarpetMain;
 import carpet.forge.CarpetSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;

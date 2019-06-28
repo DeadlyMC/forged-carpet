@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.CarpetMain;
+import carpet.forge.CarpetServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,9 +14,9 @@ public abstract class MixinDedicatedServer
     private void gameStartHook(CallbackInfoReturnable<Boolean> cir)
     {
         // [FCM] init - all stuff loaded from the server, just before worlds loading
-        CarpetMain.onServerLoaded((DedicatedServer) (Object) this);
+        CarpetServer.onServerLoaded((DedicatedServer) (Object) this);
         // [FCM] start game hook
-        CarpetMain.onGameStarted();
+        CarpetServer.onGameStarted();
     }
 
 }

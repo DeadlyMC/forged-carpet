@@ -1,7 +1,6 @@
 package carpet.forge.commands;
 
 
-import carpet.forge.CarpetMain;
 import carpet.forge.CarpetSettings;
 import carpet.forge.logging.LogHandler;
 import carpet.forge.logging.Logger;

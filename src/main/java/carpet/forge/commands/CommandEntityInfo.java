@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
-import carpet.forge.CarpetMain;
 import carpet.forge.CarpetSettings;
 import carpet.forge.utils.EntityInfo;
 import net.minecraft.entity.Entity;

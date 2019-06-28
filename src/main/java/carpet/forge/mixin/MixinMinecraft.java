@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.CarpetMain;
+import carpet.forge.CarpetServer;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,6 +13,6 @@ public abstract class MixinMinecraft
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/RenderGlobal;makeEntityOutlineShader()V"))
     private void carpetGameStarted(CallbackInfo ci)
     {
-        CarpetMain.onGameStarted();
+        CarpetServer.onGameStarted();
     }
 }

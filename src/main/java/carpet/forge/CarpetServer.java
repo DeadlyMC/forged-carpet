@@ -24,19 +24,20 @@ import org.apache.logging.log4j.Logger;
         certificateFingerprint = Reference.FINGERPRINT,
         updateJSON = Reference.UPDATE_URL
 )
-public class CarpetMain {
+public class CarpetServer
+{
 
     public static Logger logger;
     public static MinecraftServer minecraft_server;
 
-    public CarpetMain() {
+    public CarpetServer() {
     }
 
     @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
     public static CommonProxy proxy;
 
     @Mod.Instance(Reference.MOD_ID)
-    public static CarpetMain instance;
+    public static CarpetServer instance;
 
     public static void init(MinecraftServer server) {
         minecraft_server = server;

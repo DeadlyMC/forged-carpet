@@ -1,9 +1,8 @@
 package carpet.forge.logging;
 
-import carpet.forge.CarpetMain;
+import carpet.forge.CarpetServer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.Arrays;
@@ -186,7 +185,7 @@ public class Logger
      */
     protected EntityPlayerMP playerFromName(String name)
     {
-        EntityPlayerMP tmp = CarpetMain.minecraft_server.getPlayerList().getPlayerByUsername(name);
+        EntityPlayerMP tmp = CarpetServer.minecraft_server.getPlayerList().getPlayerByUsername(name);
         return tmp;
     }
 

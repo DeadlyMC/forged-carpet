@@ -1,6 +1,6 @@
 package carpet.forge.logging;
 
-import carpet.forge.CarpetMain;
+import carpet.forge.CarpetServer;
 import carpet.forge.utils.HUDController;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
@@ -34,7 +34,7 @@ public abstract class LogHandler
         @Override
         public void onRemovePlayer(String playerName)
         {
-            EntityPlayerMP player = CarpetMain.minecraft_server.getPlayerList().getPlayerByUsername(playerName);
+            EntityPlayerMP player = CarpetServer.minecraft_server.getPlayerList().getPlayerByUsername(playerName);
             if (player != null)
                 HUDController.clear_player(player);
         }

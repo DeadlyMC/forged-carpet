@@ -184,17 +184,17 @@ public class CarpetSettings
     )
     public static boolean tickingAreas = false;
     private static boolean validateTickingAreas(boolean value) {
-        if (value && CarpetMain.minecraft_server.worlds != null)
-            TickingArea.initialChunkLoad(CarpetMain.minecraft_server, false);
+        if (value && CarpetServer.minecraft_server.worlds != null)
+            TickingArea.initialChunkLoad(CarpetServer.minecraft_server, false);
         return true;
     }
     
     @Rule(desc = "Removes the spawn chunks.", category = CREATIVE, validator = "validateDisableSpawnChunks")
     public static boolean disableSpawnChunks = false;
     private static boolean validateDisableSpawnChunks(boolean value) {
-        if (!value && CarpetMain.minecraft_server.worlds != null)
+        if (!value && CarpetServer.minecraft_server.worlds != null)
         {
-            World overworld = CarpetMain.minecraft_server.worlds[0];
+            World overworld = CarpetServer.minecraft_server.worlds[0];
             for (ChunkPos chunk : new TickingArea.SpawnChunks().listIncludedChunks(overworld))
                 overworld.getChunkProvider().provideChunk(chunk.x, chunk.z);
         }

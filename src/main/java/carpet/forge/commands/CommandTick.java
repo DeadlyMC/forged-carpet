@@ -1,6 +1,5 @@
 package carpet.forge.commands;
 
-import carpet.forge.CarpetMain;
 import carpet.forge.CarpetSettings;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.utils.CarpetProfiler;

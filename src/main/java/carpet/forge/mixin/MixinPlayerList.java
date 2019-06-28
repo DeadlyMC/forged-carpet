@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.CarpetMain;
+import carpet.forge.CarpetServer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,12 +14,12 @@ public abstract class MixinPlayerList
     @Inject(method = "playerLoggedIn", at = @At(value = "RETURN"))
     private void onPlayerLoggedIn(EntityPlayerMP playerIn, CallbackInfo ci)
     {
-        CarpetMain.playerConnected(playerIn);
+        CarpetServer.playerConnected(playerIn);
     }
 
     @Inject(method = "playerLoggedOut", at = @At(value = "HEAD"))
     private void onPlayerLoggedOut(EntityPlayerMP playerIn, CallbackInfo ci)
     {
-        CarpetMain.playerDisconnected(playerIn);
+        CarpetServer.playerDisconnected(playerIn);
     }
 }
