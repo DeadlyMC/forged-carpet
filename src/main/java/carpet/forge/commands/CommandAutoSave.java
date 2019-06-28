@@ -102,7 +102,7 @@ public class CommandAutoSave extends CarpetCommandBase {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        if (!CarpetSettings.getBool("commandAutosave"))
+        if (!CarpetSettings.commandAutosave)
         {
             return Collections.<String>emptyList();
         }

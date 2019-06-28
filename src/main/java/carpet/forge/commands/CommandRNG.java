@@ -36,8 +36,10 @@ import net.minecraft.world.gen.IChunkGenerator;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class CommandRNG extends CarpetCommandBase{
-
+public class CommandRNG// extends CarpetCommandBase
+{
+    
+    /*
     @Override
     public String getName() {
         return "rng";
@@ -596,4 +598,5 @@ public class CommandRNG extends CarpetCommandBase{
         int l = rand.nextInt(k > 0 ? k : chunk.getTopFilledSegment() + 16 - 1);
         return new BlockPos(i, l, j);
     }
+     */
 }

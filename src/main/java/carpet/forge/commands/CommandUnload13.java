@@ -108,7 +108,7 @@ public class CommandUnload13 extends CarpetCommandBase {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        if (!CarpetSettings.getBool("commandUnload"))
+        if (!CarpetSettings.commandUnload)
         {
             return Collections.<String>emptyList();
         }

@@ -136,7 +136,7 @@ public class CommandCarpetSetBlock extends CarpetCommandBase
                     }
                     
                     // [FCM] if statement around - start
-                    if (CarpetSettings.getBool("fillUpdates"))
+                    if (CarpetSettings.fillUpdates)
                     {
                         world.notifyNeighborsRespectDebug(blockpos, iblockstate.getBlock(), false);
                     } // [FCM] End
@@ -151,7 +151,7 @@ public class CommandCarpetSetBlock extends CarpetCommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
-        if (!CarpetSettings.getBool("commandCarpetSetBlock"))
+        if (!CarpetSettings.commandCarpetSetBlock)
         {
             return Collections.<String>emptyList();
         }

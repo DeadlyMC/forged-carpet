@@ -27,7 +27,7 @@ public abstract class MixinBlockSilverfish extends Block
             target = "Lnet/minecraft/entity/monster/EntitySilverfish;spawnExplosionParticle()V"))
     private void dropGravelSilverfish(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune, CallbackInfo ci)
     {
-        if (CarpetSettings.getBool("silverFishDropGravel"))
+        if (CarpetSettings.silverFishDropGravel)
         {
             spawnAsEntity(worldIn, pos, new ItemStack(Blocks.GRAVEL));
         }

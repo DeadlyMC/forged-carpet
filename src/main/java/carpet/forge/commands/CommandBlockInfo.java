@@ -43,7 +43,7 @@ public class CommandBlockInfo extends CarpetCommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 
-        if (!CarpetSettings.getBool("commandBlockInfo"))
+        if (!CarpetSettings.commandBlockInfo)
         {
             return Collections.<String>emptyList();
         }

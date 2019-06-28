@@ -39,7 +39,7 @@ public class CarpetMain {
     public static CarpetMain instance;
 
     public static void init(MinecraftServer server) {
-        CarpetMain.minecraft_server = server;
+        minecraft_server = server;
     }
 
     public static void onGameStarted() {
@@ -57,7 +57,7 @@ public class CarpetMain {
 
     public static void onServerLoaded(MinecraftServer server)
     {
-        CarpetSettings.apply_settings_from_conf(server);
+        CarpetSettings.applySettingsFromConf(server);
     }
 
     public static void tick(MinecraftServer server) {
@@ -81,8 +81,8 @@ public class CarpetMain {
     }
 
     @Mod.EventHandler
-    public void serverLoad(FMLServerStartingEvent event) {
-
+    public void serverLoad(FMLServerStartingEvent event)
+    {
         event.registerServerCommand(new CommandCarpet());
         event.registerServerCommand(new CommandGMC());
         event.registerServerCommand(new CommandGMS());
@@ -100,19 +100,17 @@ public class CarpetMain {
         event.registerServerCommand(new CommandDistance());
         event.registerServerCommand(new CommandUnload());
         event.registerServerCommand(new CommandUnload13());
-        event.registerServerCommand(new CommandRNG());
+        //event.registerServerCommand(new CommandRNG());
         event.registerServerCommand(new CommandTickingArea());
         event.registerServerCommand(new CommandStructure());
         event.registerServerCommand(new CommandCarpetFill());
         event.registerServerCommand(new CommandCarpetClone());
         event.registerServerCommand(new CommandCarpetSetBlock());
-
-        CarpetSettings.reload_all_statics();
     }
 
     @Mod.EventHandler
-    public void onFingerprintViolation(FMLFingerprintViolationEvent event) {
-
+    public void onFingerprintViolation(FMLFingerprintViolationEvent event)
+    {
         if (!event.isDirectory()) {
             logger.warn("*******************************************************************************************************");
             logger.warn("                                         WARNING!                                                      ");

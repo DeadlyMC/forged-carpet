@@ -23,7 +23,7 @@ public abstract class MixinBlockShulkerBox extends BlockContainer
     @Redirect(method = "breakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;setTagCompound(Lnet/minecraft/nbt/NBTTagCompound;)V"))
     private void ifSetTagCompound(ItemStack itemStack, NBTTagCompound nbt)
     {
-        if (!CarpetSettings.getBool("stackableEmptyShulkerBoxes") || nbt.getCompoundTag("BlockEntityTag").getSize() > 0)
+        if (!CarpetSettings.stackableEmptyShulkerBoxes || nbt.getCompoundTag("BlockEntityTag").getSize() > 0)
             itemStack.setTagCompound(nbt);
     }
 }

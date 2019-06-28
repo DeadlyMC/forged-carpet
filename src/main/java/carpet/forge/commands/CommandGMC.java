@@ -37,7 +37,7 @@ public class CommandGMC extends CarpetCommandBase {
         }
         else
         {
-            if (!CarpetSettings.getBool("commandCameramode"))
+            if (!CarpetSettings.commandCameramode)
             {
                 notifyCommandListener(sender, this, "Quick gamemode switching is disabled");
             }

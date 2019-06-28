@@ -21,7 +21,7 @@ public class BlockRotator
 {
     public static boolean flipBlockWithCactus(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        if (!playerIn.capabilities.allowEdit || !CarpetSettings.getBool("flippinCactus") || !player_holds_cactus_mainhand(playerIn))
+        if (!playerIn.capabilities.allowEdit || !CarpetSettings.flippinCactus || !player_holds_cactus_mainhand(playerIn))
         {
             return false;
         }
@@ -33,7 +33,7 @@ public class BlockRotator
         {
             return block.getDefaultState()
                     .withProperty(BlockDirectional.FACING, EnumFacing.byIndex((int)hitX - 2))
-                    .withProperty(BlockObserver.POWERED, CarpetSettings.getBool("observersDoNonUpdate"));
+                    .withProperty(BlockObserver.POWERED, CarpetSettings.observersDoNonUpdate);
         }
         return null;
     }
@@ -55,7 +55,7 @@ public class BlockRotator
         {
             return block.getDefaultState()
                     .withProperty(BlockDirectional.FACING, EnumFacing.byIndex((int)hitX - 2))
-                    .withProperty(BlockObserver.POWERED, CarpetSettings.getBool("observersDoNonUpdate"));
+                    .withProperty(BlockObserver.POWERED, CarpetSettings.observersDoNonUpdate);
         }
         else if (block instanceof BlockRedstoneRepeater)
         {
@@ -218,7 +218,7 @@ public class BlockRotator
     }
     public static boolean flippinEligibility(Entity entity)
     {
-        if (CarpetSettings.getBool("flippinCactus")
+        if (CarpetSettings.flippinCactus
                 && (entity instanceof EntityPlayer))
         {
             EntityPlayer player = (EntityPlayer)entity;

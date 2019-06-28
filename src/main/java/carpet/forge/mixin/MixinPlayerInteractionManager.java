@@ -40,7 +40,7 @@ public abstract class MixinPlayerInteractionManager
             shift = At.Shift.BEFORE))
 	private void notifyUpdate(BlockPos pos, EnumFacing side, CallbackInfo ci)
     {
-		if (CarpetSettings.getBool("miningGhostBlocksFix")) {
+		if (CarpetSettings.miningGhostBlocksFix) {
 			player.connection.sendPacket(new SPacketBlockChange(world, destroyPos));
 		}
 	}

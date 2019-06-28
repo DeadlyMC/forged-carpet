@@ -31,7 +31,8 @@ public abstract class MixinBlockPistonBase extends BlockDirectional
     {
         super(materialIn);
     }
-
+    
+    /*
     @Shadow
     public static boolean canPush(IBlockState blockStateIn, World worldIn, BlockPos pos, EnumFacing facing, boolean destroyBlocks, EnumFacing p_185646_5_)
     {
@@ -91,5 +92,7 @@ public abstract class MixinBlockPistonBase extends BlockDirectional
 
         worldIn.addBlockEvent(pos, blockIn, eventID, eventParam | suppress_move);
     }
+    
+     */
 
 }
