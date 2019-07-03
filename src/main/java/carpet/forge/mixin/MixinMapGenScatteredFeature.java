@@ -21,18 +21,18 @@ public abstract class MixinMapGenScatteredFeature extends MapGenStructure implem
 {
     @Final
     @Mutable
-    private ArrayList<Biome.SpawnListEntry> scatteredFeatureSpawnListHusk;
+    private ArrayList<Biome.SpawnListEntry> huskSpawnList;
     
     @Inject(method = "<init>()V", at = @At(value = "RETURN"))
     private void onInit(CallbackInfo ci)
     {
-        this.scatteredFeatureSpawnListHusk = Lists.<Biome.SpawnListEntry>newArrayList();
-        this.scatteredFeatureSpawnListHusk.add(new Biome.SpawnListEntry(EntityHusk.class, 1, 1, 1));
+        this.huskSpawnList = Lists.<Biome.SpawnListEntry>newArrayList();
+        this.huskSpawnList.add(new Biome.SpawnListEntry(EntityHusk.class, 1, 1, 1));
     }
     
-    public List<Biome.SpawnListEntry> getScatteredFeatureSpawnListHusk()
+    public List<Biome.SpawnListEntry> getHuskSpawnList()
     {
-        return this.scatteredFeatureSpawnListHusk;
+        return this.huskSpawnList;
     }
     
     public boolean isTemple(BlockPos pos)

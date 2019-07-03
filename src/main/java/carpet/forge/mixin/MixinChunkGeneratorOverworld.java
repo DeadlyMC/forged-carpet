@@ -20,12 +20,18 @@ public abstract class MixinChunkGeneratorOverworld
 {
     @Shadow private MapGenScatteredFeature scatteredFeatureGenerator;
     
-    @Inject(method = "getPossibleCreatures", at = @At(value = "FIELD", target = "Lnet/minecraft/world/gen/ChunkGeneratorOverworld;mapFeaturesEnabled:Z", shift = At.Shift.AFTER), cancellable = true)
-    private void spawnHusksIf(EnumCreatureType creatureType, BlockPos pos, CallbackInfoReturnable<List<Biome.SpawnListEntry>> cir)
+    @Inject(
+            method = "getPossibleCreatures",
+            at = @At(value = "FIELD",
+                    target = "Lnet/minecraft/world/gen/ChunkGeneratorOverworld;mapFeaturesEnabled:Z",
+                    shift = At.Shift.AFTER),
+            cancellable = true
+    )
+    private void onGetPossibleCreatures(EnumCreatureType creatureType, BlockPos pos, CallbackInfoReturnable<List<Biome.SpawnListEntry>> cir)
     {
-        if (CarpetSettings.huskSpawningInTemples && creatureType == EnumCreatureType.MONSTER &&((IMapGenScatteredFeature) this.scatteredFeatureGenerator).isTemple(pos))
+        if (CarpetSettings.huskSpawningInTemples && creatureType == EnumCreatureType.MONSTER && ((IMapGenScatteredFeature) this.scatteredFeatureGenerator).isTemple(pos))
         {
-            cir.setReturnValue(((IMapGenScatteredFeature) this.scatteredFeatureGenerator).getScatteredFeatureSpawnListHusk());
+            cir.setReturnValue(((IMapGenScatteredFeature) this.scatteredFeatureGenerator).getHuskSpawnList());
         }
     }
 }
