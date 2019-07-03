@@ -214,20 +214,6 @@ public class CarpetSettings
     @CreativeDefault("500000")
     public static int fillLimit = 32768;
     
-    @Rule(
-            desc = "Customizable tile tick limit",
-            category = SURVIVAL,
-            options = {"1000", "65536", "1000000"},
-            validator = "validateTileTickLimit",
-            extra = {
-            "-1 for no limit"
-            }
-    )
-    public static int tileTickLimit = 65536;
-    private static boolean validateTileTickLimit(int value) {
-        return value >= -1;
-    }
-    
     
     // ===== FIXES ===== //
     /*
