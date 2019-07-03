@@ -1,17 +1,28 @@
 package carpet.forge.mixin;
 
+import carpet.forge.CarpetSettings;
+import net.minecraft.entity.passive.AbstractChestHorse;
 import net.minecraft.entity.passive.EntityLlama;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = EntityLlama.class)
-public abstract class MixinEntityLlama
+public abstract class MixinEntityLlama extends AbstractChestHorse
 {
-    @Redirect(method = "handleEating", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/EntityLlama;isTame()Z"))
-    public boolean isLlamaFix(EntityLlama self)
+    public MixinEntityLlama(World worldIn)
     {
-        return self.isTame() && !self.isInLove();
+        super(worldIn);
+    }
+    
+    @Redirect(
+            method = "handleEating",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/EntityLlama;isTame()Z", ordinal = 0)
+    )
+    private boolean onHandleEating(EntityLlama entityLlama)
+    {
+        return this.isTame() && !(CarpetSettings.llamaOverfeedingFix && this.isInLove());
     }
 
 }
