@@ -14,11 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public abstract class MixinEntity implements IMixinEntity
 {
-
-    @Shadow
-    public float rotationYaw;
-    @Shadow
-    private int fire;
+    @Shadow public float rotationYaw;
+    
+    @Shadow private int fire;
 
     public int getFire()
     {
@@ -30,11 +28,12 @@ public abstract class MixinEntity implements IMixinEntity
         return "Other Entity";
     }
 
-    @Inject(method = "getHorizontalFacing", at = @At(value = "RETURN", shift = At.Shift.BEFORE), cancellable = true)
-    private void flippinEligibility(CallbackInfoReturnable<EnumFacing> cir)
+    @Inject(method = "getHorizontalFacing", at = @At("HEAD"), cancellable = true)
+    private void onGetHorizontalFacing(CallbackInfoReturnable<EnumFacing> cir)
     {
-        if (BlockRotator.flippinEligibility((Entity) (Object) this))
-            cir.setReturnValue(EnumFacing.byHorizontalIndex(MathHelper.floor((double) (this.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3).getOpposite());
+        if (BlockRotator.flippinEligibility((Entity)(Object)this))
+        {
+            cir.setReturnValue(EnumFacing.byHorizontalIndex(MathHelper.floor((double)(this.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3).getOpposite());
+        }
     }
-
 }

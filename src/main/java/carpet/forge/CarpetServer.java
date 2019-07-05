@@ -78,7 +78,7 @@ public class CarpetServer
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        MinecraftForge.EVENT_BUS.register(FlippinCactus.class);
+    
     }
 
     @Mod.EventHandler
