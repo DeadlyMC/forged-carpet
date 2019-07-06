@@ -1,6 +1,6 @@
 {
   "minVersion": "0.7.4",
-  "package": "carpet.forge.mixin.fastredstone",
+  "package": "carpet.forge.mixin",
   "refmap": "mixins.carpet.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",

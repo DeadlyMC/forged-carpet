@@ -1,4 +1,4 @@
-package carpet.forge.mixin.newlight;
+package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
