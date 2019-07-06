@@ -100,9 +100,6 @@ public class CarpetServer
         //event.registerServerCommand(new CommandRNG());
         event.registerServerCommand(new CommandTickingArea());
         event.registerServerCommand(new CommandStructure());
-        event.registerServerCommand(new CommandCarpetFill());
-        event.registerServerCommand(new CommandCarpetClone());
-        event.registerServerCommand(new CommandCarpetSetBlock());
     }
 
     @Mod.EventHandler

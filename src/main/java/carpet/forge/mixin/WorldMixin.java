@@ -192,12 +192,4 @@ public abstract class WorldMixin implements IWorld
     {
         return this.lightingEngine;
     }
-    
-    @ModifyConstant(method = "markAndNotifyBlock", constant = @Constant(intValue = 16))
-    private int onMarkAndNotifyBlock(int original)
-    {
-        if (CarpetSettings.impendingFillSkipUpdates)
-            return 128;
-        return original;
-    }
 }

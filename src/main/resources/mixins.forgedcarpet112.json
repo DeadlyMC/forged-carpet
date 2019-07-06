@@ -35,13 +35,21 @@
     "PlayerInteractionManagerMixin",
     "PlayerListMixin",
     "StructureStartMixin",
-    "TemplateMixin",
+    "Template_fillUpdatesMixin",
     "TileEntityMixin",
     "TileEntityHopperMixin",
     "TileEntityPistonMixin",
     "WorldMixin",
     "WorldEntitySpawnerMixin",
-    "WorldServerMixin"
+    "WorldServerMixin",
+
+    "Chunk_fillUpdatesMixin",
+    "CommandCloneMixin",
+    "CommandFillMixin",
+    "CommandHandlerMixin",
+    "CommandSetBlockMixin",
+    "TileEntityStructure_fillUpdatesMixin",
+    "World_fillUpdatesMixin"
   ],
   "server": [
     "DedicatedServerMixin"

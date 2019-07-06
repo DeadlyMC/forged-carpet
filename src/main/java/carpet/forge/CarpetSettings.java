@@ -100,27 +100,6 @@ public class CarpetSettings
     @Rule(desc = "Enables /ping for players to get their ping", category = COMMANDS)
     public static boolean commandPing = true;
     
-    @Rule(
-            desc = "Enable /carpetfill command",
-            category = COMMANDS,
-            extra = "This is a replica of /fill for fillUpdates and fillLimits"
-    )
-    public static boolean commandCarpetFill = true;
-    
-    @Rule(
-            desc = "Enable /carpetclone command",
-            category = COMMANDS,
-            extra = "This is a replica of /clone for fillUpdates and fillLimits"
-    )
-    public static boolean commandCarpetClone = true;
-    
-    @Rule(
-            desc = "Enable /carpetsetblock command",
-            category = COMMANDS,
-            extra = "This is a replica of /setblock for fillUpdates and fillLimits"
-    )
-    public static boolean commandCarpetSetBlock = true;
-    
     
     // ===== CREATIVE TOOLS ===== //
     
