@@ -1,13 +1,9 @@
 package carpet.forge.mixin;
 
-import carpet.forge.CarpetSettings;
 import carpet.forge.utils.CarpetProfiler;
 import carpet.forge.utils.LightingEngine;
-import carpet.forge.utils.TickingArea;
 import carpet.forge.utils.mixininterfaces.IChunk;
 import carpet.forge.utils.mixininterfaces.IWorld;
-import com.google.common.collect.Lists;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.profiler.Profiler;
@@ -37,9 +33,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public abstract class WorldMixin implements IWorld
 {
     
-    public final List<TickingArea> tickingAreas = Lists.newArrayList();
-    public final LongOpenHashSet tickingChunks = new LongOpenHashSet();
-    
     @Shadow
     @Final
     public WorldProvider provider;
@@ -47,18 +40,6 @@ public abstract class WorldMixin implements IWorld
     @Shadow
     @Final
     public Random rand;
-    
-    // [FCM] TickingAreas
-    @Override
-    public List<TickingArea> getTickingAreas()
-    {
-        return tickingAreas;
-    }
-    @Override
-    public LongOpenHashSet getTickingChunks()
-    {
-        return tickingChunks;
-    }
     
     @Override
     // [FCM] CommandRNG stuff

@@ -1,10 +1,7 @@
 package carpet.forge;
 
-import carpet.forge.utils.TickingArea;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -152,34 +149,6 @@ public class CarpetSettings
     
     @Rule(desc = "Spawned mobs that would otherwise despawn immediately, won't be placed in world", category = OPTIMIZATIONS)
     public static boolean optimizedDespawnRange = false;
-    
-    @Rule(
-            desc = "Enable use of ticking areas.",
-            category = {CREATIVE, EXPERIMENTAL},
-            validator = "validateTickingAreas",
-            extra = {
-            "As set by the /tickingarea command.",
-            "Ticking areas work as if they are the spawn chunks."
-            }
-    )
-    public static boolean tickingAreas = false;
-    private static boolean validateTickingAreas(boolean value) {
-        if (value && CarpetServer.minecraft_server.worlds != null)
-            TickingArea.initialChunkLoad(CarpetServer.minecraft_server, false);
-        return true;
-    }
-    
-    @Rule(desc = "Removes the spawn chunks.", category = CREATIVE, validator = "validateDisableSpawnChunks")
-    public static boolean disableSpawnChunks = false;
-    private static boolean validateDisableSpawnChunks(boolean value) {
-        if (!value && CarpetServer.minecraft_server.worlds != null)
-        {
-            World overworld = CarpetServer.minecraft_server.worlds[0];
-            for (ChunkPos chunk : new TickingArea.SpawnChunks().listIncludedChunks(overworld))
-                overworld.getChunkProvider().provideChunk(chunk.x, chunk.z);
-        }
-        return true;
-    }
     
     @Rule(desc = "fill/clone/setblock and structure blocks cause block updates", category = CREATIVE)
     @CreativeDefault("false")

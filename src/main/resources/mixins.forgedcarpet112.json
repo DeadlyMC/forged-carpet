@@ -16,7 +16,6 @@
     "BlockTNTMixin",
     "ChunkMixin",
     "ChunkGeneratorOverworldMixin",
-    "ChunkProviderServerMixin",
     "ContainerMixin",
     "EntityMixin",
     "EntityHuskMixin",

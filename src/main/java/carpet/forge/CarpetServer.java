@@ -1,16 +1,13 @@
 package carpet.forge;
 
 import carpet.forge.commands.*;
-import carpet.forge.helper.FlippinCactus;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.logging.LoggerRegistry;
 import carpet.forge.proxy.CommonProxy;
 import carpet.forge.utils.HUDController;
 import carpet.forge.utils.Reference;
-import carpet.forge.utils.TickingArea;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
@@ -43,13 +40,6 @@ public class CarpetServer
 
     public static void onGameStarted() {
         LoggerRegistry.initLoggers();
-    }
-
-    public static void onLoadAllWorlds(MinecraftServer server) {
-        TickingArea.loadConfig(server);
-    }
-    public static void onWorldsSaved(MinecraftServer server) {
-        TickingArea.saveConfig(server);
     }
 
     public static void onServerLoaded(MinecraftServer server) {
@@ -98,7 +88,6 @@ public class CarpetServer
         event.registerServerCommand(new CommandUnload());
         event.registerServerCommand(new CommandUnload13());
         //event.registerServerCommand(new CommandRNG());
-        event.registerServerCommand(new CommandTickingArea());
         event.registerServerCommand(new CommandStructure());
     }
 
