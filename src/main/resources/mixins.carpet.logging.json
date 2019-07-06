@@ -5,16 +5,16 @@
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinEntityFallingBlock",
-    "MixinEntityLivingBase",
-    "MixinEntityMob",
-    "MixinEntityPlayer",
-    "MixinEntityPlayerMP",
-    "MixinEntitySlime",
-    "MixinEntityThrowable",
-    "MixinEntityTNTPrimed",
-    "MixinGuiInGameForge",
-    "MixinNetworkManager",
-    "MixinWorld"
+    "EntityFallingBlockMixin",
+    "EntityLivingBaseMixin",
+    "EntityMobMixin",
+    "EntityPlayerMixin",
+    "EntityPlayerMPMixin",
+    "EntitySlimeMixin",
+    "EntityThrowableMixin",
+    "EntityTNTPrimedMixin",
+    "GuiInGameForgeMixin",
+    "NetworkManagerMixin",
+    "WorldMixin"
   ]
 }
