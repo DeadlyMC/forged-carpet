@@ -27,6 +27,7 @@ public class CarpetSettings
     public static final String minecraftVersion = "1.12.2";
     public static final Logger LOG = LogManager.getLogger();
     public static boolean locked = false;
+    public static boolean impendingFillSkipUpdates = false;
     
     // ===== COMMANDS ===== //
     /*
