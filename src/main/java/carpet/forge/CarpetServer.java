@@ -26,12 +26,10 @@ import org.apache.logging.log4j.Logger;
 )
 public class CarpetServer
 {
-
     public static Logger logger;
     public static MinecraftServer minecraft_server;
 
-    public CarpetServer() {
-    }
+    public CarpetServer() { }
 
     @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
     public static CommonProxy proxy;
@@ -47,23 +45,21 @@ public class CarpetServer
         LoggerRegistry.initLoggers();
     }
 
-    public static void onLoadAllWorlds(MinecraftServer server)
-    {
+    public static void onLoadAllWorlds(MinecraftServer server) {
         TickingArea.loadConfig(server);
     }
-    public static void onWorldsSaved(MinecraftServer server)
-    {
+    public static void onWorldsSaved(MinecraftServer server) {
         TickingArea.saveConfig(server);
     }
 
-    public static void onServerLoaded(MinecraftServer server)
-    {
+    public static void onServerLoaded(MinecraftServer server) {
         CarpetSettings.applySettingsFromConf(server);
     }
 
     public static void tick(MinecraftServer server) {
         TickSpeed.tick(server);
         HUDController.update_hud(server);
+        CarpetSettings.impendingFillSkipUpdates = false;
     }
 
     public static void playerConnected(EntityPlayerMP player) {
