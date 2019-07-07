@@ -10,7 +10,6 @@
     "BiomeSpawnListEntryMixin",
     "BlockHopperMixin",
     "BlockObserverMixin",
-    "BlockPistonBaseMixin",
     "BlockShulkerBoxMixin",
     "BlockSilverfishMixin",
     "BlockTNTMixin",
