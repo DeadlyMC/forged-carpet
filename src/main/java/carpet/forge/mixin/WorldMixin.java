@@ -1,33 +1,21 @@
 package carpet.forge.mixin;
 
 import carpet.forge.utils.CarpetProfiler;
-import carpet.forge.utils.LightingEngine;
-import carpet.forge.utils.mixininterfaces.IChunk;
 import carpet.forge.utils.mixininterfaces.IWorld;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.profiler.Profiler;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.storage.ISaveHandler;
-import net.minecraft.world.storage.WorldInfo;
 import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Mixin(World.class)
 public abstract class WorldMixin implements IWorld
@@ -36,39 +24,6 @@ public abstract class WorldMixin implements IWorld
     @Shadow
     @Final
     public WorldProvider provider;
-    
-    @Shadow
-    @Final
-    public Random rand;
-    
-    @Override
-    // [FCM] CommandRNG stuff
-    public long getRandSeed()
-    {
-        try
-        {
-            Field field = Random.class.getDeclaredField("seed");
-            field.setAccessible(true);
-            AtomicLong scrambledSeed = (AtomicLong) field.get(rand);   //this needs to be XOR'd with 0x5DEECE66DL
-            return scrambledSeed.get();
-            // Minecraft.getMinecraft().player.sendChatMessage(chunk.x + ", " + chunk.z + ", seed " + theSeed);
-        }
-        catch (Exception e)
-        {
-        }
-        
-        return 0;
-    }
-    
-    // [FCM ]modified for fillUpdates = false
-    @Redirect(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;)Lnet/minecraft/block/state/IBlockState;"))
-    private IBlockState setBlockStateCarpet(Chunk chunk, BlockPos pos, IBlockState state, BlockPos methodPos,
-            IBlockState newState, int flags)
-    {
-        // [FCM] Carpet added flag
-        return ((IChunk) chunk).setBlockState_carpet(methodPos, newState, ((flags & 128) != 0) ? true : false);
-    }
     
     @Inject(method = "updateEntities", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/profiler/Profiler;endSection()V",
             ordinal = 0))
@@ -155,22 +110,5 @@ public abstract class WorldMixin implements IWorld
         {
             CarpetProfiler.end_current_entity_section();
         }
-    }
-    
-    @Final
-    @Mutable
-    private LightingEngine lightingEngine;
-    
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn,
-            Profiler profilerIn, boolean client, CallbackInfo ci)
-    {
-        this.lightingEngine = new LightingEngine((World) (Object) this);
-    }
-    
-    @Override
-    public LightingEngine getLightingEngine()
-    {
-        return this.lightingEngine;
     }
 }

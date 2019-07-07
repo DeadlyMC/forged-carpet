@@ -2,7 +2,7 @@ package carpet.forge.utils.mixininterfaces;
 
 import carpet.forge.utils.LightingEngine;
 
-public interface IWorld {
+public interface IWorld
+{
     LightingEngine getLightingEngine();
-    long getRandSeed();
 }

@@ -2,7 +2,6 @@ package carpet.forge.mixin;
 
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.utils.CarpetProfiler;
-import carpet.forge.utils.mixininterfaces.IWorldServer;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -32,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Mixin(value = WorldServer.class, priority = 900)
-public abstract class WorldServerMixin extends World implements IWorldServer
+public abstract class WorldServerMixin extends World
 {
 
     @Shadow
@@ -53,9 +52,6 @@ public abstract class WorldServerMixin extends World implements IWorldServer
     @Shadow
     @Final
     private Teleporter worldTeleporter;
-
-    // New boolean
-    private boolean blockActionsProcessed;
 
     protected WorldServerMixin(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client)
     {
@@ -279,26 +275,5 @@ public abstract class WorldServerMixin extends World implements IWorldServer
                 }
             }
         }
-
     }
-
-    // [FCM] Fix for pistonGhostBlocks breaking caterpillar engine - start
-    @Inject(method = "tick", at = @At("HEAD"))
-    private void resetBlockActionsProcessed(CallbackInfo ci)
-    {
-        this.blockActionsProcessed = false;
-    }
-
-    @Inject(method = "sendQueuedBlockEvents", at = @At("RETURN"))
-    private void setBlockActionsProcessed(CallbackInfo ci)
-    {
-        this.blockActionsProcessed = true;
-    }
-
-    @Override
-    public boolean haveBlockActionsProcessed()
-    {
-        return this.blockActionsProcessed;
-    }
-    // [FCM] Fix for pistonGhostBlocks breaking caterpillar engine - end
 }
