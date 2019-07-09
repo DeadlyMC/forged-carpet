@@ -13,7 +13,6 @@
     "BlockShulkerBoxMixin",
     "BlockSilverfishMixin",
     "BlockTNTMixin",
-    "ChunkMixin",
     "ChunkGeneratorOverworldMixin",
     "ContainerMixin",
     "EntityMixin",
