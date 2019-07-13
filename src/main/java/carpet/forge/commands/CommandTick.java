@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandTick extends CarpetCommandBase
+public class CommandTick extends CommandCarpetBase
 {
     @Override
     public String getName()

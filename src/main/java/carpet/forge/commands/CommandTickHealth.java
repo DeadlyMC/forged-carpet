@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandTickHealth extends CarpetCommandBase
+public class CommandTickHealth extends CommandCarpetBase
 {
     @Override
     public String getName()

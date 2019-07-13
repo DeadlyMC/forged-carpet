@@ -36,7 +36,7 @@ import net.minecraft.world.gen.IChunkGenerator;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class CommandRNG// extends CarpetCommandBase
+public class CommandRNG// extends CommandCarpetBase
 {
     
     /*

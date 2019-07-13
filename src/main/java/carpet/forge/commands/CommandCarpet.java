@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import carpet.forge.CarpetSettings;
 import net.minecraft.util.text.ITextComponent;
 
-public class CommandCarpet extends CarpetCommandBase
+public class CommandCarpet extends CommandCarpetBase
 {
     /**
      * Gets the name of the command

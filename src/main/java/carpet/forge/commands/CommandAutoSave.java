@@ -11,7 +11,8 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandAutoSave extends CarpetCommandBase {
+public class CommandAutoSave extends CommandCarpetBase
+{
     @Override
     public String getName() {
         return "autosave";

@@ -33,7 +33,8 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class CommandStructure extends CarpetCommandBase {
+public class CommandStructure extends CommandCarpetBase
+{
 
     private static final String USAGE = "/structure <load|save|list> ...";
     private static final String USAGE_LOAD = "/structure load <name> [pos: x y z] [mirror] [rotation] [ignoreEntities] [integrity] [seed]";

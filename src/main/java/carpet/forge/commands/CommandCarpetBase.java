@@ -10,15 +10,17 @@ import net.minecraft.util.text.ITextComponent;
 
 import java.util.List;
 
-public abstract class CarpetCommandBase extends CommandBase
+public abstract class CommandCarpetBase extends CommandBase
 {
     @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
+    {
         return true;
     }
     
     @Override
-    public int getRequiredPermissionLevel() {
+    public int getRequiredPermissionLevel()
+    {
         return 0;
     }
     
@@ -34,6 +36,7 @@ public abstract class CarpetCommandBase extends CommandBase
             for (ITextComponent t: texts) notifyCommandListener(sender, this, t.getUnformattedText());
         }
     }
+    
     public boolean command_enabled(String command_name, ICommandSender sender)
     {
         if (!CarpetSettings.get(command_name).equalsIgnoreCase("true"))
@@ -55,6 +58,4 @@ public abstract class CarpetCommandBase extends CommandBase
         }
         return true;
     }
-
-
 }

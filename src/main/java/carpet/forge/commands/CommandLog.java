@@ -17,7 +17,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class CommandLog extends CarpetCommandBase {
+public class CommandLog extends CommandCarpetBase
+{
     @Override
     public String getName() {
         return "log";

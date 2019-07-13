@@ -15,7 +15,8 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandGMC extends CarpetCommandBase {
+public class CommandGMC extends CommandCarpetBase
+{
     @Override
     public String getName() {
         return "c";

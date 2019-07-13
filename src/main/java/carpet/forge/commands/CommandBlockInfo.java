@@ -13,7 +13,8 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandBlockInfo extends CarpetCommandBase {
+public class CommandBlockInfo extends CommandCarpetBase
+{
     @Override
     public String getName() {
         return "blockinfo";

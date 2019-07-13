@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandCounter extends CarpetCommandBase{
+public class CommandCounter extends CommandCarpetBase
+{
     @Override
     public String getName() {
         return "counter";

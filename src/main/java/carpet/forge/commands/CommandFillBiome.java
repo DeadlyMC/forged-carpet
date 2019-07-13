@@ -17,7 +17,8 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandFillBiome extends CarpetCommandBase {
+public class CommandFillBiome extends CommandCarpetBase
+{
     @Override
     public String getName() {
         return "fillbiome";

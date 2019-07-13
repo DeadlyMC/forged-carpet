@@ -13,7 +13,8 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandGMS extends CarpetCommandBase {
+public class CommandGMS extends CommandCarpetBase
+{
     @Override
     public String getName() {
         return "s";

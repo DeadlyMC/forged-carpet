@@ -22,7 +22,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumDyeColor;
 import java.util.ArrayList;
 
-public class CommandSpawn extends CarpetCommandBase{
+public class CommandSpawn extends CommandCarpetBase
+{
 
     @Override
     public String getName() {

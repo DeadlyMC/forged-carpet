@@ -19,7 +19,8 @@ import net.minecraft.command.ICommandSender;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-public class CommandEntityInfo extends CarpetCommandBase {
+public class CommandEntityInfo extends CommandCarpetBase
+{
 
     @Override
     public String getName()

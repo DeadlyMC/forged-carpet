@@ -12,7 +12,8 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandDistance extends CarpetCommandBase {
+public class CommandDistance extends CommandCarpetBase
+{
     @Override
     public String getName() {
         return "distance";
