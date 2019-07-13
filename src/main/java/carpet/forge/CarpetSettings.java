@@ -82,9 +82,6 @@ public class CarpetSettings
     @Rule(desc = "Enables /perimeterinfo command that scans the area around the block for potential spawnable spots", category = COMMANDS)
     public static boolean commandPerimeterInfo = true;
     
-    @Rule(desc = "Enables /rng command to manipulate and query rng", category = COMMANDS)
-    public static boolean commandRNG = true;
-    
     @Rule(desc = "Enables /structure to manage NBT structures used by structure blocks", category = COMMANDS)
     public static boolean commandStructure = true;
     
