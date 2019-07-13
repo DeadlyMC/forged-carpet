@@ -47,7 +47,7 @@ public class WoolTool {
                 {
                     EnumDyeColor under = getWoolColorAtPosition(worldIn, pos.down());
                     if (under == null) return;
-                    Messenger.send(placer, HopperCounter.query_hopper_stats_for_color(worldIn.getMinecraftServer(), under.toString(), false, false));
+                    Messenger.send(placer, HopperCounter.COUNTERS.get(under).format(worldIn.getMinecraftServer(), false, false));
                 }
                 break;
             case RED:

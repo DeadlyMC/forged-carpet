@@ -47,7 +47,6 @@ public abstract class TileEntityHopperMixin extends TileEntityLockableLoot
     @Inject(method = "transferItemsOut", at = @At("HEAD"), cancellable = true)
     private void transferItemsOut(CallbackInfoReturnable<Boolean> cir)
     {
-
         if (CarpetSettings.hopperCounters)
         {
             EnumDyeColor wool_color = this.get_wool_pointing();
@@ -57,16 +56,14 @@ public abstract class TileEntityHopperMixin extends TileEntityLockableLoot
                 {
                     if (!this.getStackInSlot(i).isEmpty())
                     {
-                        ItemStack itemstack = this.getStackInSlot(i);
-                        HopperCounter.count_hopper_items(this.getWorld(), wool_color, itemstack);
+                        ItemStack itemstack = this.getStackInSlot(i);//.copy();
+                        HopperCounter.COUNTERS.get(wool_color).add(this.getWorld().getMinecraftServer(), itemstack);
                         this.setInventorySlotContents(i, ItemStack.EMPTY);
                     }
                 }
                 cir.setReturnValue(true);
-
             }
         }
-
     }
 
 }
