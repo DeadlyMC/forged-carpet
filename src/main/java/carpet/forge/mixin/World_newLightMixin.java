@@ -22,6 +22,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(World.class)
 public abstract class World_newLightMixin implements IWorld
 {
+    @Final
+    @Mutable
+    private LightingEngine lightingEngine;
+    
     @Inject(method = "checkLightFor", at = @At("HEAD"), cancellable = true)
     private void onCheckLightFor(EnumSkyBlock lightType, BlockPos pos, CallbackInfoReturnable<Boolean> cir)
     {
@@ -32,10 +36,6 @@ public abstract class World_newLightMixin implements IWorld
             cir.setReturnValue(true);
         }
     }
-    
-    @Final
-    @Mutable
-    private LightingEngine lightingEngine;
     
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onInit(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn,

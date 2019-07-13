@@ -36,9 +36,9 @@
     "TileEntityMixin",
     "TileEntityHopperMixin",
     "TileEntityPistonMixin",
-    "WorldMixin",
+    "World_tickMixin",
     "WorldEntitySpawnerMixin",
-    "WorldServerMixin",
+    "WorldServer_tickMixin",
 
     "Chunk_fillUpdatesMixin",
     "CommandCloneMixin",
@@ -46,7 +46,9 @@
     "CommandHandlerMixin",
     "CommandSetBlockMixin",
     "TileEntityStructure_fillUpdatesMixin",
-    "World_fillUpdatesMixin"
+    "World_fillUpdatesMixin",
+
+    "MinecraftServer_coreMixin"
   ],
   "server": [
     "DedicatedServerMixin"

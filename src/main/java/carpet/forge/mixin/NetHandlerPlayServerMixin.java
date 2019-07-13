@@ -11,11 +11,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(NetHandlerPlayServer.class)
 public abstract class NetHandlerPlayServerMixin
 {
-	@Inject(method = "processInput", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayerMP;setEntityActionState(FFZZ)V"))
-	private void isPlayerMoving(CPacketInput packetIn, CallbackInfo ci) {
+	@Inject(
+			method = "processInput",
+			at = @At(value = "INVOKE", shift = At.Shift.AFTER,
+					target = "Lnet/minecraft/entity/player/EntityPlayerMP;setEntityActionState(FFZZ)V")
+	)
+	private void onProcessInput(CPacketInput packetIn, CallbackInfo ci)
+	{
 		// [FCM] Checking if player is moving, for commandTick
-		if (packetIn.getStrafeSpeed() != 0.0F || packetIn.getForwardSpeed() != 0.0F || packetIn.isJumping()
-				|| packetIn.isSneaking()) {
+		if (packetIn.getStrafeSpeed() != 0.0F || packetIn.getForwardSpeed() != 0.0F || packetIn.isJumping() || packetIn.isSneaking())
+		{
 			TickSpeed.reset_player_active_timeout();
 		}
 	}
