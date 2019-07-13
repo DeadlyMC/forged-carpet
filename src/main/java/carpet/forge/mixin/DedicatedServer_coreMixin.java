@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(DedicatedServer.class)
-public abstract class DedicatedServerMixin
+public abstract class DedicatedServer_coreMixin
 {
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerProfileCache;setOnlineMode(Z)V"))
     private void gameStartHook(CallbackInfoReturnable<Boolean> cir)

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerList.class)
-public abstract class PlayerListMixin
+public abstract class PlayerList_coreMixin
 {
     @Inject(method = "playerLoggedIn", at = @At(value = "RETURN"))
     private void onPlayerLoggedIn(EntityPlayerMP playerIn, CallbackInfo ci)

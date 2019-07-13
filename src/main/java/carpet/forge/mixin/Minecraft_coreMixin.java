@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
-public abstract class MinecraftMixin
+public abstract class Minecraft_coreMixin
 {
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/RenderGlobal;makeEntityOutlineShader()V"))
     private void carpetGameStarted(CallbackInfo ci)

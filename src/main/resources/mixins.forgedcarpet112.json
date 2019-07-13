@@ -5,6 +5,9 @@
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MinecraftServer_coreMixin",
+    "PlayerList_coreMixin",
+
     "IMixinEntityVillager",
     "IMixinSlot",
     "BiomeSpawnListEntryMixin",
@@ -30,15 +33,14 @@
     "NetHandlerPlayServerMixin",
     "PlayerInteractionManager_cactusMixin",
     "PlayerInteractionManagerMixin",
-    "PlayerListMixin",
     "StructureStartMixin",
-    "Template_fillUpdatesMixin",
     "TileEntityMixin",
     "TileEntityHopperMixin",
     "TileEntityPistonMixin",
-    "World_tickMixin",
     "WorldEntitySpawnerMixin",
+
     "WorldServer_tickMixin",
+    "World_tickMixin",
 
     "Chunk_fillUpdatesMixin",
     "CommandCloneMixin",
@@ -47,14 +49,13 @@
     "CommandSetBlockMixin",
     "TileEntityStructure_fillUpdatesMixin",
     "World_fillUpdatesMixin",
-
-    "MinecraftServer_coreMixin"
+    "Template_fillUpdatesMixin"
   ],
   "server": [
-    "DedicatedServerMixin"
+    "DedicatedServer_coreMixin"
   ],
   "client": [
-    "IntegratedServerMixin",
-    "MinecraftMixin"
+    "IntegratedServer_coreMixin",
+    "Minecraft_coreMixin"
   ]
 }
