@@ -1,123 +1,91 @@
 package carpet.forge.mixin;
 
-import carpet.forge.utils.mixininterfaces.IItemStack;
+import carpet.forge.CarpetSettings;
+import carpet.forge.utils.ShulkerStackingUtils;
+import carpet.forge.utils.mixininterfaces.IEntityItem;
+import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = EntityItem.class, priority = 900)
-public abstract class EntityItemMixin extends Entity
+//CREDITS : Masa (Tweakeroo)
+@Mixin(EntityItem.class)
+public abstract class EntityItemMixin extends Entity implements IEntityItem
 {
+    @Shadow private int age;
     
-    @Shadow
-    private int pickupDelay;
-    @Shadow
-    private int age;
+    @Shadow private int pickupDelay;
     
     public EntityItemMixin(World worldIn)
     {
         super(worldIn);
     }
     
-    @Shadow
-    public abstract ItemStack getItem();
-    
-    /**
-     * @author DeadlyMC
-     * @reason Items don't stack if u do it using redirecting forge else if statements
-     */
-    @Overwrite
-    public boolean combineItems(EntityItem other)
+    @Override
+    public int getPickupDelay()
     {
-        if (other == (EntityItem) (Object) this)
+        return this.pickupDelay;
+    }
+    
+    @Inject(method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/item/ItemStack;)V", at = @At("RETURN"))
+    private void removeEmptyShulkerBoxTags(World worldIn, double x, double y, double z, ItemStack stack, CallbackInfo ci)
+    {
+        if (CarpetSettings.stackableEmptyShulkerBoxes)
         {
-            return false;
-        }
-        else if (other.isEntityAlive() && this.isEntityAlive())
-        {
-            ItemStack itemstack = this.getItem();
-            ItemStack itemstack1 = other.getItem();
-            
-            if (this.pickupDelay != 32767 && other.pickupDelay != 32767)
+            if (stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlock() instanceof BlockShulkerBox)
             {
-                if (this.age != -32768 && other.age != -32768)
+                if (ShulkerStackingUtils.cleanUpShulkerBoxNBT(stack))
                 {
-                    if (itemstack1.getItem() != itemstack.getItem())
-                    {
-                        return false;
-                    }
-                    else if (itemstack1.hasTagCompound() ^ itemstack.hasTagCompound())
-                    {
-                        return false;
-                    }
-                    else if (itemstack1.hasTagCompound() && !itemstack1.getTagCompound().equals(itemstack.getTagCompound()))
-                    {
-                        return false;
-                    }
-                    else if (itemstack1.getItem() == null)
-                    {
-                        return false;
-                    }
-                    else if (itemstack1.getItem().getHasSubtypes() && itemstack1.getMetadata() != itemstack.getMetadata())
-                    {
-                        return false;
-                    }
-                    else if (itemstack1.getCount() < itemstack.getCount())
-                    {
-                        return other.combineItems((EntityItem) (Object) this);
-                    }
-                    else if (itemstack1.getCount() + itemstack.getCount() > itemstack1.getMaxStackSize())
-                    {
-                        // [FCM] Add check for stacking shoulkers without NBT on the ground
-                        if (((IItemStack) (Object) itemstack1).isGroundStackable() && ((IItemStack) (Object) itemstack).isGroundStackable())
-                        {
-                            itemstack1.grow(itemstack.getCount());
-                            other.pickupDelay = Math.max(other.pickupDelay, this.pickupDelay);
-                            other.age = Math.min(other.age, this.age);
-                            other.setItem(itemstack1);
-                            this.setDead();
-                            return true;
-                        }
-                        return false;
-                    }
-                    else if (!itemstack.areCapsCompatible(itemstack1))
-                    {
-                        return false;
-                    }
-                    // [FCM] Make sure stackable items are checked before combining them, always true in vanilla
-                    else if (!itemstack1.isStackable() && !itemstack.isStackable())
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        itemstack1.grow(itemstack.getCount());
-                        other.pickupDelay = Math.max(other.pickupDelay, this.pickupDelay);
-                        other.age = Math.min(other.age, this.age);
-                        other.setItem(itemstack1);
-                        this.setDead();
-                        return true;
-                    }
-                }
-                else
-                {
-                    return false;
+                    ((EntityItem) (Object) this).setItem(stack);
                 }
             }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
         }
     }
     
-    
+    @Inject(method = "combineItems", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", ordinal = 0), cancellable = true)
+    private void tryStackShulkerBoxes(EntityItem other, CallbackInfoReturnable<Boolean> cir)
+    {
+        if (CarpetSettings.stackableEmptyShulkerBoxes)
+        {
+            EntityItem self = (EntityItem) (Object) this;
+            ItemStack stackSelf = self.getItem();
+            ItemStack stackOther = other.getItem();
+            
+            if (stackSelf.getItem() instanceof ItemBlock && ((ItemBlock) stackSelf.getItem()).getBlock() instanceof BlockShulkerBox &&
+                        stackSelf.getItem() == stackOther.getItem() &&
+                        ShulkerStackingUtils.shulkerBoxHasItems(stackSelf) == false &&
+                        // Only stack up to 64, and don't steal from other stacks that are larger
+                        stackSelf.getCount() < 64 && stackSelf.getCount() >= stackOther.getCount() &&
+                        ItemStack.areItemStackTagsEqual(stackSelf, stackOther))
+            {
+                int amount = Math.min(stackOther.getCount(), 64 - stackSelf.getCount());
+                stackSelf.grow(amount);
+                self.setItem(stackSelf);
+                this.pickupDelay = Math.max(((IEntityItem) other).getPickupDelay(), this.pickupDelay);
+                this.age = Math.min(other.getAge(), this.age);
+                
+                if (amount >= stackOther.getCount())
+                {
+                    other.setDead();
+                }
+                else
+                {
+                    stackOther.shrink(amount);
+                    other.setItem(stackOther);
+                }
+                
+                cir.setReturnValue(true);
+                cir.cancel();
+            }
+        }
+    }
 }
