@@ -1,7 +1,7 @@
 package carpet.forge.utils;
 
 import carpet.forge.CarpetServer;
-import carpet.forge.utils.mixininterfaces.IMixinEntity;
+import carpet.forge.utils.mixininterfaces.IEntity;
 import carpet.forge.utils.mixininterfaces.IMixinTileEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
@@ -96,7 +96,7 @@ public class CarpetProfiler
         {
             end_current_section();
         }
-        current_section = dimension+"."+((IMixinEntity)e).cm_name();
+        current_section = dimension+"."+((IEntity)e).cm_name();
         current_section_start = System.nanoTime();
     }
 

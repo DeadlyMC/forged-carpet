@@ -1,6 +1,7 @@
 package carpet.forge.utils.mixininterfaces;
 
-public interface IMixinEntity {
+public interface IEntity
+{
     int getFire();
     String cm_name();
 }
