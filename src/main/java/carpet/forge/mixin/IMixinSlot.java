@@ -5,8 +5,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(Slot.class)
-public interface IMixinSlot {
-
+public interface IMixinSlot
+{
     @Invoker
     void invokeOnSwapCraft(int p_190900_1_);
 }

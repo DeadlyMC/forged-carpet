@@ -1,6 +1,6 @@
 package carpet.forge.helper;
 
-import carpet.forge.CarpetMain;
+import carpet.forge.CarpetServer;
 import carpet.forge.utils.Messenger;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ICommandSender;
@@ -116,7 +116,7 @@ public class TickSpeed
         }
         else
         {
-            Messenger.print_server_message(CarpetMain.minecraft_server, String.format("... Time warp completed with %d tps, or %.2f mspt",tps, mspt ));
+            Messenger.print_server_message(CarpetServer.minecraft_server, String.format("... Time warp completed with %d tps, or %.2f mspt",tps, mspt ));
         }
         time_bias = 0;
 

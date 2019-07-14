@@ -1,7 +1,7 @@
 package carpet.forge.utils;
 
-import carpet.forge.CarpetMain;
-import carpet.forge.utils.mixininterfaces.IMixinEntity;
+import carpet.forge.CarpetServer;
+import carpet.forge.utils.mixininterfaces.IEntity;
 import carpet.forge.utils.mixininterfaces.IMixinTileEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
@@ -96,7 +96,7 @@ public class CarpetProfiler
         {
             end_current_section();
         }
-        current_section = dimension+"."+((IMixinEntity)e).cm_name();
+        current_section = dimension+"."+((IEntity)e).cm_name();
         current_section_start = System.nanoTime();
     }
 
@@ -131,7 +131,7 @@ public class CarpetProfiler
         }
         if (current_section == null)
         {
-            CarpetMain.logger.error("finishing section that hasn't started");
+            CarpetServer.logger.error("finishing section that hasn't started");
             return;
         }
         //CarpetSettings.LOG.error("finishing section "+current_section);
@@ -153,7 +153,7 @@ public class CarpetProfiler
         }
         if (current_section == null)
         {
-            CarpetMain.logger.error("finishing section that hasn't started");
+            CarpetServer.logger.error("finishing section that hasn't started");
             return;
         }
         //CarpetSettings.LOG.error("finishing section "+current_section);

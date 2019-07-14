@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface IMapGenScatteredFeature
 {
-    List<Biome.SpawnListEntry> getScatteredFeatureSpawnListHusk();
+    List<Biome.SpawnListEntry> getHuskSpawnList();
+    
     boolean isTemple(BlockPos pos);
 }

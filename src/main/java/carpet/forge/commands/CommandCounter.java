@@ -1,6 +1,5 @@
 package carpet.forge.commands;
 
-import carpet.forge.CarpetMain;
 import carpet.forge.CarpetSettings;
 import carpet.forge.helper.HopperCounter;
 import net.minecraft.command.CommandException;
@@ -9,69 +8,72 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
-public class CommandCounter extends CarpetCommandBase{
+public class CommandCounter extends CommandCarpetBase
+{
     @Override
-    public String getName() {
+    public String getName()
+    {
         return "counter";
     }
-
+    
     @Override
-    public String getUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender)
+    {
         return "/counter <color> <reset/realtime>";
     }
-
+    
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-
-        if (!command_enabled("hopperCounters", sender)) return;
-        World world = sender.getEntityWorld();
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    {
+        if (!command_enabled("hopperCounters", sender))
+            return;
         if (args.length == 0)
         {
-
-            msg(sender, HopperCounter.query_hopper_all_stats(server, false));
+            msg(sender, HopperCounter.formatAll(server, false));
             return;
         }
-        if ("realtime".equalsIgnoreCase(args[0]))
+        switch (args[0].toLowerCase(Locale.ROOT))
         {
-            msg(sender, HopperCounter.query_hopper_all_stats(server, true));
-            return;
+            case "realtime":
+                msg(sender, HopperCounter.formatAll(server, true));
+                return;
+            case "reset":
+                HopperCounter.resetAll(server);
+                notifyCommandListener(sender, this, "All counters restarted.");
+                return;
         }
-        if ("reset".equalsIgnoreCase(args[0]))
-        {
-            HopperCounter.reset_hopper_counter(world, null);
-            notifyCommandListener(sender, this, "All counters restarted.");
-            return;
-        }
-        String color = args[0];
+        HopperCounter counter = HopperCounter.getCounter(args[0]);
+        if (counter == null)
+            throw new WrongUsageException("Invalid color");
         if (args.length == 1)
         {
-            msg(sender, HopperCounter.query_hopper_stats_for_color(server, color, false, false));
+            msg(sender, counter.format(server, false, false));
             return;
         }
-        if ("realtime".equalsIgnoreCase(args[1]))
+        switch (args[1].toLowerCase(Locale.ROOT))
         {
-            msg(sender, HopperCounter.query_hopper_stats_for_color(server, color, true, false));
-            return;
-        }
-        if ("reset".equalsIgnoreCase(args[1]))
-        {
-            HopperCounter.reset_hopper_counter(world, color);
-            notifyCommandListener(sender, this, String.format("%s counters restarted.", color));
-            return;
+            case "realtime":
+                msg(sender, counter.format(server, true, false));
+                return;
+            case "reset":
+                counter.reset(server);
+                notifyCommandListener(sender, this, String.format("%s counters restarted.", args[0]));
+                return;
         }
         throw new WrongUsageException(getUsage(sender));
-
+        
     }
-
+    
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    {
         if (!CarpetSettings.hopperCounters)
         {
             return Collections.<String>emptyList();
@@ -82,7 +84,7 @@ public class CommandCounter extends CarpetCommandBase{
             lst.add("reset");
             for (EnumDyeColor clr : EnumDyeColor.values())
             {
-                lst.add(clr.toString());
+                lst.add(clr.name().toLowerCase(Locale.ROOT));
             }
             lst.add("realtime");
             String[] stockArr = new String[lst.size()];

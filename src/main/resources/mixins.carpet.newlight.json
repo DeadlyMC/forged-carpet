@@ -1,21 +1,21 @@
 {
   "minVersion": "0.7.4",
-  "package": "carpet.forge.mixin.newlight",
+  "package": "carpet.forge.mixin",
   "refmap": "mixins.carpet.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinAnvilChunkLoader",
-    "MixinChunk",
-    "MixinChunkProviderServer",
-    "MixinExtendedBlockStorage",
-    "MixinSPacketChunkData",
-    "MixinWorld",
-    "MixinWorldServer"
+    "AnvilChunkLoader_newLightMixin",
+    "Chunk_newLightMixin",
+    "ChunkProviderServer_newLightMixin",
+    "ExtendedBlockStorage_newLightMixin",
+    "SPacketChunkData_newLightMixin",
+    "World_newLightMixin",
+    "WorldServer_newLightMixin"
   ],
   "client": [
-    "MixinChunkClient",
-    "MixinMinecraft",
-    "MixinRenderGlobal"
+    "ChunkClient_newLightMixin",
+    "Minecraft_newLightMixin",
+    "RenderGlobal_newLightMixin"
   ]
 }

@@ -1,8 +1,8 @@
 package carpet.forge.utils;
 
 import carpet.forge.mixin.IMixinEntityVillager;
-import carpet.forge.utils.mixininterfaces.IMixinEntity;
-import carpet.forge.utils.mixininterfaces.IMixinEntitySlime;
+import carpet.forge.utils.mixininterfaces.IEntity;
+import carpet.forge.utils.mixininterfaces.IEntitySlime;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
@@ -41,10 +41,10 @@ public class EntityInfo
         {
             return String.format("%d'%d\"", secs/60, secs%60);
         }
-
+        
         return String.format("%dh%d'%d\"", secs/60/60, (secs % (60*60))/60,(secs % (60*60))%60 );
     }
-
+    
     private static String display_item(ItemStack item)
     {
         if (item == null)
@@ -75,7 +75,7 @@ public class EntityInfo
         }
         return stackname;
     }
-
+    
     public static String entity_short_string(Entity e)
     {
         if (e == null)
@@ -84,31 +84,31 @@ public class EntityInfo
         }
         return String.format("%s at [%.1f, %.1f, %.1f]",e.getDisplayName().getUnformattedText(), e.posX, e.posY, e.posZ);
     }
-
+    
     private static double get_speed(double internal)
     {
         return 43.1*internal;
     }
-
+    
     private static double get_horse_speed_percent(double internal)
     {
         double min = 0.45*0.25;
         double max = (0.45+0.9)*0.25;
         return 100*(internal-min)/(max-min);
     }
-
+    
     private static double get_horse_jump(double x)
     {
         return -0.1817584952 * x*x*x + 3.689713992 * x*x + 2.128599134 * x - 0.343930367;
     }
-
+    
     private static double get_horse_jump_percent(double internal)
     {
         double min = 0.4;
         double max = 1.0;
         return 100*(internal-min)/(max-min);
     }
-
+    
     public static List<String> entityInfo(Entity e, World ws)
     {
         List<String> lst = new ArrayList<String>();
@@ -137,12 +137,12 @@ public class EntityInfo
         {
             lst.add(String.format(" - Dimension: %s", (e.dimension>0)?"The End":((e.dimension<0)?"Nether":"Overworld")));
         }
-        if (((IMixinEntity)e).getFire() > 0) { lst.add(String.format(" - Fire for %d ticks",((IMixinEntity)e).getFire())); }
+        if (((IEntity)e).getFire() > 0) { lst.add(String.format(" - Fire for %d ticks",((IEntity)e).getFire())); }
         if (e.isImmuneToFire() ) { lst.add(" - Immune to fire"); }
         if (e.timeUntilPortal > 0) { lst.add(String.format(" - Portal cooldown for %d ticks",e.timeUntilPortal)); }
         if (e.getIsInvulnerable()) { lst.add(" - Invulnerable"); } //  func_190530_aW()
         if (e.isImmuneToExplosions()) { lst.add(" - Immune to explosions"); }
-
+        
         if (e instanceof EntityItem)
         {
             EntityItem ei = (EntityItem)e;
@@ -168,15 +168,15 @@ public class EntityInfo
             EntityPainting ep = (EntityPainting)e;
             lst.add(String.format(" - Art: %s", ep.art.title ));
         }
-
-
-
-
+        
+        
+        
+        
         if (e instanceof EntityLivingBase)
         {
             EntityLivingBase elb = (EntityLivingBase)e;
             lst.add(String.format(" - Despawn timer: %s", makeTime(elb.getIdleTime())));
-
+            
             lst.add(String.format(" - Health: %.2f/%.2f", elb.getHealth(), elb.getMaxHealth()));
             if (elb.getEntityAttribute(SharedMonsterAttributes.ARMOR).getAttributeValue() > 0.0)
             {
@@ -187,9 +187,9 @@ public class EntityInfo
                 lst.add(String.format(" - Toughness: %.1f",elb.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue()));
             }
             //lst.add(String.format(" - Base speed: %.1fb/s",get_speed(elb.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue())));
-
-
-
+            
+            
+            
             Collection<PotionEffect> potions = elb.getActivePotionEffects();
             if (!potions.isEmpty())
             {
@@ -228,10 +228,10 @@ public class EntityInfo
             {
                 EntityLiving el = (EntityLiving)elb;
                 lst.add(String.format(" - Follow range: %.1f",el.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).getAttributeValue()));
-
+                
                 lst.add(String.format(" - Movement speed factor: %.2f",el.getMoveHelper().getSpeed()));
-
-
+                
+                
                 EntityLivingBase target_elb = el.getAttackTarget();
                 if (target_elb != null)
                 {
@@ -245,7 +245,7 @@ public class EntityInfo
                 {
                     lst.add(" - Won't despawn");
                 }
-
+                
                 if (e instanceof EntityWither)
                 {
                     EntityWither ew = (EntityWither)e;
@@ -278,7 +278,7 @@ public class EntityInfo
                         if (e instanceof EntityVillager)
                         {
                             EntityVillager ev = (EntityVillager) e;
-
+                            
                             InventoryBasic vinv = ev.getVillagerInventory();
                             String inventory_content = "";
                             for (int i = 0; i < vinv.getSizeInventory(); ++i)
@@ -326,14 +326,14 @@ public class EntityInfo
                 }
                 if (e instanceof EntitySlime)
                 {
-                    lst.add(String.format(" - Base attack: %.1f",((IMixinEntitySlime)e).getPublicAttackStrength()));
+                    lst.add(String.format(" - Base attack: %.1f",((IEntitySlime)e).getPublicAttackStrength()));
                 }
             }
         }
-
+        
         return lst;
     }
-
+    
     static void issue_entity_info(EntityPlayer player)
     {
         try

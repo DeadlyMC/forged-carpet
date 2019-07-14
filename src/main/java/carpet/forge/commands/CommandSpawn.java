@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
-import carpet.forge.CarpetMain;
 import carpet.forge.CarpetSettings;
 import carpet.forge.helper.HopperCounter;
 import carpet.forge.helper.TickSpeed;
@@ -23,21 +22,23 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumDyeColor;
 import java.util.ArrayList;
 
-public class CommandSpawn extends CarpetCommandBase{
-
+public class CommandSpawn extends CommandCarpetBase
+{
     @Override
-    public String getName() {
+    public String getName()
+    {
         return "spawn";
     }
 
     @Override
-    public String getUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender)
+    {
         return "/spawn list <X> <Y> <Z>\nspawn entities/rates <... | passive | hostile | ambient | water>\nspawn mobcaps <set <num>, nether, overworld, end>\nspawn tracking <.../stop/start/hostile/passive/water/ambient>\nspawn mocking <true/false>";
     }
-
+    
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    {
         if (!command_enabled("commandSpawn", sender)) return;
         if (args.length == 0)
         {
@@ -57,7 +58,7 @@ public class CommandSpawn extends CarpetCommandBase{
                 return;
             }
         }
-
+        
         else if ("tracking".equalsIgnoreCase(args[0]))
         {
             if (args.length == 1)
@@ -120,7 +121,7 @@ public class CommandSpawn extends CarpetCommandBase{
             long warp = 72000;
             if (args.length >= 2)
             {
-
+                
                 warp = parseInt(args[1], 20, 720000);
                 if (args.length >= 3)
                 {
@@ -130,10 +131,18 @@ public class CommandSpawn extends CarpetCommandBase{
             //stop tracking
             SpawnReporter.reset_spawn_stats(false);
             //start tracking
-            SpawnReporter.track_spawns = (long) world.getMinecraftServer().getTickCounter();
+            SpawnReporter.track_spawns = (long) server.getTickCounter();
             //counter reset
-            HopperCounter.reset_hopper_counter(world, counter);
-
+            if (counter == null)
+            {
+                HopperCounter.resetAll(server);
+            }
+            else
+            {
+                HopperCounter hopperCounter = HopperCounter.getCounter(counter);
+                if (hopperCounter != null) hopperCounter.reset(server);
+            }
+            
             // tick warp 0
             TickSpeed.tickrate_advance(null, 0, null, null);
             // tick warp given player
@@ -145,7 +154,7 @@ public class CommandSpawn extends CarpetCommandBase{
             TickSpeed.tickrate_advance(player, warp, null, sender);
             notifyCommandListener(sender, this, String.format("Started spawn test for %d ticks", warp));
             return;
-
+            
         }
         else if ("mocking".equalsIgnoreCase(args[0]))
         {
@@ -215,11 +224,11 @@ public class CommandSpawn extends CarpetCommandBase{
                     case "end":
                         msg(sender, SpawnReporter.printMobcapsForDimension(world,1,"the end"));
                         return;
-
+                    
                 }
             }
-
-
+            
+            
         }
         else if ("entities".equalsIgnoreCase(args[0]))
         {
@@ -235,9 +244,9 @@ public class CommandSpawn extends CarpetCommandBase{
             }
         }
         throw new WrongUsageException(getUsage(sender), new Object[0]);
-
+        
     }
-
+    
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
@@ -278,7 +287,7 @@ public class CommandSpawn extends CarpetCommandBase{
             if ("test".equalsIgnoreCase(args[0]))
             {
                 return getListOfStringsMatchingLastWord(args, "24000", "72000");
-
+                
             }
         }
         if ("test".equalsIgnoreCase(args[0]) && (args.length == 3))
@@ -306,5 +315,4 @@ public class CommandSpawn extends CarpetCommandBase{
         }
         return Collections.<String>emptyList();
     }
-
 }

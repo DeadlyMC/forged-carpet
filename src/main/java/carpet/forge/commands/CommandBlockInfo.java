@@ -1,6 +1,5 @@
 package carpet.forge.commands;
 
-import carpet.forge.CarpetMain;
 import carpet.forge.CarpetSettings;
 import carpet.forge.utils.BlockInfo;
 import net.minecraft.command.CommandException;
@@ -14,22 +13,25 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandBlockInfo extends CarpetCommandBase {
+public class CommandBlockInfo extends CommandCarpetBase
+{
     @Override
-    public String getName() {
+    public String getName()
+    {
         return "blockinfo";
     }
 
     @Override
-    public String getUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender)
+    {
         return "/blockinfo <X> <Y> <Z>";
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    {
         if (!command_enabled("commandBlockInfo", sender)) return;
-
+    
         if (args.length != 3)
         {
             throw new WrongUsageException(getUsage(sender), new Object[0]);
@@ -37,19 +39,18 @@ public class CommandBlockInfo extends CarpetCommandBase {
         BlockPos blockpos = parseBlockPos(sender, args, 0, false);
         World world = sender.getEntityWorld();
         msg(sender, BlockInfo.blockInfo(blockpos, world));
-
     }
-
+    
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    {
         if (!CarpetSettings.commandBlockInfo)
         {
             return Collections.<String>emptyList();
         }
         if (args.length > 0 && args.length <= 3)
         {
-            return getTabCompletionCoordinate(args, 0, targetPos);
+            return getTabCompletionCoordinate(args, 0, pos);
         }
         return Collections.<String>emptyList();
     }

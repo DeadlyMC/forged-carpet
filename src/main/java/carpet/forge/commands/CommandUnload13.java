@@ -13,7 +13,8 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandUnload13 extends CarpetCommandBase {
+public class CommandUnload13 extends CommandCarpetBase
+{
 
     @Override
     public String getName() {

@@ -1,6 +1,5 @@
 package carpet.forge.commands;
 
-import carpet.forge.CarpetMain;
 import carpet.forge.CarpetSettings;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.utils.CarpetProfiler;
@@ -15,20 +14,23 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandTick extends CarpetCommandBase {
-
+public class CommandTick extends CommandCarpetBase
+{
     @Override
-    public String getName() {
+    public String getName()
+    {
         return "tick";
     }
 
     @Override
-    public String getUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender)
+    {
         return "/tick rate <tickrate in tps> | warp <time in ticks to skip>";
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    {
 
         if (!command_enabled("commandTick", sender)) return;
         if (args.length == 0)

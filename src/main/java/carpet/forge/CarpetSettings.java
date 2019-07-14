@@ -1,10 +1,7 @@
 package carpet.forge;
 
-import carpet.forge.utils.TickingArea;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,6 +24,7 @@ public class CarpetSettings
     public static final String minecraftVersion = "1.12.2";
     public static final Logger LOG = LogManager.getLogger();
     public static boolean locked = false;
+    public static boolean impendingFillSkipUpdates = false;
     
     // ===== COMMANDS ===== //
     /*
@@ -84,12 +82,6 @@ public class CarpetSettings
     @Rule(desc = "Enables /perimeterinfo command that scans the area around the block for potential spawnable spots", category = COMMANDS)
     public static boolean commandPerimeterInfo = true;
     
-    @Rule(desc = "Enables /rng command to manipulate and query rng", category = COMMANDS)
-    public static boolean commandRNG = true;
-    
-    @Rule(desc = "Enables /structure to manage NBT structures used by structure blocks", category = COMMANDS)
-    public static boolean commandStructure = true;
-    
     @Rule(desc = "Enables /fillbiome command to change the biome of an area", category = COMMANDS)
     public static boolean commandFillBiome = true;
     
@@ -98,27 +90,6 @@ public class CarpetSettings
     
     @Rule(desc = "Enables /ping for players to get their ping", category = COMMANDS)
     public static boolean commandPing = true;
-    
-    @Rule(
-            desc = "Enable /carpetfill command",
-            category = COMMANDS,
-            extra = "This is a replica of /fill for fillUpdates and fillLimits"
-    )
-    public static boolean commandCarpetFill = true;
-    
-    @Rule(
-            desc = "Enable /carpetclone command",
-            category = COMMANDS,
-            extra = "This is a replica of /clone for fillUpdates and fillLimits"
-    )
-    public static boolean commandCarpetClone = true;
-    
-    @Rule(
-            desc = "Enable /carpetsetblock command",
-            category = COMMANDS,
-            extra = "This is a replica of /setblock for fillUpdates and fillLimits"
-    )
-    public static boolean commandCarpetSetBlock = true;
     
     
     // ===== CREATIVE TOOLS ===== //
@@ -173,34 +144,6 @@ public class CarpetSettings
     @Rule(desc = "Spawned mobs that would otherwise despawn immediately, won't be placed in world", category = OPTIMIZATIONS)
     public static boolean optimizedDespawnRange = false;
     
-    @Rule(
-            desc = "Enable use of ticking areas.",
-            category = {CREATIVE, EXPERIMENTAL},
-            validator = "validateTickingAreas",
-            extra = {
-            "As set by the /tickingarea command.",
-            "Ticking areas work as if they are the spawn chunks."
-            }
-    )
-    public static boolean tickingAreas = false;
-    private static boolean validateTickingAreas(boolean value) {
-        if (value && CarpetMain.minecraft_server.worlds != null)
-            TickingArea.initialChunkLoad(CarpetMain.minecraft_server, false);
-        return true;
-    }
-    
-    @Rule(desc = "Removes the spawn chunks.", category = CREATIVE, validator = "validateDisableSpawnChunks")
-    public static boolean disableSpawnChunks = false;
-    private static boolean validateDisableSpawnChunks(boolean value) {
-        if (!value && CarpetMain.minecraft_server.worlds != null)
-        {
-            World overworld = CarpetMain.minecraft_server.worlds[0];
-            for (ChunkPos chunk : new TickingArea.SpawnChunks().listIncludedChunks(overworld))
-                overworld.getChunkProvider().provideChunk(chunk.x, chunk.z);
-        }
-        return true;
-    }
-    
     @Rule(desc = "fill/clone/setblock and structure blocks cause block updates", category = CREATIVE)
     @CreativeDefault("false")
     public static boolean fillUpdates = true;
@@ -213,20 +156,6 @@ public class CarpetSettings
     )
     @CreativeDefault("500000")
     public static int fillLimit = 32768;
-    
-    @Rule(
-            desc = "Customizable tile tick limit",
-            category = SURVIVAL,
-            options = {"1000", "65536", "1000000"},
-            validator = "validateTileTickLimit",
-            extra = {
-            "-1 for no limit"
-            }
-    )
-    public static int tileTickLimit = 65536;
-    private static boolean validateTileTickLimit(int value) {
-        return value >= -1;
-    }
     
     
     // ===== FIXES ===== //

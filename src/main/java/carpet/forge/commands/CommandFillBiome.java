@@ -1,6 +1,5 @@
 package carpet.forge.commands;
 
-import carpet.forge.CarpetMain;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -18,7 +17,8 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandFillBiome extends CarpetCommandBase {
+public class CommandFillBiome extends CommandCarpetBase
+{
     @Override
     public String getName() {
         return "fillbiome";

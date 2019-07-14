@@ -1,6 +1,5 @@
 package carpet.forge.helper;
 
-import carpet.forge.CarpetMain;
 import carpet.forge.CarpetSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
@@ -25,94 +24,11 @@ public class BlockRotator
         {
             return false;
         }
-        return flip_block(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
+        CarpetSettings.impendingFillSkipUpdates = true;
+        boolean retval = flip_block(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
+        CarpetSettings.impendingFillSkipUpdates = false;
+        return retval;
     }
-    public static IBlockState placeBlockWithCactus(Block block, World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
-    {
-        if (block instanceof BlockObserver)
-        {
-            return block.getDefaultState()
-                    .withProperty(BlockDirectional.FACING, EnumFacing.byIndex((int)hitX - 2))
-                    .withProperty(BlockObserver.POWERED, CarpetSettings.observersDoNonUpdate);
-        }
-        return null;
-    }
-
-    public static IBlockState alternativeBlockPlacement(Block block, World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
-    {
-        //actual alternative block placement code
-        //
-        if (block instanceof BlockGlazedTerracotta)
-        {
-            facing = EnumFacing.byIndex((int)hitX - 2);
-            if(facing == EnumFacing.UP || facing == EnumFacing.DOWN)
-            {
-                facing = placer.getHorizontalFacing().getOpposite();
-            }
-            return block.getDefaultState().withProperty(BlockHorizontal.FACING, facing);
-        }
-        else if (block instanceof BlockObserver)
-        {
-            return block.getDefaultState()
-                    .withProperty(BlockDirectional.FACING, EnumFacing.byIndex((int)hitX - 2))
-                    .withProperty(BlockObserver.POWERED, CarpetSettings.observersDoNonUpdate);
-        }
-        else if (block instanceof BlockRedstoneRepeater)
-        {
-            facing = EnumFacing.byIndex((((int)hitX) % 10) - 2);
-            if(facing == EnumFacing.UP || facing == EnumFacing.DOWN)
-            {
-                facing = placer.getHorizontalFacing().getOpposite();
-            }
-            return block.getDefaultState()
-                    .withProperty(BlockHorizontal.FACING, facing)
-                    .withProperty(BlockRedstoneRepeater.DELAY, MathHelper.clamp((((int) hitX) / 10) + 1, 1, 4))
-                    .withProperty(BlockRedstoneRepeater.LOCKED, Boolean.FALSE);
-        }
-        else if (block instanceof BlockTrapDoor)
-        {
-            return block.getDefaultState()
-                    .withProperty(BlockTrapDoor.FACING, EnumFacing.byIndex((((int)hitX) % 10) - 2))
-                    .withProperty(BlockTrapDoor.OPEN, Boolean.FALSE)
-                    .withProperty(BlockTrapDoor.HALF, (hitX > 10) ? BlockTrapDoor.DoorHalf.TOP : BlockTrapDoor.DoorHalf.BOTTOM)
-                    .withProperty(BlockTrapDoor.OPEN, worldIn.isBlockPowered(pos));
-        }
-        else if (block instanceof BlockRedstoneComparator)
-        {
-            facing = EnumFacing.byIndex((((int)hitX) % 10) - 2);
-            if((facing == EnumFacing.UP) || (facing == EnumFacing.DOWN))
-            {
-                facing = placer.getHorizontalFacing().getOpposite();
-            }
-            BlockRedstoneComparator.Mode m = (hitX > 10)? BlockRedstoneComparator.Mode.SUBTRACT: BlockRedstoneComparator.Mode.COMPARE;
-            return block.getDefaultState()
-                    .withProperty(BlockHorizontal.FACING, facing)
-                    .withProperty(BlockRedstoneComparator.POWERED, Boolean.FALSE)
-                    .withProperty(BlockRedstoneComparator.MODE, m);
-        }
-        else if (block instanceof BlockDispenser)
-        {
-            return block.getDefaultState()
-                    .withProperty(BlockDispenser.FACING, EnumFacing.byIndex((int)hitX - 2))
-                    .withProperty(BlockDispenser.TRIGGERED, Boolean.FALSE);
-        }
-        else if (block instanceof BlockPistonBase)
-        {
-            return block.getDefaultState()
-                    .withProperty(BlockDirectional.FACING, EnumFacing.byIndex((int)hitX - 2) )
-                    .withProperty(BlockPistonBase.EXTENDED, Boolean.FALSE);
-        }
-        else if (block instanceof BlockStairs)
-        {
-            return block.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer)
-                    .withProperty(BlockStairs.FACING, EnumFacing.byIndex((((int)hitX) % 10) - 2))
-                    .withProperty(BlockStairs.HALF, ( hitX > 10)? BlockStairs.EnumHalf.TOP : BlockStairs.EnumHalf.BOTTOM);
-        }
-        return null;
-    }
-
-
-
 
     public static boolean flip_block(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {

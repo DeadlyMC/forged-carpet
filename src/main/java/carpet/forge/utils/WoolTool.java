@@ -14,44 +14,44 @@ public class WoolTool {
 
     /*
     public static void carpetPlacedAction(EnumDyeColor color, EntityPlayer placer, BlockPos pos, World worldIn) {
-        if (!CarpetMain.config.carpets.enabled) {
+        if (!CarpetServer.config.carpets.enabled) {
             return;
         }
         switch (color)
         {
             case PINK:
-                if (CarpetMain.config.commandSpawn.enabled)
+                if (CarpetServer.config.commandSpawn.enabled)
                     Messenger.send(placer, SpawnReporter.report(pos, worldIn));
 
                 break;
             case BLACK:
-                if (CarpetMain.config.commandSpawn.enabled)
+                if (CarpetServer.config.commandSpawn.enabled)
                     Messenger.send(placer, SpawnReporter.show_mobcaps(pos, worldIn));
                 break;
             case BROWN:
-                if (CarpetMain.config.commandDistance.enabled)
+                if (CarpetServer.config.commandDistance.enabled)
                 {
                     DistanceCalculator.report_distance(placer, pos);
                 }
                 break;
             case GRAY:
-                if (CarpetMain.config.commandBlockInfo.enabled)
+                if (CarpetServer.config.commandBlockInfo.enabled)
                     Messenger.send(placer, BlockInfo.blockInfo(pos.down(), worldIn));
                 break;
             case YELLOW:
-                if (CarpetMain.config.commandEntityInfo.enabled)
+                if (CarpetServer.config.commandEntityInfo.enabled)
                     EntityInfo.issue_entity_info(placer);
                 break;
             case GREEN:
-                if (CarpetMain.config.hopperCounters.enabled)
+                if (CarpetServer.config.hopperCounters.enabled)
                 {
                     EnumDyeColor under = getWoolColorAtPosition(worldIn, pos.down());
                     if (under == null) return;
-                    Messenger.send(placer, HopperCounter.query_hopper_stats_for_color(worldIn.getMinecraftServer(), under.toString(), false, false));
+                    Messenger.send(placer, HopperCounter.COUNTERS.get(under).format(worldIn.getMinecraftServer(), false, false));
                 }
                 break;
             case RED:
-                if (CarpetMain.config.hopperCounters.enabled)
+                if (CarpetServer.config.hopperCounters.enabled)
                 {
                     EnumDyeColor under = getWoolColorAtPosition(worldIn, pos.down());
                     if (under == null) return;

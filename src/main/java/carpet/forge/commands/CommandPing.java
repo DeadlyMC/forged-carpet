@@ -1,18 +1,13 @@
 package carpet.forge.commands;
 
-import carpet.forge.CarpetMain;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
-
-public class CommandPing extends CarpetCommandBase {
+public class CommandPing extends CommandCarpetBase
+{
     @Override
     public String getName() {
         return "ping";
