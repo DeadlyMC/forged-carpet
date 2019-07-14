@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.utils.mixininterfaces.IMixinEntityLiving;
+import carpet.forge.utils.mixininterfaces.IEntityLiving;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,21 +9,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(EntityLiving.class)
-public abstract class EntityLivingMixin extends EntityLivingBase implements IMixinEntityLiving
+public abstract class EntityLivingMixin extends EntityLivingBase implements IEntityLiving
 {
-
-    @Shadow
-    private boolean persistenceRequired;
-
     public EntityLivingMixin(World worldIn)
     {
         super(worldIn);
     }
-
-    @Shadow
-    protected abstract boolean canDespawn();
-
-    // Added optimized despawn mobs causing netlag by Luflosi
+    
+    @Shadow private boolean persistenceRequired;
+    
+    @Shadow protected abstract boolean canDespawn();
+    
     public boolean willImmediatelyDespawn()
     {
         if (!this.canDespawn() || this.persistenceRequired)

@@ -1,5 +1,6 @@
 package carpet.forge.utils.mixininterfaces;
 
-public interface IMixinEntityLiving {
+public interface IEntityLiving
+{
     boolean willImmediatelyDespawn();
 }

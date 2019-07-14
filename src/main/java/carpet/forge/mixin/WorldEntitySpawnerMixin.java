@@ -2,7 +2,7 @@ package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
 import carpet.forge.utils.SpawnReporter;
-import carpet.forge.utils.mixininterfaces.IMixinEntityLiving;
+import carpet.forge.utils.mixininterfaces.IEntityLiving;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,31 +26,26 @@ import java.util.Set;
 public abstract class WorldEntitySpawnerMixin
 {
     @Shadow
-    @Final
-    private static int MOB_COUNT_DIV;
-
-    @Shadow
-    @Final
-    private Set<ChunkPos> eligibleChunksForSpawning;
-
-    @Shadow
     protected static BlockPos getRandomChunkPosition(World worldIn, int x, int z)
     {
         return null;
     }
-
+    
+    @Shadow @Final private static int MOB_COUNT_DIV;
+    
+    @Shadow @Final private Set<ChunkPos> eligibleChunksForSpawning;
+    
     @Shadow
     public static boolean canCreatureTypeSpawnAtLocation(EntityLiving.SpawnPlacementType spawnPlacementTypeIn, World worldIn, BlockPos pos)
     {
         return false;
     }
-
+    
     /**
-     * @author DeadlyMc
-     * @reason Had to overwrite this method as there were issues with variable
-     * handling using mixins.
+     * @author DeadlyMC
+     * @reason Extra indentation for `for loop`
      */
-    @Overwrite()
+    @Overwrite
     public int findChunksForSpawning(WorldServer worldServerIn, boolean spawnHostileMobs, boolean spawnPeacefulMobs, boolean spawnOnSetTickRate)
     {
         if (!spawnHostileMobs && !spawnPeacefulMobs)
@@ -61,7 +56,7 @@ public abstract class WorldEntitySpawnerMixin
         {
             this.eligibleChunksForSpawning.clear();
             int i = 0;
-
+        
             for (EntityPlayer entityplayer : worldServerIn.playerEntities)
             {
                 if (!entityplayer.isSpectator())
@@ -69,22 +64,22 @@ public abstract class WorldEntitySpawnerMixin
                     int j = MathHelper.floor(entityplayer.posX / 16.0D);
                     int k = MathHelper.floor(entityplayer.posZ / 16.0D);
                     int l = 8;
-
+                
                     for (int i1 = -8; i1 <= 8; ++i1)
                     {
                         for (int j1 = -8; j1 <= 8; ++j1)
                         {
                             boolean flag = i1 == -8 || i1 == 8 || j1 == -8 || j1 == 8;
                             ChunkPos chunkpos = new ChunkPos(i1 + j, j1 + k);
-
+                        
                             if (!this.eligibleChunksForSpawning.contains(chunkpos))
                             {
                                 ++i;
-
+                            
                                 if (!flag && worldServerIn.getWorldBorder().contains(chunkpos))
                                 {
                                     PlayerChunkMapEntry playerchunkmapentry = worldServerIn.getPlayerChunkMap().getEntry(chunkpos.x, chunkpos.z);
-
+                                
                                     if (playerchunkmapentry != null && playerchunkmapentry.isSentToPlayers())
                                     {
                                         this.eligibleChunksForSpawning.add(chunkpos);
@@ -95,29 +90,28 @@ public abstract class WorldEntitySpawnerMixin
                     }
                 }
             }
-
+            
             // [FCM] Start
             boolean optimizedDespawnRange = CarpetSettings.optimizedDespawnRange;
-            ;
-            if (i == 0 && optimizedDespawnRange) // Worlds without valid chunks are skipped.
+            if (i==0 && optimizedDespawnRange) // Worlds without valid chunks are skipped.
             {
                 return 0;
             }
-            //[FCM] End
-
+            // [FCM] End
+            
             int j4 = 0;
             BlockPos blockpos1 = worldServerIn.getSpawnPoint();
-
+    
             // [FCM] Start
             int did = worldServerIn.provider.getDimensionType().getId();
-            String level_suffix = (did == 0) ? "" : ((did < 0 ? " (N)" : " (E)"));
+            String level_suffix = (did==0)?"":((did<0?" (N)":" (E)"));
             // [FCM] End
-
+        
             for (EnumCreatureType enumcreaturetype : EnumCreatureType.values())
             {
                 // [FCM] Start
                 String type_code = String.format("%s", enumcreaturetype);
-                String group_code = type_code + level_suffix;
+                String group_code = type_code+level_suffix;
                 if (SpawnReporter.track_spawns > 0L)
                 {
                     SpawnReporter.overall_spawn_ticks.put(group_code, SpawnReporter.overall_spawn_ticks.get(group_code) + SpawnReporter.spawn_tries.get(type_code));
@@ -126,9 +120,8 @@ public abstract class WorldEntitySpawnerMixin
                 if ((!enumcreaturetype.getPeacefulCreature() || spawnPeacefulMobs) && (enumcreaturetype.getPeacefulCreature() || spawnHostileMobs) && (!enumcreaturetype.getAnimal() || spawnOnSetTickRate))
                 {
                     int k4 = worldServerIn.countEntities(enumcreaturetype, true);
-                    //[FCM] Replaced:
-                    // int l4 = enumcreaturetype.getMaxNumberOfCreature() * i / MOB_COUNT_DIV;
-                    int l4 = (int) (Math.pow(2.0, (SpawnReporter.mobcap_exponent / 4)) * enumcreaturetype.getMaxNumberOfCreature() * i / MOB_COUNT_DIV);
+                    // [FCM} Replaced: int l4 = enumcreaturetype.getMaxNumberOfCreature() * i / MOB_COUNT_DIV;
+                    int l4 = (int)(Math.pow(2.0,(SpawnReporter.mobcap_exponent/4)) * enumcreaturetype.getMaxNumberOfCreature() * i / MOB_COUNT_DIV);
                     SpawnReporter.mobcaps.get(did).put(enumcreaturetype, new Tuple<>(k4, l4));
                     int tries = SpawnReporter.spawn_tries.get(type_code);
                     if (SpawnReporter.track_spawns > 0L)
@@ -136,25 +129,20 @@ public abstract class WorldEntitySpawnerMixin
                         SpawnReporter.spawn_attempts.put(group_code, SpawnReporter.spawn_attempts.get(group_code) + tries);
                         SpawnReporter.spawn_cap_count.put(group_code, SpawnReporter.spawn_cap_count.get(group_code) + k4);
                     }
-                    if (SpawnReporter.mock_spawns)
-                    {
-                        k4 = 0;
-                    } // No mobcaps
+                    if (SpawnReporter.mock_spawns) { k4 = 0; } // No mobcaps
                     // [FCM] End
-
                     if (k4 <= l4)
                     {
                         java.util.ArrayList<ChunkPos> shuffled = com.google.common.collect.Lists.newArrayList(this.eligibleChunksForSpawning);
                         java.util.Collections.shuffle(shuffled);
                         BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
-                        // [FCM] Extra indentation -- Start.
+                        // ForgedCarpet -> extra indentation
                         for (int trie = 0; trie < tries; trie++)
                         {
-                            // [FCM] New variable long.
                             long local_spawns = 0;
-
+                            // [FCM] End
                             label134:
-
+    
                             for (ChunkPos chunkpos1 : shuffled)
                             {
                                 BlockPos blockpos = getRandomChunkPosition(worldServerIn, chunkpos1.x, chunkpos1.z);
@@ -162,11 +150,11 @@ public abstract class WorldEntitySpawnerMixin
                                 int l1 = blockpos.getY();
                                 int i2 = blockpos.getZ();
                                 IBlockState iblockstate = worldServerIn.getBlockState(blockpos);
-
+        
                                 if (!iblockstate.isNormalCube())
                                 {
                                     int j2 = 0;
-
+            
                                     for (int k2 = 0; k2 < 3; ++k2)
                                     {
                                         int l2 = k1;
@@ -176,7 +164,7 @@ public abstract class WorldEntitySpawnerMixin
                                         Biome.SpawnListEntry biome$spawnlistentry = null;
                                         IEntityLivingData ientitylivingdata = null;
                                         int l3 = MathHelper.ceil(Math.random() * 4.0D);
-
+                
                                         for (int i4 = 0; i4 < l3; ++i4)
                                         {
                                             l2 += worldServerIn.rand.nextInt(6) - worldServerIn.rand.nextInt(6);
@@ -185,23 +173,23 @@ public abstract class WorldEntitySpawnerMixin
                                             blockpos$mutableblockpos.setPos(l2, i3, j3);
                                             float f = (float) l2 + 0.5F;
                                             float f1 = (float) j3 + 0.5F;
-
+                    
                                             if (!worldServerIn.isAnyPlayerWithinRangeAt((double) f, (double) i3, (double) f1, 24.0D) && blockpos1.distanceSq((double) f, (double) i3, (double) f1) >= 576.0D)
                                             {
                                                 if (biome$spawnlistentry == null)
                                                 {
                                                     biome$spawnlistentry = worldServerIn.getSpawnListEntryForTypeAt(enumcreaturetype, blockpos$mutableblockpos);
-
+                            
                                                     if (biome$spawnlistentry == null)
                                                     {
                                                         break;
                                                     }
                                                 }
-
+                        
                                                 if (worldServerIn.canCreatureTypeSpawnHere(enumcreaturetype, biome$spawnlistentry, blockpos$mutableblockpos) && canCreatureTypeSpawnAtLocation(EntitySpawnPlacementRegistry.getPlacementForEntity(biome$spawnlistentry.entityClass), worldServerIn, blockpos$mutableblockpos))
                                                 {
                                                     EntityLiving entityliving;
-
+                            
                                                     try
                                                     {
                                                         entityliving = biome$spawnlistentry.newInstance(worldServerIn);
@@ -211,19 +199,20 @@ public abstract class WorldEntitySpawnerMixin
                                                         exception.printStackTrace();
                                                         return j4;
                                                     }
-
+                            
                                                     entityliving.setLocationAndAngles((double) f, (double) i3, (double) f1, worldServerIn.rand.nextFloat() * 360.0F, 0.0F);
-
+                            
                                                     net.minecraftforge.fml.common.eventhandler.Event.Result canSpawn = net.minecraftforge.event.ForgeEventFactory.canEntitySpawn(entityliving, worldServerIn, f, i3, f1, false);
                                                     if (canSpawn == net.minecraftforge.fml.common.eventhandler.Event.Result.ALLOW || (canSpawn == net.minecraftforge.fml.common.eventhandler.Event.Result.DEFAULT && (entityliving.getCanSpawnHere() && entityliving.isNotColliding())))
                                                     {
                                                         if (!net.minecraftforge.event.ForgeEventFactory.doSpecialSpawn(entityliving, worldServerIn, f, i3, f1))
                                                             ientitylivingdata = entityliving.onInitialSpawn(worldServerIn.getDifficultyForLocation(new BlockPos(entityliving)), ientitylivingdata);
-
+                                
                                                         if (entityliving.isNotColliding())
                                                         {
-                                                            // [FCM] Replacing //worldServerIn.spawnEntity(entityliving);
-                                                            if (optimizedDespawnRange && ((IMixinEntityLiving) entityliving).willImmediatelyDespawn()) // Added optimized despawn mobs causing netlag by Luflosi
+                                                            ++j2;
+                                                            // [FCM] Replacing: worldServerIn.spawnEntity(entityliving);
+                                                            if (optimizedDespawnRange && ((IEntityLiving) entityliving).willImmediatelyDespawn()) // Added optimized despawn mobs causing netlag by Luflosi
                                                             {
                                                                 entityliving.setDead();
                                                             }
@@ -250,13 +239,13 @@ public abstract class WorldEntitySpawnerMixin
                                                         {
                                                             entityliving.setDead();
                                                         }
-
+                                
                                                         if (j2 >= net.minecraftforge.event.ForgeEventFactory.getMaxSpawnPackSize(entityliving))
                                                         {
                                                             continue label134;
                                                         }
                                                     }
-
+                            
                                                     j4 += j2;
                                                 }
                                             }
@@ -264,8 +253,6 @@ public abstract class WorldEntitySpawnerMixin
                                     }
                                 }
                             }
-
-                            // [FCM] SpawnReporter
                             if (SpawnReporter.track_spawns > 0L)
                             {
                                 if (local_spawns > 0)
@@ -278,10 +265,9 @@ public abstract class WorldEntitySpawnerMixin
                                     SpawnReporter.spawn_ticks_fail.put(group_code, SpawnReporter.spawn_ticks_fail.get(group_code) + 1L);
                                 }
                             }
-
-                        } // [FCM] Extra indentation -- End.
+                        }   // ForgedCarpet <- extra indentation
                     }
-                    else // [FCM] Full mobcap.
+                    else // Full mobcap
                     {
                         if (SpawnReporter.track_spawns > 0L)
                         {
@@ -291,9 +277,9 @@ public abstract class WorldEntitySpawnerMixin
                     // [FCM] End
                 }
             }
-
+        
             return j4;
         }
     }
-
+    
 }

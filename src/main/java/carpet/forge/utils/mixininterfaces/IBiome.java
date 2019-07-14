@@ -1,5 +1,6 @@
 package carpet.forge.utils.mixininterfaces;
 
-public interface IMixinBiome {
+public interface IBiome
+{
     int getWeight();
 }
