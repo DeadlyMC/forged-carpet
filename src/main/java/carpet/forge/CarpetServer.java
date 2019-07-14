@@ -87,8 +87,6 @@ public class CarpetServer
         event.registerServerCommand(new CommandDistance());
         event.registerServerCommand(new CommandUnload());
         event.registerServerCommand(new CommandUnload13());
-        //event.registerServerCommand(new CommandRNG());
-        event.registerServerCommand(new CommandStructure());
     }
 
     @Mod.EventHandler
