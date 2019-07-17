@@ -8,7 +8,8 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-public class CtrlQCrafting {
+public class CtrlQCrafting
+{
     public static ItemStack dropAllCrafting(EntityPlayer playerIn, int index, List<Slot> inventorySlotsParam)
     {
         ItemStack itemstack = ItemStack.EMPTY;
