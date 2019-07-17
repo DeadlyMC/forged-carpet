@@ -230,6 +230,9 @@ public class CarpetSettings
     @Rule(desc = "Silverfish drop a gravel item when breaking out of a block", category = EXPERIMENTAL)
     public static boolean silverFishDropGravel = false;
     
+    @Rule(desc = "Shulkers will respawn in end cities", category = {FEATURE, EXPERIMENTAL})
+    public static boolean shulkerSpawningInEndCities = false;
+    
     
     // ===== EXPERIMENTAL/OPTIMIZATIONS ===== //
     

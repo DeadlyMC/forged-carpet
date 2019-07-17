@@ -33,6 +33,9 @@
     "TileEntityMixin",
     "TileEntityHopperMixin",
     "TileEntityPistonMixin",
+    "MapGenEndCityMixin",
+    "MapGenEndCityStartMixin",
+    "ChunkGeneratorEndMixin",
 
     "WorldServer_tickMixin",
     "World_tickMixin",
