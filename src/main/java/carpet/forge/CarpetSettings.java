@@ -141,9 +141,6 @@ public class CarpetSettings
     @SurvivalDefault
     public static boolean hopperCounters = false;
     
-    @Rule(desc = "Spawned mobs that would otherwise despawn immediately, won't be placed in world", category = OPTIMIZATIONS)
-    public static boolean optimizedDespawnRange = false;
-    
     @Rule(desc = "fill/clone/setblock and structure blocks cause block updates", category = CREATIVE)
     @CreativeDefault("false")
     public static boolean fillUpdates = true;
@@ -204,6 +201,8 @@ public class CarpetSettings
     @BugFixDefault
     public static boolean watchdogFix = false;
     
+    @Rule(desc = "Spawned mobs that would otherwise despawn immediately, won't be placed in world", category = OPTIMIZATIONS)
+    public static boolean optimizedDespawnRange = false;
     
     // ===== SURVIVAL FEATURES ===== //
     
