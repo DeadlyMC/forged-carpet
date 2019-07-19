@@ -204,6 +204,11 @@ public class CarpetSettings
     @Rule(desc = "Spawned mobs that would otherwise despawn immediately, won't be placed in world", category = OPTIMIZATIONS)
     public static boolean optimizedDespawnRange = false;
     
+    @Rule(desc = "Prevents players from rubberbanding when moving too fast", category = {CREATIVE, SURVIVAL})
+    @CreativeDefault
+    public static boolean antiCheatSpeed = false;
+    
+    
     // ===== SURVIVAL FEATURES ===== //
     
     @Rule(
