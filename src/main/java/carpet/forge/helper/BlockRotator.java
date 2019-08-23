@@ -3,11 +3,14 @@ package carpet.forge.helper;
 import carpet.forge.CarpetSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Bootstrap;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Rotation;
@@ -143,5 +146,64 @@ public class BlockRotator
                     ((ItemBlock) (player.getHeldItemOffhand().getItem())).getBlock() == Blocks.CACTUS);
         }
         return false;
+    }
+    
+    public static ItemStack dispenserRotate(IBlockSource source, ItemStack stack)
+    {
+        EnumFacing sourceFace = source.getBlockState().getValue(BlockDispenser.FACING);
+        World world = source.getWorld();
+        BlockPos blockpos = source.getBlockPos().offset(sourceFace);
+        IBlockState iblockstate = world.getBlockState(blockpos);
+        Block block  = iblockstate.getBlock();
+    
+        // Block rotation for blocks that can be placed in all 6 rotations.
+        if (block instanceof BlockDirectional || block instanceof BlockDispenser)
+        {
+            EnumFacing face = iblockstate.getValue(BlockDirectional.FACING);
+            face = face.rotateAround(sourceFace.getAxis());
+            if(sourceFace.getIndex() % 2 == 0)
+            {   // Rotate twice more to make blocks always rotate clockwise relative to the dispenser
+                // when index is equal to zero. when index is equal to zero the dispenser is in the opposite direction.
+                face = face.rotateAround(sourceFace.getAxis());
+                face = face.rotateAround(sourceFace.getAxis());
+            }
+            world.setBlockState(blockpos, iblockstate.withProperty(BlockDirectional.FACING, face), 3);
+        }
+        else if(block instanceof BlockHorizontal)
+        {
+            EnumFacing face = iblockstate.getValue(BlockHorizontal.FACING);
+            face = face.rotateAround(sourceFace.getAxis());
+            if(sourceFace.getIndex() % 2 == 0)
+            {   // same as above.
+                face = face.rotateAround(sourceFace.getAxis());
+                face = face.rotateAround(sourceFace.getAxis());
+            }
+            if(sourceFace.getIndex() <= 1)
+            {
+                // Make sure to suppress rotation when index is lower then 2 as that will result in a faulty rotation for
+                // blocks that only can be placed horizontaly.
+                world.setBlockState(blockpos, iblockstate.withProperty(BlockHorizontal.FACING, face), 3);
+            }
+        }
+        // Send block update to the block that just have been rotated.
+        world.neighborChanged(blockpos, block, source.getBlockPos());
+    
+        return stack;
+    }
+    
+    public static class CactusDispenserBehaviour extends Bootstrap.BehaviorDispenseOptional
+    {
+        @Override
+        protected ItemStack dispenseStack(IBlockSource source, ItemStack stack)
+        {
+            if (CarpetSettings.rotatorBlock)
+            {
+                return BlockRotator.dispenserRotate(source, stack);
+            }
+            else
+            {
+                return super.dispenseStack(source, stack);
+            }
+        }
     }
 }

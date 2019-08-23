@@ -26,10 +26,6 @@ public class CarpetSettings
     public static boolean locked = false;
     public static boolean impendingFillSkipUpdates = false;
     
-    // ===== COMMANDS ===== //
-    /*
-     * Rules in this category should start with the "command" prefix
-     */
     
     @Rule(desc = "Enables /spawn command for spawn tracking", category = COMMANDS)
     public static boolean commandSpawn = true;
@@ -91,8 +87,8 @@ public class CarpetSettings
     @Rule(desc = "Enables /ping for players to get their ping", category = COMMANDS)
     public static boolean commandPing = true;
     
-    
-    // ===== CREATIVE TOOLS ===== //
+    @Rule(desc = "Placing carpets may issue carpet commands for non-op players", category = SURVIVAL)
+    public static boolean carpets = false;
     
     @Rule(
             desc = "Players can flip and rotate blocks when holding cactus",
@@ -154,11 +150,11 @@ public class CarpetSettings
     @CreativeDefault("500000")
     public static int fillLimit = 32768;
     
+    @Rule(desc = "Pumpkins and fence gates can be placed in mid air", category = CREATIVE)
+    public static boolean relaxedBlockPlacement = false;
     
-    // ===== FIXES ===== //
-    /*
-     * Rules in this category should end with the "Fix" suffix
-     */
+    @Rule(desc = "Explosions won't destroy blocks", category = TNT)
+    public static boolean explosionNoBlockDamage = false;
     
     @Rule(desc = "Prevents llamas from taking player food while breeding", category = FIX)
     @BugFixDefault
@@ -208,9 +204,6 @@ public class CarpetSettings
     @CreativeDefault
     public static boolean antiCheatSpeed = false;
     
-    
-    // ===== SURVIVAL FEATURES ===== //
-    
     @Rule(
             desc = "Dropping entire stacks works also from on the crafting UI result slot",
             category = {FIX, SURVIVAL}
@@ -237,9 +230,6 @@ public class CarpetSettings
     @Rule(desc = "Shulkers will respawn in end cities", category = {FEATURE, EXPERIMENTAL})
     public static boolean shulkerSpawningInEndCities = false;
     
-    
-    // ===== EXPERIMENTAL/OPTIMIZATIONS ===== //
-    
     @Rule(
             desc = "Lag optimizations for redstone dust",
             extra = "by Theosib",
@@ -249,6 +239,37 @@ public class CarpetSettings
     
     @Rule(desc = "Uses alternative lighting engine by PhiPros. AKA NewLight mod", category = OPTIMIZATIONS)
     public static boolean newLight = false;
+    
+    @Rule(desc = "Cactus in dispensers rotates blocks.", extra = "Rotates block anti-clockwise if possible", category = FEATURE)
+    public static boolean rotatorBlock = false;
+    
+    @Rule(
+            desc = "Sets a different motd message on client trying to connect to the server",
+            extra = "use '_' to use the startup setting from server.properties",
+            options = "_",
+            category = CREATIVE
+    )
+    public static String customMOTD = "_";
+    
+    @Rule(desc = "Customizable powered rail power range", category = CREATIVE, options = {"9", "15", "30"}, validator = "validatePositive")
+    public static int railPowerLimit = 9;
+    
+    @Rule( desc = "Saplings turn into dead shrubs in hot climates and no water access", category = FEATURE )
+    public static boolean desertShrubs = false;
+    
+    @Rule( desc = "Guardians turn into Elder Guardian when struck by lightning", category = FEATURE )
+    public static boolean renewableSponges = false;
+    
+    @Rule( desc = "Players absorb XP instantly, without delay", category = CREATIVE )
+    public static boolean xpNoCooldown = false;
+    
+    @Rule(
+            desc = "Portals won't let a creative player go through instantly",
+            extra = "Holding obsidian in either hand won't let you through at all",
+            category = CREATIVE
+    )
+    public static boolean portalCreativeDelay = false;
+    
     
     
     // ===== API ===== //

@@ -1,73 +1,75 @@
 package carpet.forge.utils;
 
+import carpet.forge.CarpetSettings;
+import carpet.forge.helper.HopperCounter;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class WoolTool {
-
+public class WoolTool
+{
     public static final PropertyEnum<EnumDyeColor> COLOR = PropertyEnum.<EnumDyeColor>create("color", EnumDyeColor.class);
 
-    /*
-    public static void carpetPlacedAction(EnumDyeColor color, EntityPlayer placer, BlockPos pos, World worldIn) {
-        if (!CarpetServer.config.carpets.enabled) {
-            return;
-        }
+    public static void carpetPlacedAction(EnumDyeColor color, EntityPlayer placer, BlockPos pos, World worldIn)
+    {
+		if (!CarpetSettings.carpets)
+		{
+			return;
+		}
         switch (color)
         {
             case PINK:
-                if (CarpetServer.config.commandSpawn.enabled)
+                if (CarpetSettings.commandSpawn)
                     Messenger.send(placer, SpawnReporter.report(pos, worldIn));
 
                 break;
             case BLACK:
-                if (CarpetServer.config.commandSpawn.enabled)
+                if (CarpetSettings.commandSpawn)
                     Messenger.send(placer, SpawnReporter.show_mobcaps(pos, worldIn));
                 break;
             case BROWN:
-                if (CarpetServer.config.commandDistance.enabled)
+                if (CarpetSettings.commandDistance)
                 {
                     DistanceCalculator.report_distance(placer, pos);
                 }
                 break;
             case GRAY:
-                if (CarpetServer.config.commandBlockInfo.enabled)
+                if (CarpetSettings.commandBlockInfo)
                     Messenger.send(placer, BlockInfo.blockInfo(pos.down(), worldIn));
                 break;
             case YELLOW:
-                if (CarpetServer.config.commandEntityInfo.enabled)
+                if (CarpetSettings.commandEntityInfo)
                     EntityInfo.issue_entity_info(placer);
                 break;
-            case GREEN:
-                if (CarpetServer.config.hopperCounters.enabled)
+			case GREEN:
+                if (CarpetSettings.hopperCounters)
                 {
                     EnumDyeColor under = getWoolColorAtPosition(worldIn, pos.down());
                     if (under == null) return;
                     Messenger.send(placer, HopperCounter.COUNTERS.get(under).format(worldIn.getMinecraftServer(), false, false));
                 }
-                break;
-            case RED:
-                if (CarpetServer.config.hopperCounters.enabled)
+				break;
+			case RED:
+                if (CarpetSettings.hopperCounters)
                 {
                     EnumDyeColor under = getWoolColorAtPosition(worldIn, pos.down());
                     if (under == null) return;
-                    HopperCounter.reset_hopper_counter(worldIn, under.toString());
+                    HopperCounter.COUNTERS.get(under).reset(worldIn.getMinecraftServer());
                     Messenger.s(placer, String.format("%s counter reset",under.toString() ));
                 }
-                break;
+			    break;
         }
     }
-    */
-    public static EnumDyeColor getWoolColorAtPosition(World worldIn, BlockPos pos) {
 
+    public static EnumDyeColor getWoolColorAtPosition(World worldIn, BlockPos pos)
+    {
         IBlockState state = worldIn.getBlockState(pos);
         if (state.getBlock() != Blocks.WOOL) return null;
         return state.getValue(BlockColored.COLOR);
-
     }
-
 }

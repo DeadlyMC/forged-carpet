@@ -3,13 +3,11 @@ package carpet.forge;
 import carpet.forge.commands.*;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.logging.LoggerRegistry;
-import carpet.forge.proxy.CommonProxy;
 import carpet.forge.utils.HUDController;
 import carpet.forge.utils.Reference;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Logger;
 
@@ -27,9 +25,6 @@ public class CarpetServer
     public static MinecraftServer minecraft_server;
 
     public CarpetServer() { }
-
-    @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
-    public static CommonProxy proxy;
 
     @Mod.Instance(Reference.MOD_ID)
     public static CarpetServer instance;
