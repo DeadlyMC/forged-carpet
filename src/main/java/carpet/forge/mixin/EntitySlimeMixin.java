@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.utils.mixininterfaces.IEntitySlime;
+import carpet.forge.interfaces.IEntitySlime;
 import net.minecraft.entity.monster.EntitySlime;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

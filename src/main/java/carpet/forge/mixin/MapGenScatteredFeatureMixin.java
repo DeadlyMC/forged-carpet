@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.utils.mixininterfaces.IMapGenScatteredFeature;
+import carpet.forge.interfaces.IMapGenScatteredFeature;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.util.math.BlockPos;

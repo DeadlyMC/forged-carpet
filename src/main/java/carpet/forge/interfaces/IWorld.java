@@ -1,4 +1,4 @@
-package carpet.forge.utils.mixininterfaces;
+package carpet.forge.interfaces;
 
 import carpet.forge.utils.LightingEngine;
 

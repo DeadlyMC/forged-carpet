@@ -1,7 +1,7 @@
 package carpet.forge.mixin;
 
 import carpet.forge.helper.BlockRotator;
-import carpet.forge.utils.mixininterfaces.IEntity;
+import carpet.forge.interfaces.IEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.MathHelper;

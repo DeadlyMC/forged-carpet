@@ -2,7 +2,7 @@ package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
 import carpet.forge.utils.ShulkerStackingUtils;
-import carpet.forge.utils.mixininterfaces.IEntityItem;
+import carpet.forge.interfaces.IEntityItem;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;

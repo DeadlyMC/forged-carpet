@@ -2,7 +2,7 @@ package carpet.forge.mixin;
 
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.utils.CarpetProfiler;
-import carpet.forge.utils.mixininterfaces.IWorld;
+import carpet.forge.interfaces.IWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

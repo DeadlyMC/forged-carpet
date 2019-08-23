@@ -1,7 +1,7 @@
 package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
-import carpet.forge.utils.mixininterfaces.IMapGenEndCity;
+import carpet.forge.interfaces.IMapGenEndCity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

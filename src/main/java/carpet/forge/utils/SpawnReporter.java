@@ -1,6 +1,6 @@
 package carpet.forge.utils;
 
-import carpet.forge.utils.mixininterfaces.IBiome;
+import carpet.forge.interfaces.IBiome;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.item.EnumDyeColor;

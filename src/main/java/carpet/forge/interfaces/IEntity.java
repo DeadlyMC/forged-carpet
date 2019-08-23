@@ -1,4 +1,4 @@
-package carpet.forge.utils.mixininterfaces;
+package carpet.forge.interfaces;
 
 public interface IEntity
 {

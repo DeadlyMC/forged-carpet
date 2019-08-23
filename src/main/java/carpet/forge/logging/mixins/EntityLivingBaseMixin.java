@@ -1,13 +1,12 @@
 package carpet.forge.logging.mixins;
 
 import carpet.forge.logging.logHelpers.DamageReporter;
-import carpet.forge.utils.mixininterfaces.IMixinEntityLivingBase;
+import carpet.forge.interfaces.IEntityLivingBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.init.MobEffects;
-import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -23,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import javax.annotation.Nullable;
 
 @Mixin(EntityLivingBase.class)
-public abstract class EntityLivingBaseMixin implements IMixinEntityLivingBase
+public abstract class EntityLivingBaseMixin implements IEntityLivingBase
 {
 
     public long birthTick;

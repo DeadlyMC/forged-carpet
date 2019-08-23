@@ -2,7 +2,7 @@ package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
 import carpet.forge.utils.LightingEngine;
-import carpet.forge.utils.mixininterfaces.IWorld;
+import carpet.forge.interfaces.IWorld;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;

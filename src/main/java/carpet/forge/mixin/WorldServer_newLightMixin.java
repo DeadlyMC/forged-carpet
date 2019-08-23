@@ -1,7 +1,7 @@
 package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
-import carpet.forge.utils.mixininterfaces.IWorld;
+import carpet.forge.interfaces.IWorld;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;

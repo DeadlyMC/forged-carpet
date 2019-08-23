@@ -1,8 +1,8 @@
 package carpet.forge.utils;
 
 import carpet.forge.CarpetServer;
-import carpet.forge.utils.mixininterfaces.IEntity;
-import carpet.forge.utils.mixininterfaces.IMixinTileEntity;
+import carpet.forge.interfaces.IEntity;
+import carpet.forge.interfaces.ITileEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -114,7 +114,7 @@ public class CarpetProfiler
         {
             end_current_section();
         }
-        current_section = dimension+"."+ ((IMixinTileEntity)e).cm_name();
+        current_section = dimension+"."+ ((ITileEntity)e).cm_name();
         current_section_start = System.nanoTime();
     }
 
