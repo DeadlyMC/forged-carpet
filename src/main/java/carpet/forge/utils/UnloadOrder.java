@@ -93,9 +93,9 @@ public class UnloadOrder
         ChunkProviderServer chunkproviderserver = server.getChunkProvider();
         try
         {
-            Field field = ((IChunkProviderServer) chunkproviderserver).getDroppedChunks().getClass().getDeclaredField("map");
+            Field field = ((IChunkProviderServer) chunkproviderserver).getDroppedChunksC().getClass().getDeclaredField("map");
             field.setAccessible(true);
-            HashMap map = (HashMap<Object,Object>)field.get(((IChunkProviderServer) chunkproviderserver).getDroppedChunks());
+            HashMap map = (HashMap<Object,Object>)field.get(((IChunkProviderServer) chunkproviderserver).getDroppedChunksC());
             field = map.getClass().getDeclaredField("table");
             field.setAccessible(true);
             Object [] table = (Object [])field.get(map);
@@ -384,9 +384,9 @@ public class UnloadOrder
         int current_size = UnloadOrder.getCurrentHashSize(world);
         if (!world.disableLevelSaving)
         {
-            if (!((IChunkProviderServer) provider).getDroppedChunks().isEmpty())
+            if (!((IChunkProviderServer) provider).getDroppedChunksC().isEmpty())
             {
-                Iterator<Long> iterator = ((IChunkProviderServer) provider).getDroppedChunks().iterator();
+                Iterator<Long> iterator = ((IChunkProviderServer) provider).getDroppedChunksC().iterator();
                 List<Long> chunks_ids_order = new ArrayList<>();
                 int selected_chunk = -1;
                 int iti = 0;
@@ -502,7 +502,7 @@ public class UnloadOrder
 
                     Long olong = iterator.next();
                     Chunk chunk = provider.loadedChunks.get(olong);
-                    ((IChunkProviderServer) provider).getDroppedChunks().remove(olong);
+                    ((IChunkProviderServer) provider).getDroppedChunksC().remove(olong);
 
                     if (chunk != null && chunk.unloadQueued)
                     {

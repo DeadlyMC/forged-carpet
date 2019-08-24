@@ -13,7 +13,7 @@ public abstract class ChunkProviderServerMixin implements IChunkProviderServer
 {
     @Shadow @Final private Set<Long> droppedChunks;
     
-    public Set<Long> getDroppedChunks()
+    public Set<Long> getDroppedChunksC()
     {
         return this.droppedChunks;
     }
