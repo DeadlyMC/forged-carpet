@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 @Mixin(World.class)
 public abstract class World_fillUpdatesMixin
 {
-    @ModifyConstant(method = "markAndNotifyBlock", constant = @Constant(intValue = 16))
+    @ModifyConstant(method = "markAndNotifyBlock", constant = @Constant(intValue = 16), remap = false)
     private int onMarkAndNotifyBlock(int original)
     {
         if (CarpetSettings.impendingFillSkipUpdates)

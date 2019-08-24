@@ -30,7 +30,7 @@ public abstract class EntityItemMixin extends Entity implements IEntityItem
     }
     
     @Override
-    public int getPickupDelay()
+    public int getPickupDelayC()
     {
         return this.pickupDelay;
     }
@@ -70,7 +70,7 @@ public abstract class EntityItemMixin extends Entity implements IEntityItem
                 int amount = Math.min(stackOther.getCount(), 64 - stackSelf.getCount());
                 stackSelf.grow(amount);
                 self.setItem(stackSelf);
-                this.pickupDelay = Math.max(((IEntityItem) other).getPickupDelay(), this.pickupDelay);
+                this.pickupDelay = Math.max(((IEntityItem) other).getPickupDelayC(), this.pickupDelay);
                 this.age = Math.min(other.getAge(), this.age);
                 
                 if (amount >= stackOther.getCount())

@@ -30,8 +30,10 @@ public class CarpetCore implements IFMLLoadingPlugin
         
         CarpetConfig config = new CarpetConfig();
         
-        if (config.getFastRedstoneDust())     Mixins.addConfiguration("mixins.carpet.fastdust.json");
-        if (config.getNewLight())             Mixins.addConfiguration("mixins.carpet.newlight.json");
+        //if (config.getFastRedstoneDust())
+            Mixins.addConfiguration("mixins.carpet.fastdust.json");
+        //if (config.getNewLight())
+            Mixins.addConfiguration("mixins.carpet.newlight.json");
         
         try
         {

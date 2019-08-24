@@ -20,11 +20,9 @@ public class LoggerRegistry
     public static boolean __tnt;
     public static boolean __projectiles;
     public static boolean __fallingBlocks;
-    public static boolean __kills;
     public static boolean __tps;
     public static boolean __counter;
     public static boolean __mobcaps;
-    public static boolean __damage;
     public static boolean __packets;
     public static boolean __weather;
 
@@ -33,8 +31,6 @@ public class LoggerRegistry
         registerLogger("tnt", new Logger("tnt", "brief", new String[]{"brief", "full"}, LogHandler.CHAT));
         registerLogger("projectiles", new Logger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT));
         registerLogger("fallingBlocks",new Logger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT));
-        registerLogger("kills", new Logger("kills", null, null, LogHandler.CHAT));
-        registerLogger("damage", new Logger("damage", "all", new String[]{"all","players","me"}, LogHandler.CHAT));
         registerLogger("weather", new Logger("weather", null, null, LogHandler.CHAT));
 
         registerLogger("tps", new Logger("tps", null, null, LogHandler.HUD));

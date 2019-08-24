@@ -2,5 +2,5 @@ package carpet.forge.interfaces;
 
 public interface IEntityItem
 {
-    int getPickupDelay();
+    int getPickupDelayC();
 }

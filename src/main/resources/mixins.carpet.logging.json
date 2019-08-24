@@ -6,11 +6,6 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "EntityFallingBlockMixin",
-    "EntityLivingBaseMixin",
-    "EntityMobMixin",
-    "EntityPlayerMixin",
-    "EntityPlayerMPMixin",
-    "EntitySlimeMixin",
     "EntityThrowableMixin",
     "EntityTNTPrimedMixin",
     "GuiInGameForgeMixin",

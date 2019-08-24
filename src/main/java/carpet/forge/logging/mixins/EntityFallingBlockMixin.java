@@ -19,9 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EntityFallingBlock.class)
 public abstract class EntityFallingBlockMixin extends Entity
 {
-    private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.<BlockPos>createKey(EntityFallingBlock.class, DataSerializers.BLOCK_POS);
-    public NBTTagCompound tileEntityData;
-    private int iceCount = 0;
     private TrajectoryLogHelper logHelper = null;
 
     public EntityFallingBlockMixin(World worldIn)
@@ -40,7 +37,6 @@ public abstract class EntityFallingBlockMixin extends Entity
     @Inject(method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/block/state/IBlockState;)V", at = @At(value = "RETURN"))
     private void onEntityFallingBlock(World worldIn, double x, double y, double z, IBlockState fallingBlockState, CallbackInfo ci)
     {
-        this.iceCount = 0;
         if (LoggerRegistry.__fallingBlocks)
             logHelper = new TrajectoryLogHelper("fallingBlocks");
     }

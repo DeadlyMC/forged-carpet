@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
-@Config(modid = Reference.MOD_ID)
+//@Config(modid = Reference.MOD_ID)
 public class CarpetConfig
 {
     
