@@ -11,7 +11,6 @@
     "BlockCarpetMixin",
     "IMixinEntityVillager",
     "IMixinSlot",
-    "BiomeSpawnListEntryMixin",
     "BlockHopperMixin",
     "BlockObserverMixin",
     "BlockSilverfishMixin",
@@ -21,9 +20,7 @@
     "EntityMixin",
     "EntityHuskMixin",
     "EntityItemMixin",
-    "EntityLivingMixin",
     "EntityLlamaMixin",
-    "EntitySlimeMixin",
     "EnumFacingMixin",
     "MapGenScatteredFeatureMixin",
     "MinecraftServerMixin",
@@ -31,7 +28,6 @@
     "PlayerInteractionManager_cactusMixin",
     "PlayerInteractionManagerMixin",
     "StructureStartMixin",
-    "TileEntityMixin",
     "TileEntityHopperMixin",
     "TileEntityPistonMixin",
     "MapGenEndCityMixin",
@@ -61,7 +57,18 @@
     "World_fillUpdatesMixin",
     "Template_fillUpdatesMixin",
 
-    "WorldEntitySpawnerMixin"
+    "WorldEntitySpawnerMixin",
+
+    "SPacketPlayerListHeaderFooterMixin",
+    "ChunkProviderServerMixin",
+    "EntityZombieVillagerMixin",
+    "WorldServerMixin",
+    "PlayerChunkMapEntryMixin",
+    "BlockRedstoneWireMixin",
+    "BiomeSpawnListEntryMixin",
+    "EntityLivingMixin",
+    "EntitySlimeMixin",
+    "TileEntityMixin"
   ],
   "server": [
     "DedicatedServer_coreMixin"

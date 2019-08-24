@@ -132,8 +132,6 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
-
-    rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
 jar {
@@ -142,7 +140,6 @@ jar {
             'FMLCorePluginContainsFMLMod': 'carpet.forge.CarpetServer',
             'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
             'ForceLoadAsMod': 'true',
-            'FMLAT': 'fc1122_at.cfg',
             'TweakOrder': 0
     )
 

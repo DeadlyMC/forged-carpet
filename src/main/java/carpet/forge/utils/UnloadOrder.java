@@ -1,6 +1,7 @@
 package carpet.forge.utils;
 
 import carpet.forge.CarpetSettings;
+import carpet.forge.interfaces.IChunkProviderServer;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.HashCommon;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -92,9 +93,9 @@ public class UnloadOrder
         ChunkProviderServer chunkproviderserver = server.getChunkProvider();
         try
         {
-            Field field = chunkproviderserver.droppedChunks.getClass().getDeclaredField("map");
+            Field field = ((IChunkProviderServer) chunkproviderserver).getDroppedChunks().getClass().getDeclaredField("map");
             field.setAccessible(true);
-            HashMap map = (HashMap<Object,Object>)field.get(chunkproviderserver.droppedChunks);
+            HashMap map = (HashMap<Object,Object>)field.get(((IChunkProviderServer) chunkproviderserver).getDroppedChunks());
             field = map.getClass().getDeclaredField("table");
             field.setAccessible(true);
             Object [] table = (Object [])field.get(map);
@@ -383,9 +384,9 @@ public class UnloadOrder
         int current_size = UnloadOrder.getCurrentHashSize(world);
         if (!world.disableLevelSaving)
         {
-            if (!provider.droppedChunks.isEmpty())
+            if (!((IChunkProviderServer) provider).getDroppedChunks().isEmpty())
             {
-                Iterator<Long> iterator = provider.droppedChunks.iterator();
+                Iterator<Long> iterator = ((IChunkProviderServer) provider).getDroppedChunks().iterator();
                 List<Long> chunks_ids_order = new ArrayList<>();
                 int selected_chunk = -1;
                 int iti = 0;
@@ -501,7 +502,7 @@ public class UnloadOrder
 
                     Long olong = iterator.next();
                     Chunk chunk = provider.loadedChunks.get(olong);
-                    provider.droppedChunks.remove(olong);
+                    ((IChunkProviderServer) provider).getDroppedChunks().remove(olong);
 
                     if (chunk != null && chunk.unloadQueued)
                     {

@@ -38,9 +38,9 @@ public abstract class MapGenScatteredFeatureMixin extends MapGenStructure implem
     public boolean isTemple(BlockPos pos)
     {
         StructureStart structurestart = this.getStructureAt(pos);
-        if (structurestart != null && structurestart instanceof MapGenScatteredFeature.Start && !structurestart.components.isEmpty())
+        if (structurestart != null && structurestart instanceof MapGenScatteredFeature.Start && !structurestart.getComponents().isEmpty())
         {
-            StructureComponent structurecomponent = structurestart.components.get(0);
+            StructureComponent structurecomponent = structurestart.getComponents().get(0);
             return structurecomponent instanceof ComponentScatteredFeaturePieces.DesertPyramid;
         }
         else

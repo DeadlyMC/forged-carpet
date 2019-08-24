@@ -1,5 +1,6 @@
 package carpet.forge.utils;
 
+import carpet.forge.interfaces.IEntityZombieVillager;
 import carpet.forge.mixin.IMixinEntityVillager;
 import carpet.forge.interfaces.IEntity;
 import carpet.forge.interfaces.IEntitySlime;
@@ -317,9 +318,9 @@ public class EntityInfo
                         if (e instanceof EntityZombieVillager)
                         {
                             EntityZombieVillager ezv = (EntityZombieVillager) e;
-                            if (ezv.conversionTime > 0)
+                            if (((IEntityZombieVillager)ezv).getConversionTime() > 0)
                             {
-                                lst.add(String.format(" - Convert to villager in: %s",makeTime(ezv.conversionTime)));
+                                lst.add(String.format(" - Convert to villager in: %s",makeTime(((IEntityZombieVillager)ezv).getConversionTime())));
                             }
                         }
                     }
