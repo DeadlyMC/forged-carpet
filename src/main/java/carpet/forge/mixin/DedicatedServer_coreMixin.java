@@ -10,11 +10,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(DedicatedServer.class)
 public abstract class DedicatedServer_coreMixin
 {
-    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerProfileCache;setOnlineMode(Z)V"))
+    @Inject(
+            method = "init",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V",
+                    shift = At.Shift.BEFORE)
+    )
     private void gameStartHook(CallbackInfoReturnable<Boolean> cir)
     {
-        // [FCM] init - all stuff loaded from the server, just before worlds loading
-        CarpetServer.onServerLoaded((DedicatedServer) (Object) this);
         // [FCM] start game hook
         CarpetServer.onGameStarted();
     }

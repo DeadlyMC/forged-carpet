@@ -29,15 +29,12 @@ public class CarpetServer
     @Mod.Instance(Reference.MOD_ID)
     public static CarpetServer instance;
 
-    public static void init(MinecraftServer server) {
-        minecraft_server = server;
-    }
-
     public static void onGameStarted() {
         LoggerRegistry.initLoggers();
     }
 
     public static void onServerLoaded(MinecraftServer server) {
+        CarpetServer.minecraft_server = server;
         CarpetSettings.applySettingsFromConf(server);
     }
 
