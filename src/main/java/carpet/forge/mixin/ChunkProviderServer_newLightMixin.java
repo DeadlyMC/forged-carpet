@@ -9,12 +9,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Set;
-
-// CREDITS : Nessie
 @Mixin(ChunkProviderServer.class)
 public abstract class ChunkProviderServer_newLightMixin
 {
@@ -22,32 +18,21 @@ public abstract class ChunkProviderServer_newLightMixin
     @Final
     private WorldServer world;
     
-    @Shadow @Final public Set<Long> droppedChunks;
-    
     @Inject(method = "saveChunks", at = @At("HEAD"))
     private void onSaveChunks(boolean all, CallbackInfoReturnable<Boolean> cir)
     {
         if (CarpetSettings.newLight)
-        {
             ((IWorld) this.world).getLightingEngine().procLightUpdates();
-        }
     }
     
-    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Ljava/util/Set;isEmpty()Z", remap = false))
-    private boolean foo(Set set)
+    @Inject(
+            method = "tick",
+            at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
+                    target = "Ljava/util/Set;iterator()Ljava/util/Iterator;")
+    )
+    private void onTick(CallbackInfoReturnable<Boolean> cir)
     {
         if (CarpetSettings.newLight)
-        {
-            final boolean isEmpty = set.isEmpty();
-            if (!isEmpty)
-            {
-                ((IWorld) this.world).getLightingEngine().procLightUpdates();
-            }
-            return isEmpty;
-        }
-        else
-        {
-            return !this.droppedChunks.isEmpty();
-        }
+            ((IWorld) this.world).getLightingEngine().procLightUpdates();
     }
 }

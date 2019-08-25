@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-// CREDITS : Nessie
 @Mixin(WorldServer.class)
 public abstract class WorldServer_newLightMixin extends World
 {
@@ -23,9 +22,11 @@ public abstract class WorldServer_newLightMixin extends World
         super(saveHandlerIn, info, providerIn, profilerIn, client);
     }
     
-    @Inject(method = "tick", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/Teleporter;removeStalePortalLocations(J)V",
-            shift = At.Shift.AFTER))
+    @Inject(
+            method = "tick",
+            at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
+                    target = "Lnet/minecraft/profiler/Profiler;endSection()V")
+    )
     private void onTick(CallbackInfo ci)
     {
         if (CarpetSettings.newLight)

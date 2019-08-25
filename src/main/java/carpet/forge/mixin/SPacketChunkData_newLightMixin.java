@@ -7,18 +7,15 @@ import net.minecraft.world.chunk.Chunk;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-// CREDITS : Nessie
 @Mixin(SPacketChunkData.class)
 public abstract class SPacketChunkData_newLightMixin
 {
-    @Inject(method = "calculateChunkSize", at = @At("HEAD"))
-    private void onInit(Chunk chunkIn, boolean flag, int changedSectionFilter, CallbackInfoReturnable<Integer> cir)
+    @Inject(method = "<init>(Lnet/minecraft/world/chunk/Chunk;I)V", at = @At("RETURN"))
+    private void onCtor(Chunk chunkIn, int changedSectionFilter, CallbackInfo ci)
     {
         if (CarpetSettings.newLight)
-        {
-            ((IWorld) chunkIn.getWorld()).getLightingEngine().procLightUpdates();
-        }
+            ((IWorld)chunkIn.getWorld()).getLightingEngine().procLightUpdates();
     }
 }

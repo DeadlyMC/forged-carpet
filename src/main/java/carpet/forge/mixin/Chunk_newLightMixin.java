@@ -13,41 +13,28 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-// CREDITS : Nessie
 @Mixin(Chunk.class)
 public abstract class Chunk_newLightMixin implements IChunk
 {
-    @Shadow
-    @Final
-    public int x;
-    
     private int copyOfJ;
     private int copyOfK;
     
-    @Shadow
-    @Final
-    private int[] heightMap;
+    private int copyOfZ;
+    private int copyOfX;
+    private int copyOfI;
+    private int copyOfJ2;
     
     @Shadow
     @Final
     private World world;
     
     @Shadow
-    private int heightMapMinimum;
-    
-    @Shadow
     private boolean isTerrainPopulated;
-    
-    @Shadow
-    protected abstract int getBlockLightOpacity(int x, int y, int z);
     
     @Shadow
     public abstract void checkLight();
@@ -61,11 +48,16 @@ public abstract class Chunk_newLightMixin implements IChunk
     @Shadow
     protected abstract void propagateSkylightOcclusion(int x, int z);
     
+    @Shadow private boolean dirty;
+    
     // Since we can't use LocalCapture directly in @Redirected methods we'll simply make a copy of them for ourselves.
-    @Inject(method = "generateSkylightMap", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/WorldProvider;hasSkyLight()Z"),
-            locals = LocalCapture.CAPTURE_FAILHARD)
-    private void setJAndKFields(CallbackInfo ci, int i, int j, int k)
+    @Inject(
+            method = "generateSkylightMap",
+            at = @At(value = "INVOKE",
+                target = "Lnet/minecraft/world/WorldProvider;hasSkyLight()Z"),
+            locals = LocalCapture.CAPTURE_FAILHARD
+    )
+    private void copyJAndK(CallbackInfo ci, int i, int j, int k)
     {
         if (CarpetSettings.newLight)
         {
@@ -74,9 +66,12 @@ public abstract class Chunk_newLightMixin implements IChunk
         }
     }
     
-    @Redirect(method = "generateSkylightMap", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/WorldProvider;hasSkyLight()Z"))
-    private boolean callFillSkylightColumnInWorldsWithSkylight(WorldProvider worldProvider)
+    @Redirect(
+            method = "generateSkylightMap",
+                at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/world/WorldProvider;hasSkyLight()Z")
+    )
+    private boolean onGenerateSkylightMap(WorldProvider worldProvider)
     {
         if (CarpetSettings.newLight)
         {
@@ -92,41 +87,74 @@ public abstract class Chunk_newLightMixin implements IChunk
         }
     }
     
-    // Soft override the method since there isn't really a "clean" way to do it with Mixins.
-    @Inject(method = "relightBlock", at = @At("HEAD"), cancellable = true)
-    private void onRelightBlock(int x, int y, int z, CallbackInfo ci)
+    @Inject(
+            method = "relightBlock",
+            at = @At(value = "FIELD", ordinal = 0,
+                    target = "Lnet/minecraft/world/chunk/Chunk;heightMap:[I")
+    )
+    private void copyVars(int x, int y, int z, CallbackInfo ci)
+    {
+        this.copyOfZ = z;
+        this.copyOfX = x;
+    }
+    
+    @ModifyConstant(method = "relightBlock", constant = @Constant(intValue = 255))
+    private int onRelightBlock(int original)
+    {
+        if (CarpetSettings.newLight)
+            return -1;
+        else
+            return original;
+    }
+    
+    @Redirect(method = "relightBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;markBlocksDirtyVertical(IIII)V"))
+    private void onRelightBlock2(World world, int x, int z, int y1, int y2)
+    {
+        if (!CarpetSettings.newLight)
+            world.markBlocksDirtyVertical(x, z, y1, y2);
+    }
+    
+    @Inject(
+            method = "relightBlock",
+            at = @At(value = "INVOKE", ordinal = 0,
+                    target = "Lnet/minecraft/world/WorldProvider;hasSkyLight()Z"),
+            locals = LocalCapture.CAPTURE_FAILHARD
+    )
+    private void copyIAndJ(int x, int y, int z, CallbackInfo ci, int i, int j, int k, int l, World var14, int var15, int var16, int var17, int var18)
+    {
+        this.copyOfI = i;
+        this.copyOfJ2 = j;
+    }
+    
+    @Redirect(method = "relightBlock", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/WorldProvider;hasSkyLight()Z"))
+    private boolean onRelightBlock3(WorldProvider worldProvider)
     {
         if (CarpetSettings.newLight)
         {
+            if (worldProvider.hasSkyLight())
+            {
+                LightingHooks.relightSkylightColumn(this.world, (Chunk) (Object)this, copyOfX, copyOfZ, copyOfI, copyOfJ2);
+            }
+            return false;
+        }
+        else
+        {
+            return worldProvider.hasSkyLight();
+        }
+    }
+    
+    @Inject(
+            method = "relightBlock",
+            at = @At(value = "INVOKE", ordinal = 1, shift = At.Shift.BEFORE,
+                    target = "Lnet/minecraft/world/WorldProvider;hasSkyLight()Z"),
+            cancellable = true
+    )
+    private void onRelightBlock4(int x, int y, int z, CallbackInfo ci)
+    {
+        if (CarpetSettings.newLight)
+        {
+            this.dirty = true;
             ci.cancel();
-            int i = this.heightMap[z << 4 | x];
-            int j = i;
-            
-            if (y > i)
-            {
-                j = y;
-            }
-            
-            while (j > 0 && this.getBlockLightOpacity(x, j - 1, z) == 0)
-            {
-                --j;
-            }
-            
-            if (j != i)
-            {
-                this.heightMap[z << 4 | x] = j;
-                
-                if (this.world.provider.hasSkyLight())
-                {
-                    LightingHooks.relightSkylightColumn(this.world, (Chunk) (Object) this, x, z, i, j); // Forge: Optimized version of World.markBlocksDirtyVertical; heightMap is now updated (See #3871)
-                }
-                
-                int l1 = this.heightMap[z << 4 | x];
-                if (l1 < this.heightMapMinimum)
-                {
-                    this.heightMapMinimum = l1;
-                }
-            }
         }
     }
     
@@ -134,15 +162,15 @@ public abstract class Chunk_newLightMixin implements IChunk
             target = "net/minecraft/world/chunk/storage/ExtendedBlockStorage"))
     private ExtendedBlockStorage onSetBlockState(final int y, final boolean storeSkylight)
     {
+        final ExtendedBlockStorage extendedblockstorage = new ExtendedBlockStorage(y, storeSkylight);
         if (CarpetSettings.newLight)
         {
-            final ExtendedBlockStorage extendedblockstorage1 = new ExtendedBlockStorage(y, storeSkylight);
-            LightingHooks.initSkylightForSection(this.world, (Chunk) (Object) this, extendedblockstorage1); //Forge: Always initialize sections properly (See #3870 and #3879)
-            return extendedblockstorage1;
+            LightingHooks.initSkylightForSection(this.world, (Chunk) (Object) this, extendedblockstorage); //Forge: Always initialize sections properly (See #3870 and #3879)
+            return extendedblockstorage;
         }
         else
         {
-            return new ExtendedBlockStorage(y >> 4 << 4, this.world.provider.hasSkyLight());
+            return extendedblockstorage;
         }
     }
     
@@ -154,7 +182,7 @@ public abstract class Chunk_newLightMixin implements IChunk
         if (CarpetSettings.newLight)
             return false;
         else
-            return true;
+            return flag;
     }
     
     @Redirect(method = "setBlockState", at = @At(value = "INVOKE",
@@ -172,17 +200,21 @@ public abstract class Chunk_newLightMixin implements IChunk
         if (CarpetSettings.newLight)
             return 0;
         else
-            return this.getLightFor(EnumSkyBlock.SKY, pos);
+            return this.getLightFor(type, pos);
+    }
+    
+    @Redirect(method = "setBlockState", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;generateSkylightMap()V"))
+    private void ifGenerateSkylightMap(Chunk chunk)
+    {
+        if (!CarpetSettings.newLight)
+            this.generateSkylightMap();
     }
     
     @Inject(method = "getLightFor", at = @At("HEAD"), cancellable = true)
     private void onGetLightFor(EnumSkyBlock type, BlockPos pos, CallbackInfoReturnable<Integer> cir)
     {
         if (CarpetSettings.newLight)
-        {
             ((IWorld) this.world).getLightingEngine().procLightUpdates(type);
-            cir.setReturnValue(this.getCachedLightFor(type, pos));
-        }
     }
     
     @Redirect(method = "setLightFor", at = @At(value = "INVOKE",

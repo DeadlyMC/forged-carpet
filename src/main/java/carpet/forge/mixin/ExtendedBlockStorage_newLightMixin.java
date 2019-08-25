@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-// CREDITS : Nessie
 @Mixin(ExtendedBlockStorage.class)
 public abstract class ExtendedBlockStorage_newLightMixin
 {
@@ -15,8 +14,6 @@ public abstract class ExtendedBlockStorage_newLightMixin
     private void onIsEmpty(CallbackInfoReturnable<Boolean> cir)
     {
         if (CarpetSettings.newLight)
-        {
             cir.setReturnValue(false);
-        }
     }
 }

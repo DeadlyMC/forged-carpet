@@ -68,7 +68,9 @@
     "BiomeSpawnListEntryMixin",
     "EntityLivingMixin",
     "EntitySlimeMixin",
-    "TileEntityMixin"
+    "TileEntityMixin",
+    "WorldMixin",
+    "ChunkMixin"
   ],
   "server": [
     "DedicatedServer_coreMixin"
