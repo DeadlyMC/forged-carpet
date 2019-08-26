@@ -1,6 +1,6 @@
 package carpet.forge.utils;
 
-import carpet.forge.CarpetServer;
+import carpet.forge.CarpetSettings;
 import carpet.forge.interfaces.IEntity;
 import carpet.forge.interfaces.ITileEntity;
 import net.minecraft.entity.Entity;
@@ -131,7 +131,7 @@ public class CarpetProfiler
         }
         if (current_section == null)
         {
-            CarpetServer.logger.error("finishing section that hasn't started");
+            CarpetSettings.LOG.error("finishing section that hasn't started");
             return;
         }
         //CarpetSettings.LOG.error("finishing section "+current_section);
@@ -153,7 +153,7 @@ public class CarpetProfiler
         }
         if (current_section == null)
         {
-            CarpetServer.logger.error("finishing section that hasn't started");
+            CarpetSettings.LOG.error("finishing section that hasn't started");
             return;
         }
         //CarpetSettings.LOG.error("finishing section "+current_section);

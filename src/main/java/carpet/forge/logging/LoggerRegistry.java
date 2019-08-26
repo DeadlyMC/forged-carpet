@@ -1,6 +1,6 @@
 package carpet.forge.logging;
 
-import carpet.forge.CarpetServer;
+import carpet.forge.CarpetSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 
@@ -115,11 +115,11 @@ public class LoggerRegistry
         }
         catch (IllegalAccessException e)
         {
-            CarpetServer.logger.error("Cannot change logger quick access field");
+            CarpetSettings.LOG.error("Cannot change logger quick access field");
         }
         catch (NoSuchFieldException e)
         {
-            CarpetServer.logger.error("Wrong logger name");
+            CarpetSettings.LOG.error("Wrong logger name");
         }
     }
     /**
