@@ -615,6 +615,7 @@ public class CarpetSettings
     }
     
     public static void applySettingsFromConf(MinecraftServer server) {
+        resetToVanilla();
         Map<String, String> conf = readConf(server);
         boolean is_locked = locked;
         locked = false;
