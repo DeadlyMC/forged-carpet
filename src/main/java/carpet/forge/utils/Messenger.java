@@ -1,6 +1,6 @@
 package carpet.forge.utils;
 
-import carpet.forge.core.CarpetCore;
+import carpet.forge.CarpetSettings;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -253,7 +253,7 @@ public class Messenger {
     public static void print_server_message(MinecraftServer server, String message)
     {
         if (server == null)
-            CarpetCore.log.error("Message not delivered: "+message);
+            CarpetSettings.LOG.error("Message not delivered: "+message);
         server.sendMessage(new TextComponentString(message));
         ITextComponent txt = m(null, "gi "+message);
         for (EntityPlayer entityplayer : server.getPlayerList().getPlayers())
@@ -264,7 +264,7 @@ public class Messenger {
     public static void print_server_message(MinecraftServer server, ITextComponent message)
     {
         if (server == null)
-            CarpetCore.log.error("Message not delivered: "+message.getUnformattedText());
+            CarpetSettings.LOG.error("Message not delivered: "+message.getUnformattedText());
         server.sendMessage(message);
         for (EntityPlayer entityplayer : server.getPlayerList().getPlayers())
         {
