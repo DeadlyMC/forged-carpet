@@ -20,7 +20,7 @@ import static carpet.forge.CarpetSettings.RuleCategory.*;
 
 public class CarpetSettings
 {
-    public static final String carpetVersion = "v19_05_02";
+    public static final String carpetVersion = "v1.2.0";
     public static final String minecraftVersion = "1.12.2";
     public static final Logger LOG = LogManager.getLogger();
     public static boolean locked = false;

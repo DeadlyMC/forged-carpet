@@ -24,7 +24,7 @@ apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 
-version = "1.1.3"
+version = "1.2.0"
 group = "carpet.forge" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "forgedcarpet"
 
@@ -137,7 +137,7 @@ processResources {
 jar {
     manifest.attributes(
             'FMLCorePlugin': 'carpet.forge.core.CarpetCore',
-            'FMLCorePluginContainsFMLMod': 'carpet.forge.CarpetServer',
+            'FMLCorePluginContainsFMLMod': 'carpet.forge.ForgedCarpet',
             'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
             'ForceLoadAsMod': 'true',
             'TweakOrder': 0
