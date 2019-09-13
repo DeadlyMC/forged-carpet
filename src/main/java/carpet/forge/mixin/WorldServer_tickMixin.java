@@ -94,13 +94,15 @@ public abstract class WorldServer_tickMixin extends World
             profiler.endStartSection(name);
     }
     
-    //TODO: Check if this works properly
-    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;tickUpdates(Z)Z"))
-    private boolean onTickTickUpdates(WorldServer worldServer, boolean runAllPending)
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;tickUpdates(Z)Z", ordinal = 0))
+    private boolean startAndEndBlockProfiling(WorldServer thisIn, boolean runAllPending)
     {
         if (TickSpeed.process_entities)
-            return this.tickUpdates(runAllPending);
-        return false;
+            CarpetProfiler.start_section(this.provider.getDimensionType().getName(), "blocks");
+        boolean ret = this.tickUpdates(runAllPending);
+        if (TickSpeed.process_entities)
+            CarpetProfiler.end_current_section();
+        return ret;
     }
     
     @Redirect(
@@ -292,18 +294,9 @@ public abstract class WorldServer_tickMixin extends World
             CarpetProfiler.end_current_section();
     }
     
-    @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/world/WorldServer;tickUpdates(Z)Z"))
-    private void startBlockProfiling(CallbackInfo ci)
-    {
-        if (TickSpeed.process_entities)
-            CarpetProfiler.start_section(this.provider.getDimensionType().getName(), "blocks");
-    }
-    
     @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/WorldServer;tickUpdates(Z)Z"))
-    private void stopBlockProfilingAndStartBlockSectionProfiling(CallbackInfo ci)
+    private void startBlockSectionProfiling(CallbackInfo ci)
     {
-        if (TickSpeed.process_entities)
-            CarpetProfiler.end_current_section();
         CarpetProfiler.start_section(this.provider.getDimensionType().getName(), "blocks");
     }
     
