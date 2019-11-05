@@ -23,12 +23,6 @@ public abstract class EntityMixin implements IEntity
     {
         return this.fire;
     }
-    
-    @Override
-    public String cm_name()
-    {
-        return "Other Entity";
-    }
 
     @Inject(method = "getHorizontalFacing", at = @At("HEAD"), cancellable = true)
     private void onGetHorizontalFacing(CallbackInfoReturnable<EnumFacing> cir)

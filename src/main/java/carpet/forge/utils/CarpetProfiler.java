@@ -1,8 +1,6 @@
 package carpet.forge.utils;
 
 import carpet.forge.CarpetSettings;
-import carpet.forge.interfaces.IEntity;
-import carpet.forge.interfaces.ITileEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -96,7 +94,7 @@ public class CarpetProfiler
         {
             end_current_section();
         }
-        current_section = dimension+"."+((IEntity)e).cm_name();
+        current_section = dimension + "." + simplifyName(e.getClass().getSimpleName());
         current_section_start = System.nanoTime();
     }
 
@@ -114,7 +112,7 @@ public class CarpetProfiler
         {
             end_current_section();
         }
-        current_section = dimension+"."+ ((ITileEntity)e).cm_name();
+        current_section = dimension + "."+ simplifyName(e.getClass().getSimpleName());
         current_section_start = System.nanoTime();
     }
 
@@ -330,5 +328,10 @@ public class CarpetProfiler
         current_section_start = 0L;
         current_section = null;
 
+    }
+    
+    private static String simplifyName(String name)
+    {
+        return name.replaceFirst("^Entity|^TileEntity.*?", "");
     }
 }
