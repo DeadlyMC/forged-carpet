@@ -78,6 +78,7 @@
   ],
   "client": [
     "IntegratedServer_coreMixin",
-    "Minecraft_coreMixin"
+    "Minecraft_coreMixin",
+    "PlayerControllerMPMixin"
   ]
 }
