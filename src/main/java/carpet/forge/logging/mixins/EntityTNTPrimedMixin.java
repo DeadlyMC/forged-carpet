@@ -21,11 +21,6 @@ public abstract class EntityTNTPrimedMixin extends Entity
         super(worldIn);
     }
 
-    public String cm_name()
-    {
-        return "Primed TNT";
-    }
-
     @Inject(method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/entity/EntityLivingBase;)V", at = @At(value = "RETURN"))
     private void loggerRegistryTNT(World worldIn, double x, double y, double z, EntityLivingBase igniter, CallbackInfo ci)
     {

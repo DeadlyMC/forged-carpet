@@ -41,11 +41,6 @@ public abstract class EntityFallingBlockMixin extends Entity
             logHelper = new TrajectoryLogHelper("fallingBlocks");
     }
 
-    public String cm_name()
-    {
-        return "Falling Block";
-    }
-
     @Inject(method = "onUpdate", at = @At(value = "HEAD"))
     private void onOnUpdate(CallbackInfo ci)
     {

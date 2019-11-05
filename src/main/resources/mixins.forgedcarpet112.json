@@ -68,7 +68,6 @@
     "BiomeSpawnListEntryMixin",
     "EntityLivingMixin",
     "EntitySlimeMixin",
-    "TileEntityMixin",
     "WorldMixin",
     "ChunkMixin",
     "BlockFarmlandMixin"

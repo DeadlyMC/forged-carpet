@@ -20,16 +20,6 @@ public abstract class CommandCloneMixin
         return CarpetSettings.fillLimit;
     }
     
-    @Redirect(
-            method = "execute",
-            at = @At(value = "INVOKE",
-                    target = "Ljava/lang/Integer;valueOf(I)Ljava/lang/Integer;")
-    )
-    private Integer onExecuteLimit2(int i)
-    {
-        return Integer.valueOf(CarpetSettings.fillLimit);
-    }
-    
     @ModifyConstant(method = "execute", constant = @Constant(intValue = 2, ordinal = 1))
     private int onExecuteUpdate1(int original)
     {

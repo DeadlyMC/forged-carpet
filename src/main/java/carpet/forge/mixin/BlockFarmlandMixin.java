@@ -30,7 +30,7 @@ public abstract class BlockFarmlandMixin
                     target = "Lnet/minecraft/entity/Entity;setPositionAndUpdate(DDD)V"),
             locals = LocalCapture.CAPTURE_FAILHARD
     )
-    private static void onTurnToDirt(World world, BlockPos worldIn, CallbackInfo ci, AxisAlignedBB axisalignedbb, Iterator var3, Entity entity, double d0, Entity var7, double var8, double var10, double var12)
+    private static void onTurnToDirt(World world, BlockPos worldIn, CallbackInfo ci, AxisAlignedBB axisalignedbb, Iterator var3, Entity entity, double d0)
     {
         if (!CarpetSettings.farmlandBug)
         {

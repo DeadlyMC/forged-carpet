@@ -13,11 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = TileEntityPiston.class)
 public abstract class TileEntityPistonMixin extends TileEntity
 {
-    public String cm_name()
-    {
-        return "Piston";
-    }
-    
     @Inject(
             method = "update",
             at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
