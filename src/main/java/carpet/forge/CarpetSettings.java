@@ -270,6 +270,9 @@ public class CarpetSettings
     )
     public static boolean portalCreativeDelay = false;
     
+    @Rule(desc = "Adds back farmland bug where entities teleport on top of farmland that turns back to dirt.", category = EXPERIMENTAL)
+    public static boolean farmlandBug;
+    
     
     
     // ===== API ===== //

@@ -70,7 +70,8 @@
     "EntitySlimeMixin",
     "TileEntityMixin",
     "WorldMixin",
-    "ChunkMixin"
+    "ChunkMixin",
+    "BlockFarmlandMixin"
   ],
   "server": [
     "DedicatedServer_coreMixin"
