@@ -21,7 +21,7 @@ public class CarpetCore implements IFMLLoadingPlugin
         
         MixinBootstrap.init();
         
-        Mixins.addConfiguration("mixins.forgedcarpet112.json");
+        Mixins.addConfiguration("mixins.forgedcarpet.json");
         Mixins.addConfiguration("mixins.carpet.logging.json");
         
         CarpetConfig config = new CarpetConfig();

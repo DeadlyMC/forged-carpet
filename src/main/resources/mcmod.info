@@ -5,7 +5,7 @@
   "description": "A Powerful Toolbox for Technical Minecraft",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "https://github.com/DeadlyMC/ForgedCarpet112",
+  "url": "https://github.com/DeadlyMC/ForgedCarpet",
   "updateUrl": "https://minecraft.curseforge.com/projects/forgedcarpet",
   "authorList": ["DeadlyMC"],
   "credits": "",
