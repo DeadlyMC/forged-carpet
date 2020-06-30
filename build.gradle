@@ -1,18 +1,14 @@
 buildscript {
     repositories {
         jcenter()
-        maven {
-            name = 'forge'
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = 'sponge'
-            url = 'http://repo.spongepowered.org/maven'
-        }
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
+        maven { url = 'https://plugins.gradle.org/m2' }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
     }
 }
 
@@ -23,6 +19,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 version = "1.2.1"
 group = "carpet.forge" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -34,8 +31,9 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.5.2838"
+    version = "1.12.2-14.23.5.2847"
     runDir = "run"
+    coreMod = 'carpet.forge.core.CarpetCore'
 
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
@@ -46,37 +44,18 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
     replace '@FINGERPRINT@', project.findProperty('signSHA1')
-
-    coreMod = 'carpet.forge.core.CarpetCore'
-
-    def args = [
-            "-Dfml.coreMods.load=carpet.forge.core.CarpetCore",
-            "-Dmixin.hotSwap=true",
-            "-Dmixin.checks.interfaces=true",
-            "-Dmixin.debug.export=true",
-            "-Dmixin.debug.verbose=true",
-            "-Dmixin.debug.countInjections=true"
-    ]
-    clientJvmArgs.addAll(args)
-    serverJvmArgs.addAll(args)
 }
 
-sourceSets {
-    main {
-        refMap = "mixins.carpet.refmap.json"
-    }
-}
+jar.manifest.attributes(
+        'FMLCorePluginContainsFMLMod': true,
+        'FMLCorePlugin': 'carpet.forge.core.CarpetCore',
+        'ForceLoadAsMod': true,
+        'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker'
+)
 
 repositories {
+    mavenCentral()
     maven { url = "http://repo.spongepowered.org/maven" }
-}
-
-configurations {
-    embed
-    implementation.extendsFrom(embed)
-
-    shade
-    compile.extendsFrom shade
 }
 
 dependencies {
@@ -101,18 +80,26 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    shade('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
-        exclude module: "asm-commons"
-        exclude module: "asm-tree"
-        exclude module: "launchwrapper"
-        exclude module: "guava"
-        exclude module: "log4j-core"
-        exclude module: "gson"
-        exclude module: "commons-io"
+    compile 'org.spongepowered:mixin:0.8.1-SNAPSHOT'
+}
+
+mixin {
+    add sourceSets.main, 'mixins.carpet.refmap.json'
+}
+
+shadowJar {
+    exclude 'dummyThing'
+    exclude 'LICENSE.txt'
+
+    classifier = ''
+}
+build.dependsOn(shadowJar)
+
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+        classpath = sourceSets.main.compileClasspath
     }
-
-    compile 'org.jetbrains.java.decompiler:fernflower:sponge-SNAPSHOT'
-
 }
 
 processResources {
@@ -131,25 +118,6 @@ processResources {
     // copy everything else except the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-    }
-}
-
-jar {
-    manifest.attributes(
-            'FMLCorePlugin': 'carpet.forge.core.CarpetCore',
-            'FMLCorePluginContainsFMLMod': 'carpet.forge.ForgedCarpet',
-            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-            'ForceLoadAsMod': 'true',
-            'TweakOrder': 0
-    )
-
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)){
-            exclude 'META-INF', 'META-INF/**'
-        }
-        from(project.zipTree(dep)){
-            include 'META-INF/services', 'META-INF/services/**'
-        }
     }
 }
 
@@ -173,4 +141,3 @@ task signJar(type: SignJar, dependsOn: reobfJar) {
 
 // Runs this task automatically when build is ran.
 build.dependsOn signJar
-
