@@ -1,11 +1,13 @@
 package carpet.forge.utils;
 
 import carpet.forge.interfaces.IBiome;
+import com.google.common.collect.AbstractIterator;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -14,9 +16,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkProviderServer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class SpawnReporter
 {
@@ -471,6 +471,31 @@ public class SpawnReporter
             }
         }
         return rep;
+    }
+    
+    // Method credits: @skyrising
+    public static Iterator<ChunkPos> createChunkIterator(ArrayList<ChunkPos> chunks, String type, Runnable onEnd)
+    {
+        return new AbstractIterator<ChunkPos>()
+        {
+            int tries = spawn_tries.get(type);
+            Iterator<ChunkPos> orig;
+            
+            @Override
+            protected ChunkPos computeNext()
+            {
+                while (orig == null || !orig.hasNext())
+                {
+                    if (tries-- == 0)
+                    {
+                        onEnd.run();
+                        return endOfData();
+                    }
+                    orig = chunks.iterator();
+                }
+                return orig.next();
+            }
+        };
     }
 }
 
