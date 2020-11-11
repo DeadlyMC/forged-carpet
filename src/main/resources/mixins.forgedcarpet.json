@@ -68,6 +68,7 @@
     "EntityAccessor",
     "EntitySlimeAccessor",
 
+    "WorldMixin",
     "BlockRedstoneWireMixin",
     "EntityLivingMixin",
     "ChunkMixin",
