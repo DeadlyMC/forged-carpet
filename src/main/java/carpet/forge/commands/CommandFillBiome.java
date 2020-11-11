@@ -1,7 +1,7 @@
 package carpet.forge.commands;
 
-import carpet.forge.interfaces.IPlayerChunkMapEntry;
-import carpet.forge.interfaces.IWorldServer;
+import carpet.forge.mixin.PlayerChunkMapEntryAccessor;
+import carpet.forge.mixin.WorldServerAccessor;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -91,14 +91,14 @@ public class CommandFillBiome extends CommandCarpetBase
         {
             for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++)
             {
-                PlayerChunkMapEntry entry = ((IWorldServer) world).getPlayerChunkMap().getEntry(chunkX, chunkZ);
+                PlayerChunkMapEntry entry = ((WorldServerAccessor) world).getPlayerChunkMap().getEntry(chunkX, chunkZ);
                 if (entry != null)
                 {
                     Chunk chunk = entry.getChunk();
                     if (chunk != null)
                     {
                         SPacketChunkData packet = new SPacketChunkData(chunk, 65535);
-                        for (EntityPlayerMP player : ((IPlayerChunkMapEntry) entry).getPlayers())
+                        for (EntityPlayerMP player : ((PlayerChunkMapEntryAccessor) entry).getPlayers())
                             player.connection.sendPacket(packet);
                     }
                 }

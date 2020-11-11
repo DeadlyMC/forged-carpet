@@ -1,7 +1,7 @@
 package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
-import carpet.forge.interfaces.IWorld;
+import carpet.forge.fakes.IWorld;
 import net.minecraft.network.play.server.SPacketChunkData;
 import net.minecraft.world.chunk.Chunk;
 import org.spongepowered.asm.mixin.Mixin;

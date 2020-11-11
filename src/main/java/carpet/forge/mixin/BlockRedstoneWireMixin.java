@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.interfaces.IBlockRedstoneWire;
+import carpet.forge.fakes.IBlockRedstoneWire;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.material.MapColor;

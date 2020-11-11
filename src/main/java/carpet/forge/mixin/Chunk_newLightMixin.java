@@ -2,8 +2,8 @@ package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
 import carpet.forge.utils.LightingHooks;
-import carpet.forge.interfaces.IChunk;
-import carpet.forge.interfaces.IWorld;
+import carpet.forge.fakes.IChunk;
+import carpet.forge.fakes.IWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;

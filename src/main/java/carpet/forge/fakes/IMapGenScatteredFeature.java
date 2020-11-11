@@ -1,4 +1,4 @@
-package carpet.forge.interfaces;
+package carpet.forge.fakes;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;

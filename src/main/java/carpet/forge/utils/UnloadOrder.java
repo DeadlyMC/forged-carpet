@@ -1,7 +1,7 @@
 package carpet.forge.utils;
 
 import carpet.forge.CarpetSettings;
-import carpet.forge.interfaces.IChunkProviderServer;
+import carpet.forge.mixin.ChunkProviderServerAccessor;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.HashCommon;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -93,9 +93,9 @@ public class UnloadOrder
         ChunkProviderServer chunkproviderserver = server.getChunkProvider();
         try
         {
-            Field field = ((IChunkProviderServer) chunkproviderserver).getDroppedChunksC().getClass().getDeclaredField("map");
+            Field field = ((ChunkProviderServerAccessor) chunkproviderserver).getDroppedChunks().getClass().getDeclaredField("map");
             field.setAccessible(true);
-            HashMap map = (HashMap<Object,Object>)field.get(((IChunkProviderServer) chunkproviderserver).getDroppedChunksC());
+            HashMap map = (HashMap<Object,Object>)field.get(((ChunkProviderServerAccessor) chunkproviderserver).getDroppedChunks());
             field = map.getClass().getDeclaredField("table");
             field.setAccessible(true);
             Object [] table = (Object [])field.get(map);
@@ -384,9 +384,9 @@ public class UnloadOrder
         int current_size = UnloadOrder.getCurrentHashSize(world);
         if (!world.disableLevelSaving)
         {
-            if (!((IChunkProviderServer) provider).getDroppedChunksC().isEmpty())
+            if (!((ChunkProviderServerAccessor) provider).getDroppedChunks().isEmpty())
             {
-                Iterator<Long> iterator = ((IChunkProviderServer) provider).getDroppedChunksC().iterator();
+                Iterator<Long> iterator = ((ChunkProviderServerAccessor) provider).getDroppedChunks().iterator();
                 List<Long> chunks_ids_order = new ArrayList<>();
                 int selected_chunk = -1;
                 int iti = 0;
@@ -502,7 +502,7 @@ public class UnloadOrder
 
                     Long olong = iterator.next();
                     Chunk chunk = provider.loadedChunks.get(olong);
-                    ((IChunkProviderServer) provider).getDroppedChunksC().remove(olong);
+                    ((ChunkProviderServerAccessor) provider).getDroppedChunks().remove(olong);
 
                     if (chunk != null && chunk.unloadQueued)
                     {

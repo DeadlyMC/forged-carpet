@@ -4,7 +4,7 @@ package carpet.forge.utils;
  * Copyright PhiPro
  */
 
-import carpet.forge.interfaces.IChunk;
+import carpet.forge.fakes.IChunk;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagShort;

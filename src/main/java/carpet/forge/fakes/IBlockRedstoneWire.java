@@ -1,4 +1,4 @@
-package carpet.forge.interfaces;
+package carpet.forge.fakes;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;

@@ -1,7 +1,6 @@
 package carpet.forge.mixin;
 
 import carpet.forge.helper.BlockRotator;
-import carpet.forge.interfaces.IEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.MathHelper;
@@ -12,17 +11,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements IEntity
+public abstract class EntityMixin
 {
     @Shadow public float rotationYaw;
-    
-    @Shadow private int fire;
-    
-    @Override
-    public int getFire()
-    {
-        return this.fire;
-    }
 
     @Inject(method = "getHorizontalFacing", at = @At("HEAD"), cancellable = true)
     private void onGetHorizontalFacing(CallbackInfoReturnable<EnumFacing> cir)

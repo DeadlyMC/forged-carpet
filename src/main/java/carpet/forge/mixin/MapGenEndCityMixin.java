@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.interfaces.IMapGenEndCity;
+import carpet.forge.fakes.IMapGenEndCity;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.monster.EntityShulker;
 import net.minecraft.world.biome.Biome;

@@ -59,16 +59,17 @@
 
     "WorldEntitySpawnerMixin",
 
-    "SPacketPlayerListHeaderFooterMixin",
-    "ChunkProviderServerMixin",
-    "EntityZombieVillagerMixin",
-    "WorldServerMixin",
-    "PlayerChunkMapEntryMixin",
+    "EntityZombieVillagerAccessor",
+    "ChunkProviderServerAccessor",
+    "PlayerChunkMapEntryAccessor",
+    "SPacketPlayerListHeaderFooterAccessor",
+    "WorldServerAccessor",
+    "EntityItemAccessor",
+    "EntityAccessor",
+    "EntitySlimeAccessor",
+
     "BlockRedstoneWireMixin",
-    "BiomeSpawnListEntryMixin",
     "EntityLivingMixin",
-    "EntitySlimeMixin",
-    "WorldMixin",
     "ChunkMixin",
     "BlockFarmlandMixin"
   ],

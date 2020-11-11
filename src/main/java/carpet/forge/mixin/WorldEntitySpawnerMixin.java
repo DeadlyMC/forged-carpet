@@ -1,7 +1,7 @@
 package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
-import carpet.forge.interfaces.IEntityLiving;
+import carpet.forge.fakes.IEntityLiving;
 import carpet.forge.utils.SpawnReporter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;

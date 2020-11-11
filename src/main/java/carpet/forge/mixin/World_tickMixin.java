@@ -2,7 +2,6 @@ package carpet.forge.mixin;
 
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.utils.CarpetProfiler;
-import carpet.forge.interfaces.IWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -24,7 +23,7 @@ import java.util.Iterator;
 
 @SuppressWarnings("ConstantConditions")
 @Mixin(World.class)
-public abstract class World_tickMixin implements IWorld
+public abstract class World_tickMixin
 {
     @Shadow @Final public WorldProvider provider;
     

@@ -4,7 +4,7 @@ package carpet.forge.utils;
  * Copyright PhiPro
  */
 
-import carpet.forge.interfaces.IChunk;
+import carpet.forge.fakes.IChunk;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.profiler.Profiler;

@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.interfaces.IMapGenScatteredFeature;
+import carpet.forge.fakes.IMapGenScatteredFeature;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.util.math.BlockPos;
@@ -30,11 +30,13 @@ public abstract class MapGenScatteredFeatureMixin extends MapGenStructure implem
         this.huskSpawnList.add(new Biome.SpawnListEntry(EntityHusk.class, 1, 1, 1));
     }
     
+    @Override
     public List<Biome.SpawnListEntry> getHuskSpawnList()
     {
         return this.huskSpawnList;
     }
     
+    @Override
     public boolean isTemple(BlockPos pos)
     {
         StructureStart structurestart = this.getStructureAt(pos);

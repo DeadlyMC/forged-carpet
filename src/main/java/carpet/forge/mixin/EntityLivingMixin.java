@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.interfaces.IEntityLiving;
+import carpet.forge.fakes.IEntityLiving;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +20,7 @@ public abstract class EntityLivingMixin extends EntityLivingBase implements IEnt
     
     @Shadow protected abstract boolean canDespawn();
     
+    @Override
     public boolean willImmediatelyDespawn()
     {
         if (!this.canDespawn() || this.persistenceRequired)

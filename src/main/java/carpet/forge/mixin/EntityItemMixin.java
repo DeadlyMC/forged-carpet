@@ -2,9 +2,7 @@ package carpet.forge.mixin;
 
 import carpet.forge.CarpetSettings;
 import carpet.forge.utils.ShulkerStackingUtils;
-import carpet.forge.interfaces.IEntityItem;
 import net.minecraft.block.BlockShulkerBox;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -18,22 +16,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 //CREDITS : Masa (Tweakeroo)
 @Mixin(EntityItem.class)
-public abstract class EntityItemMixin extends Entity implements IEntityItem
+public abstract class EntityItemMixin
 {
     @Shadow private int age;
     
     @Shadow private int pickupDelay;
-    
-    public EntityItemMixin(World worldIn)
-    {
-        super(worldIn);
-    }
-    
-    @Override
-    public int getPickupDelayC()
-    {
-        return this.pickupDelay;
-    }
     
     @Inject(method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/item/ItemStack;)V", at = @At("RETURN"))
     private void removeEmptyShulkerBoxTags(World worldIn, double x, double y, double z, ItemStack stack, CallbackInfo ci)
@@ -70,7 +57,7 @@ public abstract class EntityItemMixin extends Entity implements IEntityItem
                 int amount = Math.min(stackOther.getCount(), 64 - stackSelf.getCount());
                 stackSelf.grow(amount);
                 self.setItem(stackSelf);
-                this.pickupDelay = Math.max(((IEntityItem) other).getPickupDelayC(), this.pickupDelay);
+                this.pickupDelay = Math.max(((EntityItemAccessor) other).getPickupDelay(), this.pickupDelay);
                 this.age = Math.min(other.getAge(), this.age);
                 
                 if (amount >= stackOther.getCount())

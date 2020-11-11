@@ -1,6 +1,6 @@
 package carpet.forge.mixin;
 
-import carpet.forge.interfaces.IChunk;
+import carpet.forge.fakes.IChunk;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;

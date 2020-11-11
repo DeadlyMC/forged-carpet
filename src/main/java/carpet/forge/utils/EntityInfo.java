@@ -1,9 +1,9 @@
 package carpet.forge.utils;
 
-import carpet.forge.interfaces.IEntityZombieVillager;
+import carpet.forge.mixin.EntityAccessor;
+import carpet.forge.mixin.EntitySlimeAccessor;
+import carpet.forge.mixin.EntityZombieVillagerAccessor;
 import carpet.forge.mixin.IMixinEntityVillager;
-import carpet.forge.interfaces.IEntity;
-import carpet.forge.interfaces.IEntitySlime;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
@@ -138,7 +138,7 @@ public class EntityInfo
         {
             lst.add(String.format(" - Dimension: %s", (e.dimension>0)?"The End":((e.dimension<0)?"Nether":"Overworld")));
         }
-        if (((IEntity)e).getFire() > 0) { lst.add(String.format(" - Fire for %d ticks",((IEntity)e).getFire())); }
+        if (((EntityAccessor)e).getFire() > 0) { lst.add(String.format(" - Fire for %d ticks",((EntityAccessor)e).getFire())); }
         if (e.isImmuneToFire() ) { lst.add(" - Immune to fire"); }
         if (e.timeUntilPortal > 0) { lst.add(String.format(" - Portal cooldown for %d ticks",e.timeUntilPortal)); }
         if (e.getIsInvulnerable()) { lst.add(" - Invulnerable"); } //  func_190530_aW()
@@ -318,16 +318,16 @@ public class EntityInfo
                         if (e instanceof EntityZombieVillager)
                         {
                             EntityZombieVillager ezv = (EntityZombieVillager) e;
-                            if (((IEntityZombieVillager)ezv).getConversionTime() > 0)
+                            if (((EntityZombieVillagerAccessor)ezv).getConversionTime() > 0)
                             {
-                                lst.add(String.format(" - Convert to villager in: %s",makeTime(((IEntityZombieVillager)ezv).getConversionTime())));
+                                lst.add(String.format(" - Convert to villager in: %s",makeTime(((EntityZombieVillagerAccessor)ezv).getConversionTime())));
                             }
                         }
                     }
                 }
                 if (e instanceof EntitySlime)
                 {
-                    lst.add(String.format(" - Base attack: %.1f",((IEntitySlime)e).getPublicAttackStrength()));
+                    lst.add(String.format(" - Base attack: %.1f",(float)((EntitySlimeAccessor) e).invokeGetAttackStrength()));
                 }
             }
         }

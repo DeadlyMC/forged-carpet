@@ -1,6 +1,5 @@
 package carpet.forge.utils;
 
-import carpet.forge.interfaces.IBiome;
 import com.google.common.collect.AbstractIterator;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.EntityOcelot;
@@ -449,7 +448,7 @@ public class SpawnReporter
                     
                     String creature_name = EntityList.getEntityString(entityliving);
                     String pack_size = String.format("%d", entityliving.getMaxSpawnedInChunk());//String.format("%d-%d", animal.minGroupCount, animal.maxGroupCount);
-                    int weight = ((IBiome) animal).getWeight();
+                    int weight = animal.itemWeight;
                     if (canspawn)
                     {
                         String c = (fits_true && will_spawn>0)?"e":"gi";
