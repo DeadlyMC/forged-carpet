@@ -101,19 +101,21 @@ public abstract class WorldEntitySpawnerMixin
     private int modifyExistingCount(int existingCount)
     {
         String group_code = creatureType + level_suffix;
-        SpawnReporter.mobcaps.get(this.did).put(this.creatureType, new Tuple<>(existingCount, this.totalMobcap));
-        if (SpawnReporter.track_spawns > 0L)
+        if (SpawnReporter.mobcaps.get(this.did) != null)
         {
-            int tries = SpawnReporter.spawn_tries.get(type_code);
-            if (existingCount > totalMobcap)
-                SpawnReporter.spawn_ticks_full.put(group_code, SpawnReporter.spawn_ticks_full.get(group_code) + tries);
-            
-            SpawnReporter.spawn_attempts.put(group_code, SpawnReporter.spawn_attempts.get(group_code) + tries);
-            SpawnReporter.spawn_cap_count.put(group_code, SpawnReporter.spawn_cap_count.get(group_code) + existingCount);
-        }
-        if (SpawnReporter.mock_spawns)
-            return 0;
+            SpawnReporter.mobcaps.get(this.did).put(this.creatureType, new Tuple<>(existingCount, this.totalMobcap));
+            if (SpawnReporter.track_spawns > 0L)
+            {
+                int tries = SpawnReporter.spawn_tries.get(type_code);
+                if (existingCount > totalMobcap)
+                    SpawnReporter.spawn_ticks_full.put(group_code, SpawnReporter.spawn_ticks_full.get(group_code) + tries);
         
+                SpawnReporter.spawn_attempts.put(group_code, SpawnReporter.spawn_attempts.get(group_code) + tries);
+                SpawnReporter.spawn_cap_count.put(group_code, SpawnReporter.spawn_cap_count.get(group_code) + existingCount);
+            }
+            if (SpawnReporter.mock_spawns)
+                return 0;
+        }
         return existingCount;
     }
     
