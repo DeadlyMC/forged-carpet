@@ -10,6 +10,7 @@
     "EntityTNTPrimedMixin",
     "GuiInGameForgeMixin",
     "NetworkManagerMixin",
-    "WorldMixin"
+    "WorldMixin",
+    "GuiPlayerTabOverlayMixin"
   ]
 }

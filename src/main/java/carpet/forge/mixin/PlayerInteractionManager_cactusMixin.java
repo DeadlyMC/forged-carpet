@@ -23,7 +23,7 @@ public abstract class PlayerInteractionManager_cactusMixin
 	)
 	private boolean onProcessRightClickBlock(Block block, World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
-		Boolean flipped = BlockRotator.flipBlockWithCactus(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
+		boolean flipped = BlockRotator.flipBlockWithCactus(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
 		if (flipped)
 			return true;
 		
