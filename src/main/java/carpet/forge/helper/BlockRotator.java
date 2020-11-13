@@ -5,7 +5,6 @@ import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Bootstrap;
@@ -15,7 +14,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 // Helper for FlippinCactus, RotatorBlock and AccurateBlockPlacement
@@ -39,7 +37,7 @@ public class BlockRotator
         if ( (block instanceof BlockGlazedTerracotta) || (block instanceof BlockRedstoneDiode) || (block instanceof BlockRailBase) ||
                 (block instanceof BlockTrapDoor)         || (block instanceof BlockLever)         || (block instanceof BlockFenceGate))
         {
-            worldIn.setBlockState(pos, block.withRotation(state, Rotation.CLOCKWISE_90), 130);
+            worldIn.setBlockState(pos, state.withRotation(Rotation.CLOCKWISE_90), 130);
         }
         else if ((block instanceof BlockObserver) || (block instanceof BlockEndRod))
         {
@@ -51,7 +49,7 @@ public class BlockRotator
         }
         else if (block instanceof BlockPistonBase)
         {
-            if (!(((Boolean)state.getValue(BlockPistonBase.EXTENDED)).booleanValue()))
+            if (!((Boolean) state.getValue(BlockPistonBase.EXTENDED)))
                 worldIn.setBlockState(pos, state.withProperty(BlockDirectional.FACING, (EnumFacing)state.getValue(BlockDirectional.FACING).getOpposite()), 130);
         }
         else if (block instanceof BlockSlab)
@@ -114,11 +112,11 @@ public class BlockRotator
                 }
                 if (turn_right)
                 {
-                    worldIn.setBlockState(pos, block.withRotation(state, Rotation.COUNTERCLOCKWISE_90), 130);
+                    worldIn.setBlockState(pos, state.withRotation(Rotation.COUNTERCLOCKWISE_90), 130);
                 }
                 else
                 {
-                    worldIn.setBlockState(pos, block.withRotation(state, Rotation.CLOCKWISE_90), 130);
+                    worldIn.setBlockState(pos, state.withRotation(Rotation.CLOCKWISE_90), 130);
                 }
             }
         }

@@ -24,7 +24,7 @@ public abstract class BlockRedstoneWire_fastdustMixin extends Block
     @Shadow
     private boolean canProvidePower;
     
-    private RedstoneWireTurbo turbo = new RedstoneWireTurbo((BlockRedstoneWire) ((Object) (this)));
+    private final RedstoneWireTurbo turbo = new RedstoneWireTurbo((BlockRedstoneWire) ((Object) this));
     
     public BlockRedstoneWire_fastdustMixin(Material blockMaterialIn, MapColor blockMapColorIn)
     {

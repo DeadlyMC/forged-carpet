@@ -9,8 +9,7 @@
     "PlayerList_coreMixin",
 
     "BlockCarpetMixin",
-    "IMixinEntityVillager",
-    "IMixinSlot",
+    "EntityVillagerAccessor",
     "BlockHopperMixin",
     "BlockObserverMixin",
     "BlockSilverfishMixin",

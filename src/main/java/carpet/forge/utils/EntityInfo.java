@@ -3,7 +3,7 @@ package carpet.forge.utils;
 import carpet.forge.mixin.EntityAccessor;
 import carpet.forge.mixin.EntitySlimeAccessor;
 import carpet.forge.mixin.EntityZombieVillagerAccessor;
-import carpet.forge.mixin.IMixinEntityVillager;
+import carpet.forge.mixin.EntityVillagerAccessor;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
@@ -294,9 +294,9 @@ public class EntityInfo
                             {
                                 lst.add(String.format(" - Inventory:%s", inventory_content));
                             }
-                            if (((IMixinEntityVillager)ev).getWealth() > 0)
+                            if (((EntityVillagerAccessor)ev).getWealth() > 0)
                             {
-                                lst.add(String.format(" - Wealth: %d emeralds", ((IMixinEntityVillager)ev).getWealth()));
+                                lst.add(String.format(" - Wealth: %d emeralds", ((EntityVillagerAccessor)ev).getWealth()));
                             }
                         }
                         if (e instanceof AbstractHorse)

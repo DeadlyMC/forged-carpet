@@ -25,11 +25,7 @@ public abstract class ChunkProviderServer_newLightMixin
             ((IWorld) this.world).getLightingEngine().procLightUpdates();
     }
     
-    @Inject(
-            method = "tick",
-            at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
-                    target = "Ljava/util/Set;iterator()Ljava/util/Iterator;")
-    )
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;", remap = false))
     private void onTick(CallbackInfoReturnable<Boolean> cir)
     {
         if (CarpetSettings.newLight)

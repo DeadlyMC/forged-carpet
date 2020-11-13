@@ -22,11 +22,7 @@ public abstract class WorldServer_newLightMixin extends World
         super(saveHandlerIn, info, providerIn, profilerIn, client);
     }
     
-    @Inject(
-            method = "tick",
-            at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
-                    target = "Lnet/minecraft/profiler/Profiler;endSection()V")
-    )
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endSection()V"))
     private void onTick(CallbackInfo ci)
     {
         if (CarpetSettings.newLight)
