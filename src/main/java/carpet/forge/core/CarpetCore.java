@@ -1,6 +1,5 @@
 package carpet.forge.core;
 
-import carpet.forge.config.CarpetConfig;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.Mixins;
@@ -23,13 +22,6 @@ public class CarpetCore implements IFMLLoadingPlugin
         
         Mixins.addConfiguration("mixins.forgedcarpet.json");
         Mixins.addConfiguration("mixins.carpet.logging.json");
-        
-        CarpetConfig config = new CarpetConfig();
-        
-        //if (config.getFastRedstoneDust())
-            Mixins.addConfiguration("mixins.carpet.fastdust.json");
-        //if (config.getNewLight())
-            Mixins.addConfiguration("mixins.carpet.newlight.json");
         
         try
         {

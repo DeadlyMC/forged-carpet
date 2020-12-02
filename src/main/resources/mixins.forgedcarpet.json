@@ -72,10 +72,7 @@
     "EntityEnderPearlMixin",
     "ForgeHooksMixin",
 
-    "WorldMixin",
-    "BlockRedstoneWireMixin",
     "EntityLivingMixin",
-    "ChunkMixin",
     "BlockFarmlandMixin"
   ],
   "server": [

@@ -233,16 +233,6 @@ public class CarpetSettings
     @Rule(desc = "Shulkers will respawn in end cities", category = {FEATURE, EXPERIMENTAL})
     public static boolean shulkerSpawningInEndCities = false;
     
-    @Rule(
-            desc = "Lag optimizations for redstone dust",
-            extra = "by Theosib",
-            category = {EXPERIMENTAL, OPTIMIZATIONS}
-    )
-    public static boolean fastRedstoneDust = false;
-    
-    @Rule(desc = "Uses alternative lighting engine by PhiPros. AKA NewLight mod", category = OPTIMIZATIONS)
-    public static boolean newLight = false;
-    
     @Rule(desc = "Cactus in dispensers rotates blocks.", extra = "Rotates block anti-clockwise if possible", category = FEATURE)
     public static boolean rotatorBlock = false;
     

@@ -22,8 +22,7 @@ public abstract class PlayerInteractionManagerMixin
     @Shadow
     public EntityPlayerMP player;
     
-    @Shadow
-    private BlockPos destroyPos = BlockPos.ORIGIN;
+    @Shadow private BlockPos destroyPos;
     
     @Inject(
             method = "onBlockClicked",
