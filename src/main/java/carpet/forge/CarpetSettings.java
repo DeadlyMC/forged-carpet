@@ -87,6 +87,9 @@ public class CarpetSettings
     @Rule(desc = "Enables /ping for players to get their ping", category = COMMANDS)
     public static boolean commandPing = true;
     
+    @Rule(desc = "Enables /player command to control/spawn players", category = COMMANDS)
+    public static boolean commandPlayer = true;
+    
     @Rule(desc = "Placing carpets may issue carpet commands for non-op players", category = SURVIVAL)
     public static boolean carpets = false;
     

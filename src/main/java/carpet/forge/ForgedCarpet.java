@@ -47,6 +47,7 @@ public class ForgedCarpet
         event.registerServerCommand(new CommandDistance());
         event.registerServerCommand(new CommandUnload());
         event.registerServerCommand(new CommandUnload13());
+        event.registerServerCommand(new CommandPlayer());
     }
     
     @Mod.EventHandler

@@ -67,6 +67,11 @@
     "EntityAccessor",
     "EntitySlimeAccessor",
 
+    "PlayerListMixin",
+    "EntityPlayerMPMixin",
+    "EntityEnderPearlMixin",
+    "ForgeHooksMixin",
+
     "WorldMixin",
     "BlockRedstoneWireMixin",
     "EntityLivingMixin",
