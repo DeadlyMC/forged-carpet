@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(ForgeHooks.class)
 public abstract class ForgeHooksMixin
 {
-    @Redirect(method = "sendRecipeBook", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/common/network/handshake/NetworkDispatcher;get(Lnet/minecraft/network/NetworkManager;)Lnet/minecraftforge/fml/common/network/handshake/NetworkDispatcher;"))
+    @Redirect(method = "sendRecipeBook", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/common/network/handshake/NetworkDispatcher;get(Lnet/minecraft/network/NetworkManager;)Lnet/minecraftforge/fml/common/network/handshake/NetworkDispatcher;"), remap = false)
     private static NetworkDispatcher handleNPE(NetworkManager manager)
     {
         // Prevent NPE caused due to NetworkManager.channel()
