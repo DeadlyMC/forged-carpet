@@ -22,6 +22,8 @@ public class CarpetCore implements IFMLLoadingPlugin
         
         Mixins.addConfiguration("mixins.forgedcarpet.json");
         Mixins.addConfiguration("mixins.carpet.logging.json");
+        Mixins.addConfiguration("mixins.carpet.optifine.json");
+        Mixins.addConfiguration("mixins.carpet.nooptifine.json");
         
         try
         {

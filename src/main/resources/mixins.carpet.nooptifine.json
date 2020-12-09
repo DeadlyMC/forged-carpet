@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "carpet.forge.mixin",
+  "refmap": "mixins.carpet.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8",
+  "plugin": "carpet.forge.utils.NoOptifinePlugin",
+  "mixins": [
+    "WorldEntitySpawnerMixin"
+  ]
+}

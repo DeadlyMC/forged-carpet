@@ -473,7 +473,7 @@ public class SpawnReporter
     }
     
     // Method credits: @skyrising
-    public static Iterator<ChunkPos> createChunkIterator(ArrayList<ChunkPos> chunks, String type, Runnable onEnd)
+    public static Iterator<ChunkPos> createChunkIterator(Collection<ChunkPos> chunks, String type, Runnable onEnd)
     {
         return new AbstractIterator<ChunkPos>()
         {

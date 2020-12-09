@@ -7,29 +7,31 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.WorldServer;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 @Mixin(WorldEntitySpawner.class)
-public abstract class WorldEntitySpawnerMixin
+public abstract class WorldEntitySpawnerOptifineMixin
 {
-    @Shadow @Final private static int MOB_COUNT_DIV;
+    @Shadow
+    @Final
+    private static int MOB_COUNT_DIV;
+    
+    @Dynamic
+    @SuppressWarnings("ShadowTarget")
+    @Shadow(remap = false)
+    public int countChunkPos;
     
     @Unique private WorldServer world;
     @Unique private String level_suffix;
@@ -45,12 +47,11 @@ public abstract class WorldEntitySpawnerMixin
             method = "findChunksForSpawning",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/WorldServer;getSpawnPoint()Lnet/minecraft/util/math/BlockPos;"),
-            locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true
     )
-    private void skipInvalidChunks(WorldServer worldServerIn, boolean spawnHostileMobs, boolean spawnPeacefulMobs, boolean spawnOnSetTickRate, CallbackInfoReturnable<Integer> cir, int chunkCount)
+    private void skipInvalidChunks(WorldServer worldServerIn, boolean spawnHostileMobs, boolean spawnPeacefulMobs, boolean spawnOnSetTickRate, CallbackInfoReturnable<Integer> cir)
     {
-        if (chunkCount == 0 && CarpetSettings.optimizedDespawnRange) // worlds without valid chunks are skipped.
+        if (this.countChunkPos == 0 && CarpetSettings.optimizedDespawnRange) // worlds without valid chunks are skipped.
         {
             cir.setReturnValue(0);
         }
@@ -58,7 +59,7 @@ public abstract class WorldEntitySpawnerMixin
         if (this.world == null)
         {
             this.world = worldServerIn;
-            this.chunksCount = chunkCount;
+            this.chunksCount = this.countChunkPos;
             this.did = worldServerIn.provider.getDimensionType().getId();
             this.level_suffix = (did==0)?"":((did<0?" (N)":" (E)"));
         }
@@ -71,8 +72,9 @@ public abstract class WorldEntitySpawnerMixin
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void spawnTicks(WorldServer worldServerIn, boolean spawnHostileMobs, boolean spawnPeacefulMobs, boolean spawnOnSetTickRate,
-            CallbackInfoReturnable<Integer> cir, int i, int j4, BlockPos blockpos1, EnumCreatureType var8[], int var9, int var10,
-            EnumCreatureType enumcreaturetype)
+            CallbackInfoReturnable<Integer> cir, boolean updateEligibleChunks, EntityPlayer player, int j4, BlockPos blockpos1,
+            @Coerce BlockPos blockPosM /*Optifine class*/, BlockPos.MutableBlockPos blockpos$mutableblockpos, EnumCreatureType var11[], int var12,
+            int var13, EnumCreatureType enumcreaturetype)
     {
         this.creatureType = enumcreaturetype;
         this.type_code = String.format("%s", enumcreaturetype);
@@ -92,15 +94,11 @@ public abstract class WorldEntitySpawnerMixin
     }
     
     // This one is tricky to target, we want the number of existing mobs right where it's compared to the mobcap.
-    // The comparison looks like ILOAD 12, ILOAD 13, IF_ICMPGT -> index = 12
-    // If @At would actually respect the slice here we could use that with ordinal=0
-    // but apparently 12 is also used in the loop that counts chunks, so ordinal needs to be 4.
     // The resulting code looks like:
-    //   int l4 = this.redirect$zej000$getMaxNumberOfCreature(enumcreaturetype) * i / MOB_COUNT_DIV;
-    //   k4 = this.localvar$zej000$modifyExistingCount(k4);
+    //   int l4 = enumcreaturetype.func_75601_b() * this.countChunkPos / field_180268_a;
+    //   k4 = this.localvar$zdk000$modifyExistingCount(k4);
     //   if (k4 <= l4) {
-    // Thanks to @skyrising for this mixin.
-    @ModifyVariable(method = "findChunksForSpawning", at = @At(value = "LOAD", ordinal = 4), index = 12)
+    @ModifyVariable(method = "findChunksForSpawning", at = @At(value = "LOAD", ordinal = 0), index = 15)
     private int modifyExistingCount(int existingCount)
     {
         String group_code = creatureType + level_suffix;
@@ -112,7 +110,7 @@ public abstract class WorldEntitySpawnerMixin
                 int tries = SpawnReporter.spawn_tries.get(type_code);
                 if (existingCount > totalMobcap)
                     SpawnReporter.spawn_ticks_full.put(group_code, SpawnReporter.spawn_ticks_full.get(group_code) + tries);
-        
+                
                 SpawnReporter.spawn_attempts.put(group_code, SpawnReporter.spawn_attempts.get(group_code) + tries);
                 SpawnReporter.spawn_cap_count.put(group_code, SpawnReporter.spawn_cap_count.get(group_code) + existingCount);
             }
@@ -126,8 +124,8 @@ public abstract class WorldEntitySpawnerMixin
     // which acts like a for (int i = 0; i < tries; i++) loop around the spawning code
     // the iterator executes the code below when it is finished
     // Thanks to @skyrising for this mixin.
-    @Redirect(method = "findChunksForSpawning", at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;iterator()Ljava/util/Iterator;", remap = false))
-    private Iterator<ChunkPos> getChunkIterator(ArrayList<ChunkPos> set)
+    @Redirect(method = "findChunksForSpawning", at = @At(value = "INVOKE", target = "Ljava/util/Collection;iterator()Ljava/util/Iterator;", remap = false))
+    private Iterator<ChunkPos> getChunkIterator(Collection<ChunkPos> set)
     {
         return SpawnReporter.createChunkIterator(set, type_code, () -> {
             if (SpawnReporter.track_spawns <= 0L)
@@ -145,13 +143,12 @@ public abstract class WorldEntitySpawnerMixin
         });
     }
     
-    @Inject(method = "findChunksForSpawning", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;spawnEntity(Lnet/minecraft/entity/Entity;)Z"),
-            locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "findChunksForSpawning", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void captureMutablePos(WorldServer worldServerIn, boolean spawnHostileMobs, boolean spawnPeacefulMobs, boolean spawnOnSetTickRate,
-            CallbackInfoReturnable<Integer> cir, int i, int j4, BlockPos blockpos1, EnumCreatureType var8[], int var9, int var10,
-            EnumCreatureType enumcreaturetype, int k4, int l4, ArrayList shuffled, BlockPos.MutableBlockPos mutableBlockPos)
+            CallbackInfoReturnable<Integer> cir, boolean updateEligibleChunks, EntityPlayer player, int j4, BlockPos blockpos1,
+            @Coerce BlockPos blockPosM /*Optifine class*/, BlockPos.MutableBlockPos blockpos$mutableblockpos)
     {
-        this.mutablePos = mutableBlockPos;
+        this.mutablePos = blockpos$mutableblockpos;
     }
     
     @Redirect(method = "findChunksForSpawning", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))

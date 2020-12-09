@@ -56,8 +56,6 @@
     "World_fillUpdatesMixin",
     "Template_fillUpdatesMixin",
 
-    "WorldEntitySpawnerMixin",
-
     "EntityZombieVillagerAccessor",
     "ChunkProviderServerAccessor",
     "PlayerChunkMapEntryAccessor",
