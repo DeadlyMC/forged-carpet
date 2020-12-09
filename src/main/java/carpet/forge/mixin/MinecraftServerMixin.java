@@ -134,25 +134,13 @@ public abstract class MinecraftServerMixin
         }
     }
     
-    @Inject(
-            method = "tick",
-            at = @At(value = "INVOKE", ordinal = 0, shift = At.Shift.BEFORE,
-                    target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V"),
-            slice = @Slice(from = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/network/ServerStatusResponse;invalidateJson()V"))
-    )
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;saveAllPlayerData()V"))
     private void startAutoSaveProfiling(CallbackInfo ci)
     {
         CarpetProfiler.start_section(null, "Autosave");
     }
     
-    @Inject(
-            method = "tick",
-            at = @At(value = "INVOKE", ordinal = 0, shift = At.Shift.AFTER,
-                    target = "Lnet/minecraft/profiler/Profiler;endSection()V"),
-            slice = @Slice(from = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/network/ServerStatusResponse;invalidateJson()V"))
-    )
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;saveAllWorlds(Z)V", shift = At.Shift.AFTER))
     private void stopAutoSaveProfiling(CallbackInfo ci)
     {
         CarpetProfiler.end_current_section();
