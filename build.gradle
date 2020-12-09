@@ -83,8 +83,10 @@ dependencies {
     compile 'org.spongepowered:mixin:0.8.1-SNAPSHOT'
 }
 
-mixin {
-    add sourceSets.main, 'mixins.carpet.refmap.json'
+sourceSets {
+    main {
+        ext.refMap = 'mixins.carpet.refmap.json'
+    }
 }
 
 shadowJar {
