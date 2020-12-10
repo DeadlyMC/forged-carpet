@@ -14,11 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(NetHandlerPlayServer.class)
 public abstract class NetHandlerPlayServerMixin
 {
-	@Inject(
-			method = "processInput",
-			at = @At(value = "INVOKE", shift = At.Shift.AFTER,
-					target = "Lnet/minecraft/entity/player/EntityPlayerMP;setEntityActionState(FFZZ)V")
-	)
+	@Inject(method = "processInput", at = @At("RETURN"))
 	private void onProcessInput(CPacketInput packetIn, CallbackInfo ci)
 	{
 		// [FCM] Checking if player is moving, for commandTick
@@ -28,9 +24,9 @@ public abstract class NetHandlerPlayServerMixin
 		}
 	}
 	
-	@Redirect(method = "processPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayerMP;isInvulnerableDimensionChange()Z"))
+	@Redirect(method = "processPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayerMP;isInvulnerableDimensionChange()Z", ordinal = 0))
 	private boolean onProcessPlayer(EntityPlayerMP playerMP)
 	{
-		return playerMP.isInvulnerableDimensionChange() || CarpetSettings.antiCheatSpeed;
+		return playerMP.isInvulnerableDimensionChange() && CarpetSettings.antiCheatSpeed;
 	}
 }
