@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGeneratorOverworld;
 import net.minecraft.world.gen.structure.MapGenScatteredFeature;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,18 +21,17 @@ public abstract class ChunkGeneratorOverworldMixin
 {
     @Shadow private MapGenScatteredFeature scatteredFeatureGenerator;
     
-    @Inject(
-            method = "getPossibleCreatures",
-            at = @At(value = "FIELD",
-                    target = "Lnet/minecraft/world/gen/ChunkGeneratorOverworld;mapFeaturesEnabled:Z",
-                    shift = At.Shift.AFTER),
-            cancellable = true
-    )
-    private void onGetPossibleCreatures(EnumCreatureType creatureType, BlockPos pos, CallbackInfoReturnable<List<Biome.SpawnListEntry>> cir)
+    @Shadow @Final private boolean mapFeaturesEnabled;
+    
+    @Inject(method = "getPossibleCreatures", at = @At("HEAD"), cancellable = true)
+    private void huskSpawning(EnumCreatureType creatureType, BlockPos pos, CallbackInfoReturnable<List<Biome.SpawnListEntry>> cir)
     {
-        if (CarpetSettings.huskSpawningInTemples && creatureType == EnumCreatureType.MONSTER && ((IMapGenScatteredFeature) this.scatteredFeatureGenerator).isTemple(pos))
+        if (this.mapFeaturesEnabled)
         {
-            cir.setReturnValue(((IMapGenScatteredFeature) this.scatteredFeatureGenerator).getHuskSpawnList());
+            if (CarpetSettings.huskSpawningInTemples && creatureType == EnumCreatureType.MONSTER && ((IMapGenScatteredFeature) this.scatteredFeatureGenerator).isTemple(pos))
+            {
+                cir.setReturnValue(((IMapGenScatteredFeature) this.scatteredFeatureGenerator).getHuskSpawnList());
+            }
         }
     }
 }
