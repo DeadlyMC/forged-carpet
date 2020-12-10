@@ -3,8 +3,8 @@ package carpet.forge.mixin;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.utils.CarpetProfiler;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
@@ -27,26 +27,16 @@ public abstract class World_tickMixin
 {
     @Shadow @Final public WorldProvider provider;
     
-    @Redirect(
-            method = "updateEntities",
-            at = @At(value = "FIELD", ordinal = 0,
-                    target = "Lnet/minecraft/entity/Entity;isDead:Z"),
-            slice = @Slice(from = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/entity/Entity;dismountRidingEntity()V"))
-    )
-    private boolean onUpdateEntities1(Entity entity)
+    @Redirect(method = "updateEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;updateEntity(Lnet/minecraft/entity/Entity;)V"))
+    private void stopEntityProcessing(World world, Entity entity)
     {
-        return entity.isDead && !(TickSpeed.process_entities || entity instanceof EntityPlayer);
+        if (TickSpeed.process_entities) world.updateEntity(entity);
     }
     
-    @Redirect(
-            method = "updateEntities",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/tileentity/TileEntity;hasWorld()Z")
-    )
-    private boolean onUpdateEntities2(TileEntity tileEntity)
+    @Redirect(method = "updateEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/ITickable;update()V"))
+    private void stopTileEntityProcessing(ITickable tickable)
     {
-        return tileEntity.hasWorld() && TickSpeed.process_entities;
+        if (TickSpeed.process_entities) tickable.update();
     }
     
     @Inject(
