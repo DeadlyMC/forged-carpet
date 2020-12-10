@@ -23,6 +23,6 @@ public abstract class BlockPumpkinMixin extends BlockHorizontal
     @Inject(method = "canPlaceBlockAt", at = @At("HEAD"), cancellable = true)
     private void canPlaceOnOver(World worldIn, BlockPos pos, CallbackInfoReturnable<Boolean> cir)
     {
-        cir.setReturnValue((worldIn.getBlockState(pos.down()).getMaterial().isSolid() || CarpetSettings.relaxedBlockPlacement) ? super.canPlaceBlockAt(worldIn, pos) : false);
+        cir.setReturnValue((worldIn.getBlockState(pos.down()).getMaterial().isSolid() || CarpetSettings.relaxedBlockPlacement) && super.canPlaceBlockAt(worldIn, pos));
     }
 }

@@ -7,6 +7,8 @@
   "mixins": [
     "MinecraftServer_coreMixin",
     "PlayerList_coreMixin",
+    "WorldServer_coreMixin",
+    "World_coreMixin",
 
     "BlockCarpetMixin",
     "EntityVillagerAccessor",
@@ -22,7 +24,6 @@
     "EntityLlamaMixin",
     "EnumFacingMixin",
     "MapGenScatteredFeatureMixin",
-    "MinecraftServerMixin",
     "NetHandlerPlayServerMixin",
     "PlayerInteractionManager_cactusMixin",
     "PlayerInteractionManagerMixin",
@@ -44,8 +45,9 @@
     "EntityXPOrbMixin",
     "EntityPlayerMixin",
 
-    "WorldServer_tickMixin",
-    "World_tickMixin",
+    "World_profilerMixin",
+    "WorldServer_profilerMixin",
+    "MinecraftServer_profilerMixin",
 
     "Chunk_fillUpdatesMixin",
     "CommandCloneMixin",

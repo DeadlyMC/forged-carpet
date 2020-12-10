@@ -20,13 +20,13 @@ public abstract class BlockSaplingMixin
 {
     @Inject(
             method = "grow(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Ljava/util/Random;)V",
-            at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
+            at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/block/BlockSapling;generateTree(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Ljava/util/Random;)V"),
             cancellable = true
     )
     private void onGrow(World worldIn, BlockPos pos, IBlockState state, Random rand, CallbackInfo ci)
     {
-        if(CarpetSettings.desertShrubs && worldIn.getBiome(pos) == Biomes.DESERT && !BlockSaplingHelper.hasWater(worldIn, pos))
+        if (CarpetSettings.desertShrubs && worldIn.getBiome(pos) == Biomes.DESERT && !BlockSaplingHelper.hasWater(worldIn, pos))
         {
             worldIn.setBlockState(pos, Blocks.DEADBUSH.getDefaultState(), 3);
             ci.cancel();

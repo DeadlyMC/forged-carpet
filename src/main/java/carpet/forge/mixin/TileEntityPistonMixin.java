@@ -10,14 +10,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = TileEntityPiston.class)
+@Mixin(TileEntityPiston.class)
 public abstract class TileEntityPistonMixin extends TileEntity
 {
-    @Inject(
-            method = "update",
-            at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
-                    target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z")
-    )
+    @Inject(method = "update", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z"))
     private void onUpdate(CallbackInfo ci)
     {
         if (CarpetSettings.pistonGhostBlocksFix)

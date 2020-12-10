@@ -17,7 +17,7 @@ public abstract class WorldMixin
     @Shadow
     protected WorldInfo worldInfo;
 
-    @Inject(method = "updateWeatherBody", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/storage/WorldInfo;isThundering()Z", shift = At.Shift.BEFORE, ordinal = 1))
+    @Inject(method = "updateWeatherBody", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/storage/WorldInfo;isThundering()Z", ordinal = 1))
     private void loggerRegistryWeatherThunder(CallbackInfo ci)
     {
         if (LoggerRegistry.__weather)
@@ -26,7 +26,7 @@ public abstract class WorldMixin
         }
     }
 
-    @Inject(method = "updateWeatherBody", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/world/storage/WorldInfo;isRaining()Z", ordinal = 1))
+    @Inject(method = "updateWeatherBody", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/storage/WorldInfo;isRaining()Z", ordinal = 1))
     private void loggerRegistryWeatherRaining(CallbackInfo ci)
     {
         if (LoggerRegistry.__weather)
