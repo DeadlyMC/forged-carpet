@@ -17,24 +17,12 @@ public class CarpetCore implements IFMLLoadingPlugin
     
     public CarpetCore()
     {
-        
         MixinBootstrap.init();
         
         Mixins.addConfiguration("mixins.forgedcarpet.json");
-        Mixins.addConfiguration("mixins.carpet.logging.json");
-        Mixins.addConfiguration("mixins.carpet.optifine.json");
-        Mixins.addConfiguration("mixins.carpet.nooptifine.json");
-        
-        try
-        {
-            Class.forName("com.mumfrey.liteloader.LiteMod");
-            Mixins.addConfiguration("mixins.carpet.liteloader.json");
-        }
-        catch (ClassNotFoundException e)
-        {
-            Mixins.addConfiguration("mixins.carpet.forge.json");
-        }
-        
+        Mixins.addConfiguration("mixins.forgedcarpet.logging.json");
+        Mixins.addConfiguration("mixins.forgedcarpet.optifine.json");
+        Mixins.addConfiguration("mixins.forgedcarpet.liteloader.json");
     }
     
     public static File getMinecraftDir()

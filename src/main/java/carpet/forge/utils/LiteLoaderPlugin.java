@@ -1,5 +1,6 @@
 package carpet.forge.utils;
 
+import carpet.forge.ForgedCarpet;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -7,7 +8,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import java.util.List;
 import java.util.Set;
 
-public class NoOptifinePlugin implements IMixinConfigPlugin
+public class LiteLoaderPlugin implements IMixinConfigPlugin
 {
     @Override
     public void onLoad(String mixinPackage) { }
@@ -20,12 +21,14 @@ public class NoOptifinePlugin implements IMixinConfigPlugin
     {
         try
         {
-            Class.forName("optifine.OptiFineForgeTweaker");
-            return false;
+            Class.forName("com.mumfrey.liteloader.LiteMod");
+            ForgedCarpet.logger.info("Liteloader detected!");
+            return mixinClassName.equals("carpet.forge.mixin.NetHandlerPlayServerLiteMixin");
         }
         catch (ClassNotFoundException e)
         {
-            return true;
+            ForgedCarpet.logger.info("Liteloader not detected!");
+            return mixinClassName.equals("carpet.forge.mixin.NetHandlerPlayServerForgeMixin");
         }
     }
     

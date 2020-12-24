@@ -23,12 +23,12 @@ public class OptifinePlugin implements IMixinConfigPlugin
         {
             Class.forName("optifine.OptiFineForgeTweaker");
             ForgedCarpet.logger.info("Optifine detected!");
-            return true;
+            return mixinClassName.equals("carpet.forge.mixin.WorldEntitySpawnerOptifineMixin");
         }
         catch (ClassNotFoundException e)
         {
             ForgedCarpet.logger.info("Optifine not detected!");
-            return false;
+            return mixinClassName.equals("carpet.forge.mixin.WorldEntitySpawnerMixin");
         }
     }
     
