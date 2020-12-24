@@ -70,7 +70,6 @@
     "PlayerListMixin",
     "EntityPlayerMPMixin",
     "EntityEnderPearlMixin",
-    "ForgeHooksMixin",
 
     "EntityLivingMixin",
     "BlockFarmlandMixin"

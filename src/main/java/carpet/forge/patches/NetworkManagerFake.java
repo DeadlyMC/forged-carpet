@@ -1,5 +1,6 @@
 package carpet.forge.patches;
 
+import io.netty.channel.Channel;
 import net.minecraft.network.EnumPacketDirection;
 import net.minecraft.network.NetworkManager;
 
@@ -18,5 +19,11 @@ public class NetworkManagerFake extends NetworkManager
     @Override
     public void handleDisconnection()
     {
+    }
+    
+    @Override
+    public Channel channel()
+    {
+        return new ChannelFake();
     }
 }
