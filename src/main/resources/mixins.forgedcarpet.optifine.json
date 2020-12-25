@@ -1,5 +1,4 @@
 {
-  "required": false,
   "minVersion": "0.8",
   "package": "carpet.forge.mixin",
   "refmap": "mixins.carpet.refmap.json",
