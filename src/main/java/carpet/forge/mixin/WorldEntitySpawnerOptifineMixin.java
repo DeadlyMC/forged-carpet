@@ -51,15 +51,16 @@ public abstract class WorldEntitySpawnerOptifineMixin
     )
     private void skipInvalidChunks(WorldServer worldServerIn, boolean spawnHostileMobs, boolean spawnPeacefulMobs, boolean spawnOnSetTickRate, CallbackInfoReturnable<Integer> cir)
     {
+        this.chunksCount = this.countChunkPos;
         if (this.countChunkPos == 0 && CarpetSettings.optimizedDespawnRange) // worlds without valid chunks are skipped.
         {
             cir.setReturnValue(0);
+            return;
         }
         
         if (this.world == null)
         {
             this.world = worldServerIn;
-            this.chunksCount = this.countChunkPos;
             this.did = worldServerIn.provider.getDimensionType().getId();
             this.level_suffix = (did==0)?"":((did<0?" (N)":" (E)"));
         }
@@ -102,21 +103,18 @@ public abstract class WorldEntitySpawnerOptifineMixin
     private int modifyExistingCount(int existingCount)
     {
         String group_code = creatureType + level_suffix;
-        if (SpawnReporter.mobcaps.get(this.did) != null)
+        SpawnReporter.mobcaps.get(this.did).put(this.creatureType, new Tuple<>(existingCount, this.totalMobcap));
+        if (SpawnReporter.track_spawns > 0L)
         {
-            SpawnReporter.mobcaps.get(this.did).put(this.creatureType, new Tuple<>(existingCount, this.totalMobcap));
-            if (SpawnReporter.track_spawns > 0L)
-            {
-                int tries = SpawnReporter.spawn_tries.get(type_code);
-                if (existingCount > totalMobcap)
-                    SpawnReporter.spawn_ticks_full.put(group_code, SpawnReporter.spawn_ticks_full.get(group_code) + tries);
-                
-                SpawnReporter.spawn_attempts.put(group_code, SpawnReporter.spawn_attempts.get(group_code) + tries);
-                SpawnReporter.spawn_cap_count.put(group_code, SpawnReporter.spawn_cap_count.get(group_code) + existingCount);
-            }
-            if (SpawnReporter.mock_spawns)
-                return 0;
+            int tries = SpawnReporter.spawn_tries.get(type_code);
+            if (existingCount > totalMobcap)
+                SpawnReporter.spawn_ticks_full.put(group_code, SpawnReporter.spawn_ticks_full.get(group_code) + tries);
+        
+            SpawnReporter.spawn_attempts.put(group_code, SpawnReporter.spawn_attempts.get(group_code) + tries);
+            SpawnReporter.spawn_cap_count.put(group_code, SpawnReporter.spawn_cap_count.get(group_code) + existingCount);
         }
+        if (SpawnReporter.mock_spawns)
+            return 0;
         return existingCount;
     }
     
@@ -124,6 +122,7 @@ public abstract class WorldEntitySpawnerOptifineMixin
     // which acts like a for (int i = 0; i < tries; i++) loop around the spawning code
     // the iterator executes the code below when it is finished
     // Thanks to @skyrising for this mixin.
+    @SuppressWarnings("UnresolvedMixinReference")
     @Redirect(method = "findChunksForSpawning", at = @At(value = "INVOKE", target = "Ljava/util/Collection;iterator()Ljava/util/Iterator;", remap = false))
     private Iterator<ChunkPos> getChunkIterator(Collection<ChunkPos> set)
     {

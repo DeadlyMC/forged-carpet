@@ -14,6 +14,7 @@ import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraftforge.common.DimensionManager;
 
 import java.util.*;
 
@@ -281,9 +282,10 @@ public class SpawnReporter
             spawn_stats.put(type_code, new HashMap<>());
             spawned_mobs.put(type_code, new EvictingQueue<>());
         }
-        mobcaps.put(-1,new HashMap<>());
-        mobcaps.put(0,new HashMap<>());
-        mobcaps.put(1,new HashMap<>());
+        for (Integer dimId : DimensionManager.getIDs())
+        {
+            mobcaps.put(dimId, new HashMap<>());
+        }
         track_spawns = 0L;
     }
     
