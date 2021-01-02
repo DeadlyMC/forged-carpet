@@ -4,16 +4,19 @@ import carpet.forge.fakes.IEntityPlayerMP;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.EnumPacketDirection;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketEntityHeadLook;
 import net.minecraft.network.play.server.SPacketEntityTeleport;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerInteractionManager;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.GameType;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.handshake.NetworkDispatcher;
 
 @SuppressWarnings("EntityConstructor")
 public class EntityPlayerMPFake extends EntityPlayerMP
@@ -36,7 +39,10 @@ public class EntityPlayerMPFake extends EntityPlayerMP
         gameprofile = fixSkin(gameprofile);
         EntityPlayerMPFake instance = new EntityPlayerMPFake(server, worldIn, gameprofile, interactionManagerIn);
         instance.setSetPosition(x, y, z, (float)yaw, (float)pitch);
-        server.getPlayerList().initializeConnectionToPlayer(new NetworkManagerFake(EnumPacketDirection.CLIENTBOUND), instance, instance.connection);
+        PlayerList playerList = server.getPlayerList();
+        NetworkManager manager = new NetworkManagerFake(EnumPacketDirection.CLIENTBOUND);
+        manager.channel().attr(NetworkDispatcher.FML_DISPATCHER).getAndSet(new NetworkDispatcher(manager, playerList));
+        playerList.initializeConnectionToPlayer(manager, instance, instance.connection);
         if (instance.dimension != dimension) //player was logged in in a different dimension
         {
             WorldServer old_world = server.getWorld(instance.dimension);
@@ -70,7 +76,10 @@ public class EntityPlayerMPFake extends EntityPlayerMP
         gameprofile = fixSkin(gameprofile);
         EntityPlayerMPFake playerShadow = new EntityPlayerMPFake(server, worldIn, gameprofile, interactionManagerIn);
         playerShadow.setSetPosition(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
-        server.getPlayerList().initializeConnectionToPlayer(new NetworkManagerFake(EnumPacketDirection.CLIENTBOUND), playerShadow, playerShadow.connection);
+        PlayerList playerList = server.getPlayerList();
+        NetworkManager manager = new NetworkManagerFake(EnumPacketDirection.CLIENTBOUND);
+        manager.channel().attr(NetworkDispatcher.FML_DISPATCHER).getAndSet(new NetworkDispatcher(manager, playerList));
+        playerList.initializeConnectionToPlayer(manager, playerShadow, playerShadow.connection);
         
         playerShadow.setHealth(player.getHealth());
         playerShadow.connection.setPlayerLocation(player.posX, player.posY,player.posZ, player.rotationYaw, player.rotationPitch);

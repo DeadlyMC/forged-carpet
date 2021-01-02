@@ -6,9 +6,12 @@ import net.minecraft.network.NetworkManager;
 
 public class NetworkManagerFake extends NetworkManager
 {
+    private final Channel channel;
+    
     public NetworkManagerFake(EnumPacketDirection p)
     {
         super(p);
+        this.channel = new ChannelFake(null);
     }
 
     @Override
@@ -24,6 +27,6 @@ public class NetworkManagerFake extends NetworkManager
     @Override
     public Channel channel()
     {
-        return new ChannelFake();
+        return this.channel;
     }
 }
