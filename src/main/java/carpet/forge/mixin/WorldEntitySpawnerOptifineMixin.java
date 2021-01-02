@@ -61,7 +61,7 @@ public abstract class WorldEntitySpawnerOptifineMixin
         if (this.world == null)
         {
             this.world = worldServerIn;
-            this.did = worldServerIn.provider.getDimensionType().getId();
+            this.did = worldServerIn.provider.getDimension();
             this.level_suffix = (did==0)?"":((did<0?" (N)":" (E)"));
         }
     }

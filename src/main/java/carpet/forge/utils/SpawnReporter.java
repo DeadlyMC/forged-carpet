@@ -1,5 +1,6 @@
 package carpet.forge.utils;
 
+import carpet.forge.ForgedCarpet;
 import com.google.common.collect.AbstractIterator;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.EntityOcelot;
@@ -282,8 +283,9 @@ public class SpawnReporter
             spawn_stats.put(type_code, new HashMap<>());
             spawned_mobs.put(type_code, new EvictingQueue<>());
         }
-        for (Integer dimId : DimensionManager.getIDs())
+        for (Integer dimId : DimensionManager.getStaticDimensionIDs())
         {
+            ForgedCarpet.logger.info("Reset mobcaps for " + DimensionManager.getProviderType(dimId) + "[" + dimId + "].");
             mobcaps.put(dimId, new HashMap<>());
         }
         track_spawns = 0L;
