@@ -1,6 +1,7 @@
 package carpet.forge.helper;
 
 import carpet.forge.CarpetServer;
+import carpet.forge.network.CarpetPacketHandler;
 import carpet.forge.utils.Messenger;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ICommandSender;
@@ -37,7 +38,8 @@ public class TickSpeed
         player_active_timeout = PLAYER_GRACE+ticks;
     }
 
-    public static void tickrate(float rate)
+    public static void tickrate(float rate) {tickrate(rate, true);}
+    public static void tickrate(float rate, boolean update)
     {
         tickrate = rate;
         mspt = (long)(1000.0/tickrate);
@@ -45,6 +47,10 @@ public class TickSpeed
         {
             mspt = 1l;
             tickrate = 1000.0f;
+        }
+        if (update)
+        {
+            CarpetPacketHandler.updateTickSpeedToConnectedPlayers();
         }
     }
 
@@ -162,8 +168,6 @@ public class TickSpeed
 
             }
         }
-
-
     }
 }
 

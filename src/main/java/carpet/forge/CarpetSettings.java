@@ -1,5 +1,6 @@
 package carpet.forge;
 
+import carpet.forge.network.CarpetPacketHandler;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
@@ -454,8 +455,14 @@ public class CarpetSettings
             return field.getType() == double.class;
     }
     
+    
+    public static boolean set(String ruleName, String value)
+    {
+        return set(ruleName, value, true);
+    }
+    
     @SuppressWarnings("unchecked")
-    public static boolean set(String ruleName, String value) {
+    public static boolean set(String ruleName, String value, boolean update) {
         Field field = rules.get(ruleName.toLowerCase(Locale.ENGLISH));
         if (field == null)
             return false;
@@ -540,8 +547,10 @@ public class CarpetSettings
             throw new AssertionError(e);
         }
         
-        //CarpetClientRuleChanger.updateCarpetClientsRule(ruleName, value);
-        
+        if (update)
+        {
+            CarpetPacketHandler.updateRuleWithConnectedClients(ruleName, value);
+        }
         return true;
     }
     

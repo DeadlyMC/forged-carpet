@@ -1,6 +1,7 @@
 package carpet.forge;
 
 import carpet.forge.commands.*;
+import carpet.forge.network.CarpetPacketHandler;
 import carpet.forge.utils.Reference;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
@@ -24,7 +25,7 @@ public class ForgedCarpet
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-    
+        CarpetPacketHandler.registerMessagesAndEvents();
     }
     
     @Mod.EventHandler
