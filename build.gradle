@@ -23,7 +23,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 version = "1.2.1"
 group = "carpet.forge" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "forgedcarpet"
+archivesBaseName = "forged-carpet"
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
