@@ -267,7 +267,8 @@ public class CarpetSettings
     @Rule(desc = "Adds back farmland bug where entities teleport on top of farmland that turns back to dirt.", category = EXPERIMENTAL)
     public static boolean farmlandBug;
     
-    
+    @Rule(desc = "Places the mined block in the player inventory when sneaking.", category = FEATURE)
+    public static boolean carefulBreak = false;
     
     // ===== API ===== //
     private static Map<String, Field> rules = new HashMap<>();

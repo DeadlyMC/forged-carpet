@@ -6,9 +6,12 @@ import carpet.forge.utils.HUDController;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
+import java.util.Random;
+
 public class CarpetServer
 {
     public static MinecraftServer minecraft_server;
+    public static final Random rand = new Random((int) ((2 >> 16) * Math.random()));
 
     public static void onGameStarted() {
         LoggerRegistry.initLoggers();
