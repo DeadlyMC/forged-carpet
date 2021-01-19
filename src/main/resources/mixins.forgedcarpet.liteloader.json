@@ -1,7 +1,7 @@
 {
   "minVersion": "0.8",
   "package": "carpet.forge.mixin",
-  "refmap": "mixins.carpet.refmap.json",
+  "refmap": "mixins.forgedcarpet.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
   "plugin": "carpet.forge.utils.LiteLoaderPlugin",

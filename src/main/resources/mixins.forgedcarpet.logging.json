@@ -1,7 +1,7 @@
 {
   "minVersion": "0.8",
   "package": "carpet.forge.logging.mixins",
-  "refmap": "mixins.carpet.refmap.json",
+  "refmap": "mixins.forgedcarpet.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
   "mixins": [

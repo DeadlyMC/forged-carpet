@@ -85,7 +85,7 @@ dependencies {
 
 sourceSets {
     main {
-        ext.refMap = 'mixins.carpet.refmap.json'
+        ext.refMap = 'mixins.forgedcarpet.refmap.json'
     }
 }
 
