@@ -24,11 +24,7 @@ public abstract class PlayerControllerMPMixin
     @Inject(method = "func_194338_a", at = @At("RETURN"))
     private void ctrlQCraftClient(int window, IRecipe recipe, boolean makeAll, EntityPlayer p_194338_4_, CallbackInfo ci)
     {
-        if (GuiScreen.isShiftKeyDown() && GuiScreen.isAltKeyDown())
-        {
-            this.mc.playerController.windowClick(window, 0, 1, ClickType.QUICK_MOVE, this.mc.player);
-        }
-        else if (GuiScreen.isShiftKeyDown() && GuiScreen.isCtrlKeyDown() && CarpetSettings.ctrlQCraftingFix)
+        if (GuiScreen.isShiftKeyDown() && GuiScreen.isCtrlKeyDown() && CarpetSettings.ctrlQCraftingFix)
         {
             this.mc.playerController.windowClick(window, 0, 1, ClickType.THROW, this.mc.player);
         }
