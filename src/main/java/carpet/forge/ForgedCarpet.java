@@ -20,7 +20,8 @@ import java.util.Map;
         version = Reference.MOD_VERSION,
         acceptedMinecraftVersions = Reference.ACCEPTED_MC_VERSIONS,
         certificateFingerprint = Reference.FINGERPRINT,
-        updateJSON = Reference.UPDATE_URL
+        updateJSON = Reference.UPDATE_URL,
+        acceptableRemoteVersions = "*"
 )
 public class ForgedCarpet
 {
@@ -30,12 +31,6 @@ public class ForgedCarpet
     public void preInit(FMLPreInitializationEvent event)
     {
         CarpetPacketHandler.registerMessagesAndEvents();
-    }
-    
-    @NetworkCheckHandler
-    public boolean checkConnect(Map<String, String> mods, Side otherSide)
-    {
-        return true;
     }
     
     @Mod.EventHandler
