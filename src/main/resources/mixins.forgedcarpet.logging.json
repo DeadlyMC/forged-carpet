@@ -10,7 +10,9 @@
     "EntityTNTPrimedMixin",
     "GuiInGameForgeMixin",
     "NetworkManagerMixin",
-    "WorldMixin",
+    "WorldMixin"
+  ],
+  "client":[
     "GuiPlayerTabOverlayMixin"
   ]
 }
