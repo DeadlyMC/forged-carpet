@@ -1,6 +1,6 @@
 [
 {
-  "modid": "fc1122",
+  "modid": "forgedcarpet",
   "name": "ForgedCarpet",
   "description": "A Powerful Toolbox for Technical Minecraft",
   "version": "${version}",
@@ -9,7 +9,7 @@
   "updateUrl": "https://minecraft.curseforge.com/projects/forgedcarpet",
   "authorList": ["DeadlyMC"],
   "credits": "",
-  "logoFile": "",
+  "logoFile": "icon.png",
   "screenshots": [],
   "dependencies": []
 }
