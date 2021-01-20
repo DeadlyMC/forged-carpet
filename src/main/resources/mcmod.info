@@ -1,11 +1,11 @@
 [
 {
   "modid": "forgedcarpet",
-  "name": "ForgedCarpet",
+  "name": "Forged Carpet",
   "description": "A Powerful Toolbox for Technical Minecraft",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "https://github.com/DeadlyMC/ForgedCarpet",
+  "url": "https://www.curseforge.com/minecraft/mc-mods/forgedcarpet",
   "updateUrl": "https://minecraft.curseforge.com/projects/forgedcarpet",
   "authorList": ["DeadlyMC"],
   "credits": "",
