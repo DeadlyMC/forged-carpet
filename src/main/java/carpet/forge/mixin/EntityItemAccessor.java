@@ -8,5 +8,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface EntityItemAccessor
 {
     @Accessor("pickupDelay")
-    int getPickupDelay();
+    int getPickupDelayFC();
 }

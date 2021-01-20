@@ -57,7 +57,7 @@ public abstract class EntityItemMixin
                 int amount = Math.min(stackOther.getCount(), 64 - stackSelf.getCount());
                 stackSelf.grow(amount);
                 self.setItem(stackSelf);
-                this.pickupDelay = Math.max(((EntityItemAccessor) other).getPickupDelay(), this.pickupDelay);
+                this.pickupDelay = Math.max(((EntityItemAccessor) other).getPickupDelayFC(), this.pickupDelay);
                 this.age = Math.min(other.getAge(), this.age);
                 
                 if (amount >= stackOther.getCount())
