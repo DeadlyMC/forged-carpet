@@ -10,7 +10,6 @@ import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
@@ -25,13 +24,10 @@ public class World_profilerMixin
 {
     @Shadow @Final public WorldProvider provider;
     
-    @Unique
-    private boolean isWorldServer = (World)(Object)(this) instanceof WorldServer;
-    
     @Inject(method = "updateEntities", at = @At(value = "CONSTANT", args = "stringValue=remove", ordinal = 0))
     private void startEntitiesProfiling(CallbackInfo ci)
     {
-        if (isWorldServer)
+        if ((World) (Object) (this) instanceof WorldServer)
         {
             String world_name = this.provider.getDimensionType().getName();
             CarpetProfiler.start_section(world_name, "entities");
@@ -42,7 +38,7 @@ public class World_profilerMixin
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void startEntityProfiling(CallbackInfo ci, int i1, Entity entity2)
     {
-        if (isWorldServer)
+        if ((World) (Object) (this) instanceof WorldServer)
         {
             String world_name = this.provider.getDimensionType().getName();
             CarpetProfiler.start_entity_section(world_name, entity2);
@@ -54,13 +50,13 @@ public class World_profilerMixin
             to = @At(value = "CONSTANT", args = "stringValue=blockEntities")))
     private void stopEntityProfiling(CallbackInfo ci)
     {
-        if (isWorldServer) CarpetProfiler.end_current_entity_section();
+        if ((World) (Object) (this) instanceof WorldServer) CarpetProfiler.end_current_entity_section();
     }
     
     @Inject(method = "updateEntities", at = @At(value = "CONSTANT", args = "stringValue=blockEntities"))
     private void stopEntitiesProfilingAndStartTEProfiling(CallbackInfo ci)
     {
-        if (isWorldServer)
+        if ((World) (Object) (this) instanceof WorldServer)
         {
             CarpetProfiler.end_current_section();
             String world_name = this.provider.getDimensionType().getName();
@@ -72,7 +68,7 @@ public class World_profilerMixin
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void startTESectionProfiling(CallbackInfo ci, Iterator iterator, TileEntity tileentity)
     {
-        if (isWorldServer)
+        if ((World) (Object) (this) instanceof WorldServer)
             CarpetProfiler.start_tileentity_section(this.provider.getDimensionType().getName(), tileentity);
     }
     
@@ -82,14 +78,14 @@ public class World_profilerMixin
     )
     private void stopTESectionProfiling(CallbackInfo ci)
     {
-        if (isWorldServer)
+        if ((World) (Object) (this) instanceof WorldServer)
             CarpetProfiler.end_current_entity_section();
     }
     
     @Inject(method = "updateEntities", at = @At("RETURN"))
     private void stopTEProfiling(CallbackInfo ci)
     {
-        if (isWorldServer)
+        if ((World) (Object) (this) instanceof WorldServer)
             CarpetProfiler.end_current_section();
     }
 }
