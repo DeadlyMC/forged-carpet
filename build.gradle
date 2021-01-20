@@ -33,7 +33,7 @@ compileJava {
 minecraft {
     version = "1.12.2-14.23.5.2847"
     runDir = "run"
-    coreMod = 'carpet.forge.core.CarpetCore'
+    coreMod = 'carpet.forge.core.ForgedCarpetCore'
 
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
@@ -48,7 +48,7 @@ minecraft {
 
 jar.manifest.attributes(
         'FMLCorePluginContainsFMLMod': true,
-        'FMLCorePlugin': 'carpet.forge.core.CarpetCore',
+        'FMLCorePlugin': 'carpet.forge.core.ForgedCarpetCore',
         'ForceLoadAsMod': true,
         'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker'
 )

@@ -10,12 +10,12 @@ import java.util.Map;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")
 @IFMLLoadingPlugin.SortingIndex(-10000)
-@IFMLLoadingPlugin.TransformerExclusions("carpet.forge.core.CarpetCore")
-public class CarpetCore implements IFMLLoadingPlugin
+@IFMLLoadingPlugin.TransformerExclusions("carpet.forge.core.ForgedCarpetCore")
+public class ForgedCarpetCore implements IFMLLoadingPlugin
 {
     private static File minecraftDir;
     
-    public CarpetCore()
+    public ForgedCarpetCore()
     {
         MixinBootstrap.init();
         
