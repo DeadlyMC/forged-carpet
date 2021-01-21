@@ -1,12 +1,11 @@
-# ForgedCarpet
+# Forged Carpet
 Powerful toolbox with ultimate control for technical mc.
 https://www.curseforge.com/minecraft/mc-mods/forgedcarpet
 ![Forged Carpet](/media/forged-carpet.png)
 
 ## General Info
-- Mod loader: Forge
-- Mod Version: 1.12.2
-- Every setting can be toggled on/off using `/carpet` command. Like u would do in carpetmod
+- Requires minecraft 1.12.2 with forge.
+- Every setting can be toggled using the `/carpet` command. (Only accessible by ops)
   
 ## Compiling
 - Clone this repo.
