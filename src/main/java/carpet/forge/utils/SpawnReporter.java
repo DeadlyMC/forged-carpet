@@ -285,7 +285,7 @@ public class SpawnReporter
         }
         for (Integer dimId : DimensionManager.getStaticDimensionIDs())
         {
-            ForgedCarpet.logger.info("Reset mobcaps for " + DimensionManager.getProviderType(dimId) + "[" + dimId + "].");
+            ForgedCarpet.logger.info("Reset mobcap cache for " + DimensionManager.getProviderType(dimId) + "[" + dimId + "].");
             mobcaps.put(dimId, new HashMap<>());
         }
         track_spawns = 0L;
