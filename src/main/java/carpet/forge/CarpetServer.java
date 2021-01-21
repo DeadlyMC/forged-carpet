@@ -25,7 +25,6 @@ public class CarpetServer
     public static void tick(MinecraftServer server) {
         TickSpeed.tick(server);
         HUDController.update_hud(server);
-        CarpetSettings.impendingFillSkipUpdates = false;
     }
 
     public static void playerConnected(EntityPlayerMP player) {

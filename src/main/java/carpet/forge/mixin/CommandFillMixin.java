@@ -14,24 +14,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(CommandFill.class)
 public abstract class CommandFillMixin
 {
-    @ModifyConstant(method = "execute", constant = @Constant(intValue = 32768))
-    private int onExecuteLimit(int original)
+    @ModifyConstant(method = "execute", constant = @Constant(intValue = 2))
+    private int flags(int flags)
     {
-        return CarpetSettings.fillLimit;
+        return flags | (CarpetSettings.fillUpdates ? 0 : 128);
     }
     
-    @ModifyConstant(method = "execute", constant = @Constant(intValue = 2, ordinal = 2))
-    private int onExecuteUpdate(int original)
-    {
-        return original | (CarpetSettings.fillUpdates?0:128);
-    }
-    
-    @Redirect(
-            method = "execute",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;notifyNeighborsRespectDebug(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;Z)V")
-    )
-    private void onExecuteUpdate(World world, BlockPos pos, Block blockType, boolean updateObservers)
+    @Redirect(method = "execute", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/world/World;notifyNeighborsRespectDebug(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;Z)V"))
+    private void notifyNeighbors(World world, BlockPos pos, Block blockType, boolean updateObservers)
     {
         if (CarpetSettings.fillUpdates)
             world.notifyNeighborsRespectDebug(pos, blockType, updateObservers);

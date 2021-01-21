@@ -53,11 +53,10 @@
     "MinecraftServer_profilerMixin",
 
     "Chunk_fillUpdatesMixin",
+    "CommandFillCloneMixin",
     "CommandCloneMixin",
     "CommandFillMixin",
-    "CommandHandlerMixin",
     "CommandSetBlockMixin",
-    "TileEntityStructure_fillUpdatesMixin",
     "World_fillUpdatesMixin",
     "Template_fillUpdatesMixin",
 
