@@ -9,7 +9,7 @@
   "updateUrl": "https://minecraft.curseforge.com/projects/forgedcarpet",
   "authorList": ["DeadlyMC"],
   "credits": "",
-  "logoFile": "assets/forgedcarpet/textures/icon.png",
+  "logoFile": "",
   "screenshots": [],
   "dependencies": []
 }
