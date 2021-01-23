@@ -18,7 +18,8 @@ public abstract class World_fillUpdatesMixin implements IWorld
     @Unique private boolean skipUpdates = false;
     
     @Inject(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
-            target = "Lnet/minecraft/block/state/IBlockState;getLightOpacity(Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/util/math/BlockPos;)I", ordinal = 0))
+            target = "Lnet/minecraft/block/state/IBlockState;getLightOpacity(Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/util/math/BlockPos;)I",
+            ordinal = 0, remap = false))
     private void shouldSkipUpdates(BlockPos pos, IBlockState newState, int flags, CallbackInfoReturnable<Boolean> cir)
     {
         this.skipUpdates = ((flags & 128) != 0);
