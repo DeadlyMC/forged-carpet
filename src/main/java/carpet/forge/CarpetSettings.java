@@ -268,6 +268,11 @@ public class CarpetSettings
     @Rule(desc = "Places the mined block in the player inventory when sneaking.", category = FEATURE)
     public static boolean carefulBreak = false;
     
+    @Rule(desc = "Allows to place blocks in different orientations. (Tweakeroo support)", category = CREATIVE, extra = {
+            "Also prevents rotations upon placement of dispensers or furnaces by commands."
+    })
+    public static boolean accurateBlockPlacement = false;
+    
     // ===== API ===== //
     private static Map<String, Field> rules = new HashMap<>();
     private static Map<String, String> defaults = new HashMap<>();

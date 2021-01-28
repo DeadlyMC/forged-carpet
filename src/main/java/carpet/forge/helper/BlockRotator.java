@@ -16,7 +16,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-// Helper for FlippinCactus, RotatorBlock and AccurateBlockPlacement
+// Helper for flippinCactus and rotatorBlock.
 public class BlockRotator
 {
     public static boolean flipBlockWithCactus(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)

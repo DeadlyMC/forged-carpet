@@ -47,6 +47,11 @@
     "EntityGuardianMixin",
     "EntityXPOrbMixin",
     "EntityPlayerMixin",
+    "BlockDispenserMixin",
+    "BlockFurnaceMixin",
+    "BlockPistonBaseMixin",
+    "ItemBlockMixin",
+    "ItemBlockSpecialMixin",
 
     "World_profilerMixin",
     "WorldServer_profilerMixin",
