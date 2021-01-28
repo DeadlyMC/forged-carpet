@@ -12,16 +12,14 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ItemBlockSpecial.class)
+@Mixin(value = ItemBlockSpecial.class, priority = 999) // Apply the @ModifyArg before tweakeroo
 public class ItemBlockSpecialMixin
 {
     @Unique private World world;
@@ -32,18 +30,11 @@ public class ItemBlockSpecialMixin
     @Unique private EntityPlayer placer;
     @Unique private EnumHand hand;
     
-    @ModifyVariable(method = "onItemUse", argsOnly = true, at = @At(value = "LOAD", opcode = Opcodes.FLOAD), index = 6)
+    @ModifyArg(method = "onItemUse", index = 3, at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/block/Block;getStateForPlacement(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;FFFILnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/block/state/IBlockState;"))
     private float modifyHitX(float hitX)
     {
-        this.hitX = hitX;
         return hitX % 2.0F;
-    }
-    
-    @ModifyVariable(method = "onItemUse", index = 6, at = @At(value = "INVOKE", shift = At.Shift.AFTER, remap = false,
-            target = "Lnet/minecraft/block/Block;getStateForPlacement(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;FFFILnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/block/state/IBlockState;"))
-    private float resetHitX(float hitX)
-    {
-        return this.hitX;
     }
     
     // I know this is pretty ugly but you can't capture method args with @ModifyArg's and using an @Redirect would cause a conflict and crash the game

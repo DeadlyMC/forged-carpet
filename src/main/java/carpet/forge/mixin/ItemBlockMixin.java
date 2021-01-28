@@ -18,28 +18,18 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ItemBlock.class)
+@Mixin(value = ItemBlock.class, priority = 999) // Apply the @ModifyArg before tweakeroo
 public abstract class ItemBlockMixin
 {
     @Unique private EnumHand hand;
-    @Unique private float hitX;
     
-    @ModifyVariable(method = "onItemUse", index = 6, argsOnly = true, at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/item/ItemBlock;getMetadata(I)I"))
+    @ModifyArg(method = "onItemUse", index = 3, at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/block/Block;getStateForPlacement(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;FFFILnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/block/state/IBlockState;"))
     private float modifyHitX(float hitX)
     {
-        this.hitX = hitX;
         return hitX % 2.0F;
-    }
-    
-    @ModifyVariable(method = "onItemUse", index = 6, argsOnly = true, at = @At(value = "INVOKE", shift = At.Shift.AFTER, remap = false,
-            target = "Lnet/minecraft/block/Block;getStateForPlacement(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;FFFILnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/block/state/IBlockState;"))
-    private float resetHitX(float hitX)
-    {
-        return this.hitX;
     }
     
     @Inject(method = "onItemUse", at = @At(value = "INVOKE", remap = false,
