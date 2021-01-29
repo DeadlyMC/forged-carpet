@@ -235,12 +235,13 @@ public class EntityPlayerActionPack
     
     public void swapHands()
     {
-        player.connection.processPlayerDigging(createDiggingPacket(CPacketPlayerDigging.Action.SWAP_HELD_ITEMS,null, null));
+        player.connection.processPlayerDigging(createDiggingPacket(CPacketPlayerDigging.Action.SWAP_HELD_ITEMS, null, null));
     }
     
-    public void dropItem()
+    public void dropItem(boolean dropAll)
     {
-        player.connection.processPlayerDigging(createDiggingPacket(CPacketPlayerDigging.Action.DROP_ITEM,null, null));
+        CPacketPlayerDigging.Action action = dropAll ? CPacketPlayerDigging.Action.DROP_ALL_ITEMS : CPacketPlayerDigging.Action.DROP_ITEM;
+        player.connection.processPlayerDigging(createDiggingPacket(action, null, null));
     }
     
     public void mount()

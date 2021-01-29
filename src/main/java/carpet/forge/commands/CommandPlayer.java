@@ -35,7 +35,7 @@ public class CommandPlayer extends CommandCarpetBase
      */
     public String getUsage(ICommandSender sender)
     {
-        return "player <spawn|kill|stop|drop|swapHands|mount|dismount> <player_name>  OR /player <use|attack|jump> <player_name> <once|continuous|interval.. ticks>";
+        return "player <spawn|kill|stop|drop|dropStack|swapHands|mount|dismount> <player_name>  OR /player <use|attack|jump> <player_name> <once|continuous|interval.. ticks>";
     }
     
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
@@ -112,7 +112,12 @@ public class CommandPlayer extends CommandCarpetBase
         }
         if ("drop".equalsIgnoreCase(action))
         {
-            actionPack.dropItem();
+            actionPack.dropItem(false);
+            return;
+        }
+        if ("dropStack".equalsIgnoreCase(action))
+        {
+            actionPack.dropItem(true);
             return;
         }
         if ("swapHands".equalsIgnoreCase(action))
@@ -295,7 +300,7 @@ public class CommandPlayer extends CommandCarpetBase
             //currently for all, needs to be restricted for Fake plaeyrs
             return getListOfStringsMatchingLastWord(args,
                     "spawn","kill","attack","use","jump","stop","shadow",
-                    "swapHands","drop","mount","dismount",
+                    "swapHands","drop", "dropStack","mount","dismount",
                     "move","sneak","sprint","look");
         }
         if (args.length == 3 && (args[1].matches("^(?:use|attack|jump)$")))
