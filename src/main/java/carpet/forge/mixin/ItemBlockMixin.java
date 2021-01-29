@@ -25,7 +25,7 @@ public abstract class ItemBlockMixin
 {
     @Unique private EnumHand hand;
     
-    @ModifyArg(method = "onItemUse", index = 3, at = @At(value = "INVOKE",
+    @ModifyArg(method = "onItemUse", index = 3, at = @At(value = "INVOKE", remap = false,
             target = "Lnet/minecraft/block/Block;getStateForPlacement(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;FFFILnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/block/state/IBlockState;"))
     private float modifyHitX(float hitX)
     {
