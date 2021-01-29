@@ -11,6 +11,7 @@
     "WorldServer_coreMixin",
     "World_coreMixin",
 
+    "MinecraftServerMixin",
     "BlockMixin",
     "UtilMixin",
     "BlockCarpetMixin",

@@ -8,7 +8,6 @@ import java.util.Map;
 
 public class CommandLogHandler extends LogHandler
 {
-
     private String[] command;
     
     public CommandLogHandler(String... extraArgs)
@@ -47,5 +46,4 @@ public class CommandLogHandler extends LogHandler
         
         return params;
     }
-    
 }

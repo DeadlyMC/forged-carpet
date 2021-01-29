@@ -33,7 +33,6 @@ public class HUDController
         }
         player_huds.get(player).add(hudMessage);
     }
-    
     public static void clear_player(EntityPlayer player)
     {
         SPacketPlayerListHeaderFooter packet = new SPacketPlayerListHeaderFooter();
@@ -137,8 +136,8 @@ public class HUDController
             Collections.addAll(commandParams, counter.color.name(), counter.getTotalItems());
         LoggerRegistry.getLogger("counter").log((option) -> send_counter_info(server, option), commandParams);
     }
-    
-    private static ITextComponent [] send_counter_info(MinecraftServer server, String color)
+
+    private static ITextComponent[] send_counter_info(MinecraftServer server, String color)
     {
         HopperCounter counter = HopperCounter.getCounter(color);
         List<ITextComponent> res = counter == null ? Collections.emptyList() : counter.format(server, false, true);

@@ -1,8 +1,8 @@
 package carpet.forge.logging;
 
-import carpet.forge.CarpetServer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.Arrays;
@@ -12,11 +12,11 @@ import java.util.function.Supplier;
 
 public class Logger
 {
-    // The set of subscribed and online players.
-    private Map<String, String> subscribedOnlinePlayers;
+    // Reference to the minecraft server. Used to look players up by name.
+    private MinecraftServer server;
 
-    // The set of subscribed and offline players.
-    private Map<String,String> subscribedOfflinePlayers;
+    // The set of subscribed players.
+    private Map<String, String> subscribedPlayers;
 
     // The logName of this log. Gets prepended to logged messages.
     private String logName;
@@ -29,11 +29,14 @@ public class Logger
     
     // The map of player names to the log handler used
     private Map<String, LogHandler> handlers;
-    
-    public Logger(String logName, String def, String [] options, LogHandler defaultHandler)
+    // Added boolean to create a sublist of loggers as a debugger list and use this boolean to distingwish the two.
+    private boolean debugger = false;
+    private boolean generic = false;
+
+    public Logger(MinecraftServer server, String logName, String def, String [] options, LogHandler defaultHandler)
     {
-        subscribedOnlinePlayers = new HashMap<>();
-        subscribedOfflinePlayers = new HashMap<>();
+        this.server = server;
+        subscribedPlayers = new HashMap<>();
         this.logName = logName;
         this.default_option = def;
         this.options = options;
@@ -59,14 +62,7 @@ public class Logger
      */
     public void addPlayer(String playerName, String option, LogHandler handler)
     {
-        if (playerFromName(playerName) != null)
-        {
-            subscribedOnlinePlayers.put(playerName, option);
-        }
-        else
-        {
-            subscribedOfflinePlayers.put(playerName, option);
-        }
+        subscribedPlayers.put(playerName, option);
         if (handler == null)
             handler = defaultHandler;
         handlers.put(playerName, handler);
@@ -80,8 +76,7 @@ public class Logger
     public void removePlayer(String playerName)
     {
         handlers.getOrDefault(playerName, defaultHandler).onRemovePlayer(playerName);
-        subscribedOnlinePlayers.remove(playerName);
-        subscribedOfflinePlayers.remove(playerName);
+        subscribedPlayers.remove(playerName);
         handlers.remove(playerName);
         LoggerRegistry.setAccess(this);
     }
@@ -105,9 +100,23 @@ public class Logger
     /**
      * Returns true if there are any online subscribers for this log.
      */
-    public boolean hasOnlineSubscribers()
+    public boolean hasSubscribers()
     {
-        return subscribedOnlinePlayers.size() > 0;
+        return subscribedPlayers.size() > 0;
+    }
+
+    public Logger asDebugger() {
+        debugger = true;
+        return this;
+    }
+
+    public Logger asGeneric() {
+        generic = true;
+        return this;
+    }
+
+    public boolean debuggerFilter(int compareDebugger) {
+        return 0 == compareDebugger || !debugger && !generic && 1 == compareDebugger || debugger && 2 == compareDebugger || generic && 3 == compareDebugger;
     }
 
     /**
@@ -115,16 +124,16 @@ public class Logger
      * will repeat invocation for players that share the same option
      */
     @FunctionalInterface
-    public interface lMessage { ITextComponent[] get(String playerOption, EntityPlayer player);}
+    public interface lMessage { ITextComponent [] get(String playerOption, EntityPlayer player);}
     public void logNoCommand(lMessage messagePromise) {log(messagePromise, (Object[])null);}
     public void log(lMessage messagePromise, Object... commandParams)
     {
-        for (Map.Entry<String,String> en : subscribedOnlinePlayers.entrySet())
+        for (Map.Entry<String,String> en : subscribedPlayers.entrySet())
         {
             EntityPlayerMP player = playerFromName(en.getKey());
             if (player != null)
             {
-                ITextComponent[] messages = messagePromise.get(en.getValue(),player);
+                ITextComponent [] messages = messagePromise.get(en.getValue(),player);
                 if (messages != null)
                     sendPlayerMessage(en.getKey(), player, messages, commandParams);
             }
@@ -136,12 +145,12 @@ public class Logger
      * and served the same way to all other players subscribed to the same option
      */
     @FunctionalInterface
-    public interface lMessageIgnorePlayer { ITextComponent[] get(String playerOption);}
+    public interface lMessageIgnorePlayer { ITextComponent [] get(String playerOption);}
     public void logNoCommand(lMessageIgnorePlayer messagePromise) {log(messagePromise, (Object[])null);}
     public void log(lMessageIgnorePlayer messagePromise, Object... commandParams)
     {
         Map<String, ITextComponent[]> cannedMessages = new HashMap<>();
-        for (Map.Entry<String,String> en : subscribedOnlinePlayers.entrySet())
+        for (Map.Entry<String,String> en : subscribedPlayers.entrySet())
         {
             EntityPlayerMP player = playerFromName(en.getKey());
             if (player != null)
@@ -151,7 +160,7 @@ public class Logger
                 {
                     cannedMessages.put(option,messagePromise.get(option));
                 }
-                ITextComponent[] messages = cannedMessages.get(option);
+                ITextComponent [] messages = cannedMessages.get(option);
                 if (messages != null)
                     sendPlayerMessage(en.getKey(), player, messages, commandParams);
             }
@@ -163,8 +172,8 @@ public class Logger
     public void logNoCommand(Supplier<ITextComponent[]> messagePromise) {log(messagePromise, (Object[])null);}
     public void log(Supplier<ITextComponent[]> messagePromise, Object... commandParams)
     {
-        ITextComponent[] cannedMessages = null;
-        for (Map.Entry<String,String> en : subscribedOnlinePlayers.entrySet())
+        ITextComponent [] cannedMessages = null;
+        for (Map.Entry<String,String> en : subscribedPlayers.entrySet())
         {
             EntityPlayerMP player = playerFromName(en.getKey());
             if (player != null)
@@ -173,6 +182,19 @@ public class Logger
                 sendPlayerMessage(en.getKey(), player, cannedMessages, commandParams);
             }
         }
+    }
+
+    public boolean subscribed(EntityPlayerMP player)
+    {
+        for (Map.Entry<String,String> en : subscribedPlayers.entrySet())
+        {
+            EntityPlayerMP p = playerFromName(en.getKey());
+            if (p != null && player.equals(p))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void sendPlayerMessage(String playerName, EntityPlayerMP player, ITextComponent[] messages, Object[] commandParams)
@@ -185,35 +207,10 @@ public class Logger
      */
     protected EntityPlayerMP playerFromName(String name)
     {
-        EntityPlayerMP tmp = CarpetServer.minecraft_server.getPlayerList().getPlayerByUsername(name);
-        return tmp;
+        return server.getPlayerList().getPlayerByUsername(name);
     }
 
     // ----- Event Handlers ----- //
-
-    public void onPlayerConnect(EntityPlayer player)
-    {
-        // If the player was subscribed to the log and offline, move them to the set of online subscribers.
-        String playerName = player.getName();
-        if (subscribedOfflinePlayers.containsKey(playerName))
-        {
-            subscribedOnlinePlayers.put(playerName, subscribedOfflinePlayers.get(playerName));
-            subscribedOfflinePlayers.remove(playerName);
-        }
-        LoggerRegistry.setAccess(this);
-    }
-
-    public void onPlayerDisconnect(EntityPlayer player)
-    {
-        // If the player was subscribed to the log, move them to the set of offline subscribers.
-        String playerName = player.getName();
-        if (subscribedOnlinePlayers.containsKey(playerName))
-        {
-            subscribedOfflinePlayers.put(playerName, subscribedOnlinePlayers.get(playerName));
-            subscribedOnlinePlayers.remove(playerName);
-        }
-        LoggerRegistry.setAccess(this);
-    }
 
     public String getAcceptedOption(String arg)
     {
