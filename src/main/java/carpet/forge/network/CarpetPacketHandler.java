@@ -3,6 +3,7 @@ package carpet.forge.network;
 import carpet.forge.CarpetSettings;
 import carpet.forge.helper.TickSpeed;
 import carpet.forge.patches.EntityPlayerMPFake;
+import carpet.forge.utils.Reference;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
@@ -19,7 +20,7 @@ import java.util.Set;
 
 public class CarpetPacketHandler
 {
-    public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel("forgedcarpet");
+    public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
     
     private static Map<EntityPlayerMP, String> remoteCarpetPlayers = new HashMap<>();
     private static Set<EntityPlayerMP> validCarpetPlayers = new HashSet<>();

@@ -1,6 +1,7 @@
 package carpet.forge;
 
 import carpet.forge.network.CarpetPacketHandler;
+import carpet.forge.utils.Reference;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +22,7 @@ import static carpet.forge.CarpetSettings.RuleCategory.*;
 
 public class CarpetSettings
 {
-    public static final String carpetVersion = "v1.3.1";
+    public static final String carpetVersion = "v" + Reference.MOD_VERSION;
     public static final String minecraftVersion = "1.12.2";
     public static final Logger LOG = LogManager.getLogger();
     public static boolean locked = false;
