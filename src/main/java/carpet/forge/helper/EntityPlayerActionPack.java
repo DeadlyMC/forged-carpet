@@ -1,6 +1,7 @@
 package carpet.forge.helper;
 
 import carpet.forge.CarpetSettings;
+import carpet.forge.mixin.CPacketPlayerDiggingAccessor;
 import carpet.forge.mixin.EntityAccessor;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -234,13 +235,14 @@ public class EntityPlayerActionPack
     
     public void swapHands()
     {
-        player.connection.processPlayerDigging(new CPacketPlayerDigging(CPacketPlayerDigging.Action.SWAP_HELD_ITEMS,null, null));
+        player.connection.processPlayerDigging(createDiggingPacket(CPacketPlayerDigging.Action.SWAP_HELD_ITEMS,null, null));
     }
     
     public void dropItem()
     {
-        player.connection.processPlayerDigging(new CPacketPlayerDigging(CPacketPlayerDigging.Action.DROP_ITEM,null, null));
+        player.connection.processPlayerDigging(createDiggingPacket(CPacketPlayerDigging.Action.DROP_ITEM,null, null));
     }
+    
     public void mount()
     {
         List<Entity> entities = player.world.getEntitiesInAABBexcluding(
@@ -547,7 +549,7 @@ public class EntityPlayerActionPack
         {
             if (player.interactionManager.getGameType()==GameType.CREATIVE)
             {
-                player.connection.processPlayerDigging(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, loc, face));
+                player.connection.processPlayerDigging(createDiggingPacket(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, loc, face));
                 clickBlockCreative(world, loc, face);
                 this.blockHitDelay = 5;
             }
@@ -555,11 +557,11 @@ public class EntityPlayerActionPack
             {
                 if (this.isHittingBlock)
                 {
-                    player.connection.processPlayerDigging(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, this.currentBlock, face));
+                    player.connection.processPlayerDigging(createDiggingPacket(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, this.currentBlock, face));
                 }
                 
                 IBlockState iblockstate = world.getBlockState(loc);
-                player.connection.processPlayerDigging(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, loc, face));
+                player.connection.processPlayerDigging(createDiggingPacket(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, loc, face));
                 boolean flag = iblockstate.getMaterial() != Material.AIR;
                 
                 if (flag && this.curBlockDamageMP == 0.0F)
@@ -603,7 +605,7 @@ public class EntityPlayerActionPack
         if (player.interactionManager.getGameType()==GameType.CREATIVE && world.getWorldBorder().contains(posBlock))
         {
             this.blockHitDelay = 5;
-            player.connection.processPlayerDigging(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, posBlock, directionFacing));
+            player.connection.processPlayerDigging(createDiggingPacket(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, posBlock, directionFacing));
             clickBlockCreative(world, posBlock, directionFacing);
             return true;
         }
@@ -623,7 +625,7 @@ public class EntityPlayerActionPack
                 if (this.curBlockDamageMP >= 1.0F)
                 {
                     this.isHittingBlock = false;
-                    player.connection.processPlayerDigging(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, posBlock, directionFacing));
+                    player.connection.processPlayerDigging(createDiggingPacket(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, posBlock, directionFacing));
                     this.onPlayerDestroyBlock(posBlock);
                     this.curBlockDamageMP = 0.0F;
                     this.blockHitDelay = 5;
@@ -720,12 +722,22 @@ public class EntityPlayerActionPack
     {
         if (this.isHittingBlock)
         {
-            player.connection.processPlayerDigging(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, this.currentBlock, EnumFacing.DOWN));
+            player.connection.processPlayerDigging(createDiggingPacket(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, this.currentBlock, EnumFacing.DOWN));
             this.isHittingBlock = false;
             this.curBlockDamageMP = 0.0F;
             player.getEntityWorld().sendBlockBreakProgress(player.getEntityId(), this.currentBlock, -1);
             player.resetCooldown();
             this.currentBlock = new BlockPos(-1,-1,-1);
         }
+    }
+    
+    private static CPacketPlayerDigging createDiggingPacket(CPacketPlayerDigging.Action action, BlockPos pos, EnumFacing facing)
+    {
+        CPacketPlayerDigging p = new CPacketPlayerDigging();
+        CPacketPlayerDiggingAccessor acc = (CPacketPlayerDiggingAccessor) p;
+        acc.setAction(action);
+        acc.setPosition(pos);
+        acc.setFacing(facing);
+        return p;
     }
 }

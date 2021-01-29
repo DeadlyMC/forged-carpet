@@ -74,6 +74,7 @@
     "EntityAccessor",
     "EntitySlimeAccessor",
 
+    "CPacketPlayerDiggingAccessor",
     "PlayerListMixin",
     "EntityPlayerMPMixin",
     "EntityEnderPearlMixin",
