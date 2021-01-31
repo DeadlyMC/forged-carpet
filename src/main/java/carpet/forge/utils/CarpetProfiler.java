@@ -4,6 +4,7 @@ import carpet.forge.CarpetSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.DimensionManager;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -26,24 +27,18 @@ public class CarpetProfiler
         //maybe add so it only spams the sending player, but honestly - all may want to see it
         time_repo.clear();
         test_type = 1;
-        time_repo.put("tick",0L);
-        time_repo.put("Network",0L);
-        time_repo.put("Autosave",0L);
-
-        time_repo.put("overworld.spawning",0L);
-        time_repo.put("overworld.blocks",0L);
-        time_repo.put("overworld.entities",0L);
-        time_repo.put("overworld.tileentities",0L);
-
-        time_repo.put("the_nether.spawning",0L);
-        time_repo.put("the_nether.blocks",0L);
-        time_repo.put("the_nether.entities",0L);
-        time_repo.put("the_nether.tileentities",0L);
-
-        time_repo.put("the_end.spawning",0L);
-        time_repo.put("the_end.blocks",0L);
-        time_repo.put("the_end.entities",0L);
-        time_repo.put("the_end.tileentities",0L);
+        time_repo.put("tick", 0L);
+        time_repo.put("Network", 0L);
+        time_repo.put("Autosave", 0L);
+    
+        for (Integer dimId : DimensionManager.getStaticDimensionIDs())
+        {
+            String dimension = DimensionManager.getProviderType(dimId).getName();
+            time_repo.put(dimension + ".spawning", 0L);
+            time_repo.put(dimension + ".blocks", 0L);
+            time_repo.put(dimension + ".entities", 0L);
+            time_repo.put(dimension + ".tileentities", 0L);
+        }
         //spawning
         //blocks
         //entities
@@ -74,7 +69,7 @@ public class CarpetProfiler
         String key = name;
         if (dimension != null)
         {
-            key = dimension+"."+name;
+            key = dimension + "." + name;
         }
         current_section = key;
         current_section_start = System.nanoTime();
@@ -112,7 +107,7 @@ public class CarpetProfiler
         {
             end_current_section();
         }
-        current_section = dimension + "."+ simplifyName(e.getClass().getSimpleName());
+        current_section = dimension + "." + simplifyName(e.getClass().getSimpleName());
         current_section_start = System.nanoTime();
     }
 
@@ -155,10 +150,10 @@ public class CarpetProfiler
             return;
         }
         //CarpetSettings.LOG.error("finishing section "+current_section);
-        String time_section = "t."+current_section;
-        String count_section = "c."+current_section;
-        time_repo.put(time_section,time_repo.getOrDefault(time_section,0L)+end_time-current_section_start);
-        time_repo.put(count_section,time_repo.getOrDefault(count_section,0L)+1);
+        String time_section = "t." + current_section;
+        String count_section = "c." + current_section;
+        time_repo.put(time_section, time_repo.getOrDefault(time_section,0L)+end_time-current_section_start);
+        time_repo.put(count_section, time_repo.getOrDefault(count_section,0L)+1);
         current_section = null;
         current_section_start = 0;
     }
@@ -175,7 +170,7 @@ public class CarpetProfiler
             return;
         }
         time_repo.put("tick",time_repo.get("tick")+System.nanoTime()-current_tick_start);
-        tick_health_elapsed --;
+        tick_health_elapsed--;
         //CarpetSettings.LOG.error("tick count current at "+time_repo.get("tick"));
         if (tick_health_elapsed <= 0)
         {
@@ -213,7 +208,7 @@ public class CarpetProfiler
     {
         //print stats
         long total_tick_time = time_repo.get("tick");
-        double divider = 1.0D/tick_health_requested/1000000;
+        double divider = 1.0D / tick_health_requested / 1000000;
         Messenger.print_server_message(server, String.format("Average tick time: %.3fms",divider*total_tick_time));
         long accumulated = 0L;
 
@@ -222,48 +217,25 @@ public class CarpetProfiler
 
         accumulated += time_repo.get("Network");
         Messenger.print_server_message(server, String.format("Network: %.3fms",divider*time_repo.get("Network")));
-
-        Messenger.print_server_message(server, "Overworld:");
-
-        accumulated += time_repo.get("overworld.entities");
-        Messenger.print_server_message(server, String.format(" - Entities: %.3fms",divider*time_repo.get("overworld.entities")));
-
-        accumulated += time_repo.get("overworld.tileentities");
-        Messenger.print_server_message(server, String.format(" - Tile Entities: %.3fms",divider*time_repo.get("overworld.tileentities")));
-
-        accumulated += time_repo.get("overworld.blocks");
-        Messenger.print_server_message(server, String.format(" - Blocks: %.3fms",divider*time_repo.get("overworld.blocks")));
-
-        accumulated += time_repo.get("overworld.spawning");
-        Messenger.print_server_message(server, String.format(" - Spawning: %.3fms",divider*time_repo.get("overworld.spawning")));
-
-        Messenger.print_server_message(server, "Nether:");
-
-        accumulated += time_repo.get("the_nether.entities");
-        Messenger.print_server_message(server, String.format(" - Entities: %.3fms",divider*time_repo.get("the_nether.entities")));
-
-        accumulated += time_repo.get("the_nether.tileentities");
-        Messenger.print_server_message(server, String.format(" - Tile Entities: %.3fms",divider*time_repo.get("the_nether.tileentities")));
-
-        accumulated += time_repo.get("the_nether.blocks");
-        Messenger.print_server_message(server, String.format(" - Blocks: %.3fms",divider*time_repo.get("the_nether.blocks")));
-
-        accumulated += time_repo.get("the_nether.spawning");
-        Messenger.print_server_message(server, String.format(" - Spawning: %.3fms",divider*time_repo.get("the_nether.spawning")));
-
-        Messenger.print_server_message(server, "End:");
-
-        accumulated += time_repo.get("the_end.entities");
-        Messenger.print_server_message(server, String.format(" - Entities: %.3fms",divider*time_repo.get("the_end.entities")));
-
-        accumulated += time_repo.get("the_end.tileentities");
-        Messenger.print_server_message(server, String.format(" - Tile Entities: %.3fms",divider*time_repo.get("the_end.tileentities")));
-
-        accumulated += time_repo.get("the_end.blocks");
-        Messenger.print_server_message(server, String.format(" - Blocks: %.3fms",divider*time_repo.get("the_end.blocks")));
-
-        accumulated += time_repo.get("the_end.spawning");
-        Messenger.print_server_message(server, String.format(" - Spawning: %.3fms",divider*time_repo.get("the_end.spawning")));
+    
+        for (Integer dimId : DimensionManager.getStaticDimensionIDs())
+        {
+            String dimension = DimensionManager.getProviderType(dimId).getName();
+            String capitalized_dim = dimension.substring(0, 1).toUpperCase() + dimension.substring(1); // Capitalize first letter.
+            Messenger.print_server_message(server, capitalized_dim + ":");
+    
+            accumulated += time_repo.get(dimension + ".entities");
+            Messenger.print_server_message(server, String.format(" - Entities: %.3fms", divider*time_repo.get(dimension + ".entities")));
+    
+            accumulated += time_repo.get(dimension + ".tileentities");
+            Messenger.print_server_message(server, String.format(" - Tile Entities: %.3fms", divider*time_repo.get(dimension + ".tileentities")));
+    
+            accumulated += time_repo.get(dimension + ".blocks");
+            Messenger.print_server_message(server, String.format(" - Blocks: %.3fms", divider*time_repo.get(dimension + ".blocks")));
+    
+            accumulated += time_repo.get(dimension + ".spawning");
+            Messenger.print_server_message(server, String.format(" - Spawning: %.3fms", divider*time_repo.get(dimension + ".spawning")));
+        }
 
         long rest = total_tick_time-accumulated;
 
