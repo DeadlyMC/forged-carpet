@@ -2,7 +2,7 @@ buildscript {
     repositories {
         jcenter()
         maven { url = 'https://files.minecraftforge.net/maven' }
-        maven { url = 'https://repo.spongepowered.org/maven' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         maven { url = 'https://plugins.gradle.org/m2' }
     }
     dependencies {
@@ -55,7 +55,7 @@ jar.manifest.attributes(
 
 repositories {
     mavenCentral()
-    maven { url = "http://repo.spongepowered.org/maven" }
+    maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
 }
 
 dependencies {
